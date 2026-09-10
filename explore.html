@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Explore | SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="explore.css">
+</head>
+
+<body class="explore-page">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <h2>SmartBlog</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                🏠 Home
+            </a>
+
+            <a href="explore.html" class="active">
+                🔎 Explore
+            </a>
+
+            <a href="search.html">
+                🔍 Search
+            </a>
+
+            <a href="create-blog.html">
+                ✍️ Create Blog
+            </a>
+
+            <a href="questions.html">
+                💬 Questions
+            </a>
+
+            <a href="profile.html">
+                👤 Profile
+            </a>
+
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="home.html">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="explore-main">
+
+        <!-- HEADER -->
+
+        <section class="explore-header">
+
+            <div>
+
+                <span class="explore-label">
+                    DISCOVER
+                </span>
+
+                <h1>
+                    Explore ideas.
+                </h1>
+
+                <p>
+                    Discover stories, perspectives and knowledge
+                    from the SmartBlog community.
+                </p>
+
+            </div>
+
+            <a href="create-blog.html" class="explore-create-btn">
+                + Create Blog
+            </a>
+
+        </section>
+
+
+        <!-- SEARCH -->
+
+        <section class="explore-search">
+
+            <div class="explore-search-box">
+
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    placeholder="Search blogs, topics or ideas..."
+                >
+
+                <button>
+                    Search
+                </button>
+
+            </div>
+
+            <p>
+                SmartBlog search understands the meaning behind your query.
+            </p>
+
+        </section>
+
+
+        <!-- TRENDING TOPICS -->
+
+        <section class="explore-topics">
+
+            <div class="explore-section-title">
+
+                <div>
+
+                    <span class="explore-label">
+                        BROWSE BY TOPIC
+                    </span>
+
+                    <h2>
+                        Trending topics
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="topic-buttons">
+
+                <button class="topic-button active">
+                    All
+                </button>
+
+                <button class="topic-button">
+                    Artificial Intelligence
+                </button>
+
+                <button class="topic-button">
+                    Machine Learning
+                </button>
+
+                <button class="topic-button">
+                    Data Science
+                </button>
+
+                <button class="topic-button">
+                    Programming
+                </button>
+
+                <button class="topic-button">
+                    Web Development
+                </button>
+
+                <button class="topic-button">
+                    Productivity
+                </button>
+
+                <button class="topic-button">
+                    Career
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- BLOG SECTION -->
+
+        <section class="explore-blogs">
+
+            <div class="explore-section-title">
+
+                <div>
+
+                    <span class="explore-label">
+                        LATEST STORIES
+                    </span>
+
+                    <h2>
+                        Fresh from the community
+                    </h2>
+
+                </div>
+
+                <select class="sort-select">
+
+                    <option>
+                        Most Relevant
+                    </option>
+
+                    <option>
+                        Newest
+                    </option>
+
+                    <option>
+                        Most Popular
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="explore-blog-grid">
+
+
+                <!-- ================= BLOG 1 ================= -->
+
+                <article class="explore-blog-card">
+
+                    <div class="explore-card-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=85"
+                            alt="Artificial intelligence"
+                        >
+
+                        <span>
+                            AI
+                        </span>
+
+                    </div>
+
+
+                    <div class="explore-card-content">
+
+                        <span class="explore-category">
+                            ARTIFICIAL INTELLIGENCE
+                        </span>
+
+                        <h3>
+                            The Future of Artificial Intelligence
+                        </h3>
+
+                        <p>
+                            Exploring how AI is changing the way
+                            we learn, work and create.
+                        </p>
+
+
+                        <div class="explore-card-footer">
+
+                            <div class="explore-author">
+
+                                <div class="explore-avatar">
+                                    A
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Ananya Sharma
+                                    </strong>
+
+                                    <small>
+                                        6 min read
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <span>
+                                ♡ 128
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ================= BLOG 2 ================= -->
+
+                <article class="explore-blog-card">
+
+                    <div class="explore-card-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=900&q=85"
+                            alt="Machine learning"
+                        >
+
+                        <span>
+                            ML
+                        </span>
+
+                    </div>
+
+
+                    <div class="explore-card-content">
+
+                        <span class="explore-category">
+                            MACHINE LEARNING
+                        </span>
+
+                        <h3>
+                            Machine Learning Without the Jargon
+                        </h3>
+
+                        <p>
+                            A simple introduction to how machines
+                            learn patterns from data.
+                        </p>
+
+
+                        <div class="explore-card-footer">
+
+                            <div class="explore-author">
+
+                                <div class="explore-avatar">
+                                    R
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Rahul Mehta
+                                    </strong>
+
+                                    <small>
+                                        5 min read
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <span>
+                                ♡ 96
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ================= BLOG 3 ================= -->
+
+                <article class="explore-blog-card">
+
+                    <div class="explore-card-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=85"
+                            alt="Programming"
+                        >
+
+                        <span>
+                            CODE
+                        </span>
+
+                    </div>
+
+
+                    <div class="explore-card-content">
+
+                        <span class="explore-category">
+                            PROGRAMMING
+                        </span>
+
+                        <h3>
+                            What I Wish I Knew Before Learning to Code
+                        </h3>
+
+                        <p>
+                            Lessons that can make the beginning
+                            of your programming journey easier.
+                        </p>
+
+
+                        <div class="explore-card-footer">
+
+                            <div class="explore-author">
+
+                                <div class="explore-avatar">
+                                    P
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Priya Kapoor
+                                    </strong>
+
+                                    <small>
+                                        7 min read
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <span>
+                                ♡ 74
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ================= BLOG 4 ================= -->
+
+                <article class="explore-blog-card">
+
+                    <div class="explore-card-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=85"
+                            alt="Team collaboration"
+                        >
+
+                        <span>
+                            CAREER
+                        </span>
+
+                    </div>
+
+
+                    <div class="explore-card-content">
+
+                        <span class="explore-category">
+                            CAREER
+                        </span>
+
+                        <h3>
+                            Building a Career in Technology
+                        </h3>
+
+                        <p>
+                            Practical lessons for students starting
+                            their technology journey.
+                        </p>
+
+
+                        <div class="explore-card-footer">
+
+                            <div class="explore-author">
+
+                                <div class="explore-avatar">
+                                    K
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Karan Singh
+                                    </strong>
+
+                                    <small>
+                                        8 min read
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <span>
+                                ♡ 52
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ================= BLOG 5 ================= -->
+
+                <article class="explore-blog-card">
+
+                    <div class="explore-card-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=85"
+                            alt="Productivity"
+                        >
+
+                        <span>
+                            LIFE
+                        </span>
+
+                    </div>
+
+
+                    <div class="explore-card-content">
+
+                        <span class="explore-category">
+                            PRODUCTIVITY
+                        </span>
+
+                        <h3>
+                            Building Better Habits That Actually Last
+                        </h3>
+
+                        <p>
+                            Simple strategies for making consistent
+                            progress every day.
+                        </p>
+
+
+                        <div class="explore-card-footer">
+
+                            <div class="explore-author">
+
+                                <div class="explore-avatar">
+                                    N
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Neha Verma
+                                    </strong>
+
+                                    <small>
+                                        4 min read
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <span>
+                                ♡ 109
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ================= BLOG 6 ================= -->
+
+                <article class="explore-blog-card">
+
+                    <div class="explore-card-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85"
+                            alt="Learning"
+                        >
+
+                        <span>
+                            LEARN
+                        </span>
+
+                    </div>
+
+
+                    <div class="explore-card-content">
+
+                        <span class="explore-category">
+                            EDUCATION
+                        </span>
+
+                        <h3>
+                            How to Learn Difficult Things Faster
+                        </h3>
+
+                        <p>
+                            Understanding how effective learning
+                            can change the way you study.
+                        </p>
+
+
+                        <div class="explore-card-footer">
+
+                            <div class="explore-author">
+
+                                <div class="explore-avatar">
+                                    S
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Sara Khan
+                                    </strong>
+
+                                    <small>
+                                        6 min read
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <span>
+                                ♡ 87
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SMART RECOMMENDATION ================= -->
+
+        <section id="recommended" class="explore-smart-box">
+
+            <div class="smart-icon">
+                ✦
+            </div>
+
+            <div>
+
+                <span>
+                    SMARTBLOG RECOMMENDATION
+                </span>
+
+                <h2>
+                    Not sure what to read?
+                </h2>
+
+                <p>
+                    Our recommendation system learns from your
+                    interests and reading history to suggest
+                    content that is relevant to you.
+                </p>
+
+            </div>
+
+            <a href="dashboard.html">
+                See recommendations →
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

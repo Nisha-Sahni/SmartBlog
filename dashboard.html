@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <h2>SmartBlog</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html" class="active">
+                🏠 Home
+            </a>
+
+            <a href="explore.html">
+                🔎 Explore
+            </a>
+
+            <a href="search.html">
+                🔍 Search
+            </a>
+
+            <a href="create-blog.html">
+                ✍️ Create Blog
+            </a>
+
+            <a href="questions.html">
+                💬 Questions
+            </a>
+
+            <a href="profile.html">
+                👤 Profile
+            </a>
+
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="home.html">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="dashboard-main">
+
+        <!-- TOP BAR -->
+
+        <header class="dashboard-topbar">
+
+            <div>
+
+                <p class="dashboard-date">
+                    SUNDAY, SEPTEMBER 7, 2026
+                </p>
+
+                <h1>
+                    Good afternoon, <span>User</span> 👋
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Here's something worth reading today.
+                </p>
+
+            </div>
+
+
+            <a href="profile.html" class="dashboard-user">
+
+                <div class="user-avatar">
+                    U
+                </div>
+
+                <div>
+                    <strong>User</strong>
+                    <small>Reader & Writer</small>
+                </div>
+
+            </a>
+
+        </header>
+
+
+        <!-- SEARCH -->
+
+        <section class="dashboard-search-section">
+
+            <div class="dashboard-search">
+
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    placeholder="Search blogs, topics, ideas..."
+                >
+
+                <button>
+                    Search
+                </button>
+
+            </div>
+
+            <p>
+                Search by meaning, not just keywords.
+            </p>
+
+        </section>
+
+
+        <!-- ================= FEATURED ================= -->
+
+        <section class="dashboard-section">
+
+            <div class="dashboard-section-heading">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        FEATURED FOR YOU
+                    </span>
+
+                    <h2>
+                        Worth your time.
+                    </h2>
+
+                </div>
+
+                <a href="explore.html">
+                    View all →
+                </a>
+
+            </div>
+
+
+            <article class="dashboard-featured">
+
+                <div class="featured-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=85"
+                        alt="Artificial intelligence and technology"
+                    >
+
+                </div>
+
+
+                <div class="featured-content">
+
+                    <span class="blog-category">
+                        ARTIFICIAL INTELLIGENCE
+                    </span>
+
+                    <h3>
+                        How Artificial Intelligence
+                        Is Changing the Way We Learn
+                    </h3>
+
+                    <p>
+                        AI is becoming part of everyday learning.
+                        But what does that actually mean for students,
+                        educators and the future of education?
+                    </p>
+
+
+                    <div class="blog-author">
+
+                        <div class="small-avatar">
+                            A
+                        </div>
+
+                        <div>
+                            <strong>Alex Morgan</strong>
+
+                            <span>
+                                8 min read · 2 days ago
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <a href="blog.html" class="read-btn">
+                        Read article →
+                    </a>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- ================= RECOMMENDATIONS ================= -->
+
+        <section class="dashboard-section">
+
+            <div class="dashboard-section-heading">
+
+                <div>
+
+                    <span class="dashboard-label">
+                        RECOMMENDED FOR YOU
+                    </span>
+
+                    <h2>
+                        Because you might like these.
+                    </h2>
+
+                </div>
+
+                <a href="explore.html">
+                    Explore more →
+                </a>
+
+            </div>
+
+
+            <div class="dashboard-blog-grid">
+
+
+                <!-- BLOG 1 -->
+
+                <article class="dashboard-blog-card">
+
+                    <div class="dashboard-blog-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=800&q=85"
+                            alt="Machine learning"
+                        >
+
+                    </div>
+
+                    <div class="dashboard-blog-content">
+
+                        <span class="blog-category">
+                            MACHINE LEARNING
+                        </span>
+
+                        <h3>
+                            Machine Learning Without
+                            the Complicated Jargon
+                        </h3>
+
+                        <p>
+                            A beginner-friendly look at how
+                            machines learn from data.
+                        </p>
+
+                        <div class="card-footer">
+                            <span>6 min read</span>
+                            <span>♡ 84</span>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- BLOG 2 -->
+
+                <article class="dashboard-blog-card">
+
+                    <div class="dashboard-blog-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=85"
+                            alt="Programming and web development"
+                        >
+
+                    </div>
+
+                    <div class="dashboard-blog-content">
+
+                        <span class="blog-category">
+                            PROGRAMMING
+                        </span>
+
+                        <h3>
+                            What I Wish I Knew
+                            Before Learning to Code
+                        </h3>
+
+                        <p>
+                            Lessons that can make the beginning
+                            of your programming journey easier.
+                        </p>
+
+                        <div class="card-footer">
+                            <span>5 min read</span>
+                            <span>♡ 61</span>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- BLOG 3 -->
+
+                <article class="dashboard-blog-card">
+
+                    <div class="dashboard-blog-image">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=85"
+                            alt="Student productivity"
+                        >
+
+                    </div>
+
+                    <div class="dashboard-blog-content">
+
+                        <span class="blog-category">
+                            PRODUCTIVITY
+                        </span>
+
+                        <h3>
+                            Building Better Study
+                            Habits That Actually Last
+                        </h3>
+
+                        <p>
+                            Simple strategies for making
+                            consistent progress.
+                        </p>
+
+                        <div class="card-footer">
+                            <span>7 min read</span>
+                            <span>♡ 109</span>
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= LOWER GRID ================= -->
+
+        <section class="dashboard-lower-grid">
+
+
+            <!-- READING HISTORY -->
+
+            <div class="dashboard-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            YOUR ACTIVITY
+                        </span>
+
+                        <h2>
+                            Continue reading
+                        </h2>
+
+                    </div>
+
+                    <a href="profile.html">
+                        History →
+                    </a>
+
+                </div>
+
+
+                <div class="reading-item">
+
+                    <div class="reading-number">
+                        01
+                    </div>
+
+                    <div class="reading-info">
+
+                        <span>
+                            DATA SCIENCE
+                        </span>
+
+                        <h3>
+                            Understanding Data
+                            Before Building a Model
+                        </h3>
+
+                        <p>
+                            You read 65% of this article
+                        </p>
+
+                        <div class="reading-progress">
+                            <div></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reading-item">
+
+                    <div class="reading-number">
+                        02
+                    </div>
+
+                    <div class="reading-info">
+
+                        <span>
+                            CAREER
+                        </span>
+
+                        <h3>
+                            How to Build Your
+                            First Technical Portfolio
+                        </h3>
+
+                        <p>
+                            You read 32% of this article
+                        </p>
+
+                        <div class="reading-progress">
+                            <div></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- POPULAR QUESTIONS -->
+
+            <div class="dashboard-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span class="dashboard-label">
+                            COMMUNITY
+                        </span>
+
+                        <h2>
+                            Popular questions
+                        </h2>
+
+                    </div>
+
+                    <a href="questions.html">
+                        See all →
+                    </a>
+
+                </div>
+
+
+                <a href="questions.html" class="question-item">
+
+                    <div class="question-icon">
+                        ?
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            What is the best way to
+                            start learning AI?
+                        </h3>
+
+                        <span>
+                            24 answers · 182 views
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a href="questions.html" class="question-item">
+
+                    <div class="question-icon">
+                        ?
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Which programming language
+                            should beginners learn first?
+                        </h3>
+
+                        <span>
+                            18 answers · 143 views
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a href="questions.html" class="question-item">
+
+                    <div class="question-icon">
+                        ?
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            How do recommendation
+                            systems actually work?
+                        </h3>
+
+                        <span>
+                            12 answers · 96 views
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TOPICS ================= -->
+
+        <section class="dashboard-topics">
+
+            <div>
+
+                <span class="dashboard-label">
+                    EXPLORE
+                </span>
+
+                <h2>
+                    Topics for you
+                </h2>
+
+            </div>
+
+
+            <div class="dashboard-topic-list">
+
+                <a href="explore.html">
+                    Artificial Intelligence
+                </a>
+
+                <a href="explore.html">
+                    Machine Learning
+                </a>
+
+                <a href="explore.html">
+                    Data Science
+                </a>
+
+                <a href="explore.html">
+                    Programming
+                </a>
+
+                <a href="explore.html">
+                    Web Development
+                </a>
+
+                <a href="explore.html">
+                    Productivity
+                </a>
+
+                <a href="explore.html">
+                    Career
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

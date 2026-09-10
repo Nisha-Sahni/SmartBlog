@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Blog | SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="create-blog.css">
+</head>
+
+<body class="create-blog-page">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <h2>SmartBlog</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                🏠 Home
+            </a>
+
+            <a href="explore.html">
+                🔎 Explore
+            </a>
+
+            <a href="search.html">
+                🔍 Search
+            </a>
+
+            <a href="create-blog.html" class="active">
+                ✍️ Create Blog
+            </a>
+
+            <a href="questions.html">
+                💬 Questions
+            </a>
+
+            <a href="profile.html">
+                👤 Profile
+            </a>
+
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="home.html">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="create-blog-main">
+
+        <a href="dashboard.html" class="back-to-dashboard">
+            ← Back to Dashboard
+        </a>
+
+
+        <!-- ================= HEADER ================= -->
+
+        <section class="create-blog-header">
+
+            <span class="create-blog-label">
+                CREATE
+            </span>
+
+            <h1>
+                Write something worth reading.
+            </h1>
+
+            <p>
+                Share your ideas, knowledge and experiences
+                with the SmartBlog community.
+            </p>
+
+        </section>
+
+
+        <!-- ================= BLOG FORM ================= -->
+
+        <form class="blog-form">
+
+
+            <!-- ================= TITLE ================= -->
+
+            <div class="blog-form-group">
+
+                <label for="blog-title">
+                    Blog title
+                </label>
+
+                <input
+                    type="text"
+                    id="blog-title"
+                    placeholder="Give your blog a meaningful title..."
+                    required
+                >
+
+            </div>
+
+
+            <!-- ================= CATEGORY + TAGS ================= -->
+
+            <div class="blog-form-row">
+
+                <div class="blog-form-group">
+
+                    <label for="blog-category">
+                        Category
+                    </label>
+
+                    <select
+                        id="blog-category"
+                        required
+                    >
+
+                        <option value="">
+                            Select category
+                        </option>
+
+                        <option>
+                            Technology
+                        </option>
+
+                        <option>
+                            Artificial Intelligence
+                        </option>
+
+                        <option>
+                            Machine Learning
+                        </option>
+
+                        <option>
+                            Data Science
+                        </option>
+
+                        <option>
+                            Programming
+                        </option>
+
+                        <option>
+                            Web Development
+                        </option>
+
+                        <option>
+                            Career
+                        </option>
+
+                        <option>
+                            Education
+                        </option>
+
+                        <option>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="blog-form-group">
+
+                    <label for="blog-tags">
+                        Tags
+                    </label>
+
+                    <input
+                        type="text"
+                        id="blog-tags"
+                        placeholder="e.g. python, AI, technology"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= COVER IMAGE ================= -->
+
+            <div class="blog-form-group">
+
+                <label for="blog-image">
+                    Cover image
+                </label>
+
+                <div class="image-upload">
+
+                    <input
+                        type="file"
+                        id="blog-image"
+                        accept="image/*"
+                    >
+
+                    <div class="upload-content">
+
+                        <span class="upload-icon">
+                            ↑
+                        </span>
+
+                        <strong>
+                            Upload a cover image
+                        </strong>
+
+                        <small>
+                            PNG, JPG or WEBP
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= CONTENT ================= -->
+
+            <div class="blog-form-group">
+
+                <label for="blog-content">
+                    Your story
+                </label>
+
+                <textarea
+                    id="blog-content"
+                    placeholder="Start writing your blog..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- ================= WRITING TIP ================= -->
+
+            <div class="writing-tip">
+
+                <span>
+                    ✦
+                </span>
+
+                <div>
+
+                    <strong>
+                        Writing tip
+                    </strong>
+
+                    <p>
+                        A clear title and useful content help your
+                        blog reach readers who are interested in it.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= ACTIONS ================= -->
+
+            <div class="blog-form-actions">
+
+                <button
+                    type="button"
+                    class="save-draft-btn"
+                >
+                    Save Draft
+                </button>
+
+                <button
+                    type="submit"
+                    class="publish-blog-btn"
+                >
+                    Publish Blog
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="search.css">
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <h2>SmartBlog</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">🏠 Home</a>
+            <a href="explore.html">🔍 Explore</a>
+            <a href="search.html" class="active">🔎 Search</a>
+            <a href="create-blog.html">✍️ Create Blog</a>
+            <a href="questions.html">💬 Questions</a>
+            <a href="profile.html">👤 Profile</a>
+            <a href="settings.html">⚙️ Settings</a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="login.html">🚪 Logout</a>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="search-page">
+
+        <div class="search-header">
+
+            <span class="page-label">DISCOVER</span>
+
+            <h1>Search SmartBlog</h1>
+
+            <p>
+                Find blogs based on what you mean, not just the exact words you type.
+            </p>
+
+        </div>
+
+
+        <!-- Search Box -->
+        <section class="search-box-section">
+
+            <form class="search-form">
+
+                <div class="search-input-wrapper">
+
+                    <span class="search-icon">🔍</span>
+
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="What are you looking for?"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+            <p class="search-hint">
+                Try something like:
+                <span>machine learning for beginners</span>
+            </p>
+
+        </section>
+
+
+        <!-- Search Results -->
+        <section class="search-results-section">
+
+            <div class="results-header">
+
+                <h2>Search Results</h2>
+
+                <span id="result-count">0 results</span>
+
+            </div>
+
+
+            <!-- Empty State -->
+            <div class="search-empty-state" id="search-empty">
+
+                <div class="empty-icon">🔎</div>
+
+                <h3>Start exploring</h3>
+
+                <p>
+                    Search for a topic, idea, or question and discover
+                    relevant blogs from SmartBlog.
+                </p>
+
+            </div>
+
+
+            <!-- Results will appear here later -->
+            <div id="search-results"></div>
+
+        </section>
+
+
+        <!-- How Search Works -->
+        <section class="search-info">
+
+            <div class="info-text">
+
+                <span class="page-label">SMART SEARCH</span>
+
+                <h2>Search by meaning, not just keywords.</h2>
+
+                <p>
+                    SmartBlog uses NLP-powered semantic search to understand
+                    the meaning behind your query and find relevant blog
+                    content—even when the exact words aren't present.
+                </p>
+
+            </div>
+
+            <div class="search-example">
+
+                <div class="example-row">
+                    <span class="example-label">YOU SEARCH</span>
+                    <strong>How can I start learning AI?</strong>
+                </div>
+
+                <div class="example-arrow">↓</div>
+
+                <div class="example-row">
+                    <span class="example-label">SMARTBLOG FINDS</span>
+                    <strong>
+                        Beginner's Guide to Artificial Intelligence
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

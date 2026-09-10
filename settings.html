@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="settings.css">
+</head>
+
+<body class="settings-page">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <h2>SmartBlog</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                🏠 Home
+            </a>
+
+            <a href="explore.html">
+                🔎 Explore
+            </a>
+
+            <a href="search.html">
+                🔍 Search
+            </a>
+
+            <a href="create-blog.html">
+                ✍️ Create Blog
+            </a>
+
+            <a href="questions.html">
+                💬 Questions
+            </a>
+
+            <a href="profile.html">
+                👤 Profile
+            </a>
+
+            <a href="settings.html" class="active">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="home.html">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="settings-main">
+
+        <section class="settings-header">
+
+            <span class="settings-label">
+                ACCOUNT
+            </span>
+
+            <h1>
+                Settings
+            </h1>
+
+            <p>
+                Manage your account and SmartBlog preferences.
+            </p>
+
+        </section>
+
+
+        <!-- ================= ACCOUNT ================= -->
+
+        <section class="settings-section">
+
+            <div class="settings-section-header">
+
+                <div>
+                    <span class="settings-label">
+                        PROFILE
+                    </span>
+
+                    <h2>
+                        Account information
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-card">
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Name</strong>
+                        <p>Nisha Sharma</p>
+                    </div>
+
+                    <button type="button">
+                        Edit
+                    </button>
+
+                </div>
+
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Email</strong>
+                        <p>nisha@example.com</p>
+                    </div>
+
+                    <button type="button">
+                        Change
+                    </button>
+
+                </div>
+
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Password</strong>
+                        <p>••••••••</p>
+                    </div>
+
+                    <button type="button">
+                        Change
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PERSONALIZATION ================= -->
+
+        <section class="settings-section">
+
+            <div class="settings-section-header">
+
+                <div>
+                    <span class="settings-label">
+                        PERSONALIZATION
+                    </span>
+
+                    <h2>
+                        Content preferences
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-card">
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Recommended blogs</strong>
+
+                        <p>
+                            Use your interests and reading activity
+                            to personalize recommendations.
+                        </p>
+                    </div>
+
+                    <label class="toggle">
+
+                        <input
+                            type="checkbox"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Reading history</strong>
+
+                        <p>
+                            Keep track of blogs you have read.
+                        </p>
+                    </div>
+
+                    <label class="toggle">
+
+                        <input
+                            type="checkbox"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= NOTIFICATIONS ================= -->
+
+        <section class="settings-section">
+
+            <div class="settings-section-header">
+
+                <div>
+                    <span class="settings-label">
+                        NOTIFICATIONS
+                    </span>
+
+                    <h2>
+                        Notifications
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-card">
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>New recommendations</strong>
+
+                        <p>
+                            Get notified when SmartBlog has new
+                            recommendations for you.
+                        </p>
+                    </div>
+
+                    <label class="toggle">
+
+                        <input
+                            type="checkbox"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Community activity</strong>
+
+                        <p>
+                            Notifications about answers and activity
+                            on your questions.
+                        </p>
+                    </div>
+
+                    <label class="toggle">
+
+                        <input type="checkbox">
+
+                        <span class="toggle-slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= DANGER ZONE ================= -->
+
+        <section class="settings-section danger-section">
+
+            <div class="settings-section-header">
+
+                <div>
+                    <span class="settings-label">
+                        ACCOUNT
+                    </span>
+
+                    <h2>
+                        Account actions
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-card">
+
+                <div class="settings-row">
+
+                    <div>
+                        <strong>Log out</strong>
+
+                        <p>
+                            Sign out of your SmartBlog account.
+                        </p>
+                    </div>
+
+                    <a
+                        href="home.html"
+                        class="logout-settings-btn"
+                    >
+                        Log out
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

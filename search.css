@@ -1,0 +1,715 @@
+/* =========================================
+   SMARTBLOG - SEARCH PAGE
+========================================= */
+
+
+/* =========================================
+   PAGE LAYOUT
+========================================= */
+
+.dashboard-layout {
+    min-height: 100vh;
+    background: #F8F7FC;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 240px;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 28px 18px;
+
+    background: #FFFFFF;
+
+    border-right: 1px solid #E9E6F0;
+
+    display: flex;
+    flex-direction: column;
+
+    z-index: 100;
+}
+
+
+/* Logo */
+
+.sidebar-logo {
+    padding: 0 12px;
+    margin-bottom: 32px;
+}
+
+.sidebar-logo h2 {
+    margin: 0;
+
+    font-size: 23px;
+    font-weight: 700;
+
+    color: #181622;
+}
+
+
+/* Navigation */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+/* Navigation links */
+
+.sidebar-nav a,
+.sidebar-bottom a {
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 44px;
+
+    box-sizing: border-box;
+
+    padding: 0 13px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    color: #686372;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Hover */
+
+.sidebar-nav a:hover,
+.sidebar-bottom a:hover {
+
+    background: #F4F0FF;
+
+    color: #7048E8;
+}
+
+
+/* Active page */
+
+.sidebar-nav a.active {
+
+    background: #EEE9FF;
+
+    color: #7048E8;
+
+    font-weight: 600;
+}
+
+
+/* Bottom */
+
+.sidebar-bottom {
+    margin-top: auto;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #E9E6F0;
+}
+
+.sidebar-bottom a {
+    color: #777383;
+}
+
+
+/* =========================================
+   SEARCH MAIN CONTENT
+========================================= */
+
+.search-page {
+
+    margin-left: 240px;
+
+    min-height: 100vh;
+
+    padding: 45px 55px;
+
+    max-width: 1100px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.search-header {
+    margin-bottom: 35px;
+}
+
+.page-label {
+
+    display: inline-block;
+
+    margin-bottom: 8px;
+
+    color: #7048E8;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+.search-header h1 {
+
+    margin: 0 0 8px;
+
+    font-size: 34px;
+
+    font-weight: 700;
+
+    color: #181622;
+}
+
+.search-header p {
+
+    margin: 0;
+
+    color: #777383;
+
+    font-size: 15px;
+}
+
+
+/* =========================================
+   SEARCH BOX
+========================================= */
+
+.search-box-section {
+    margin-bottom: 48px;
+}
+
+.search-form {
+
+    display: flex;
+
+    gap: 12px;
+
+    width: 100%;
+}
+
+.search-input-wrapper {
+
+    position: relative;
+
+    flex: 1;
+}
+
+
+/* Search icon */
+
+.search-icon {
+
+    position: absolute;
+
+    left: 18px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 17px;
+}
+
+
+/* Input */
+
+.search-input-wrapper input {
+
+    width: 100%;
+
+    height: 54px;
+
+    box-sizing: border-box;
+
+    padding: 0 20px 0 50px;
+
+    border: 1px solid #DDD9E8;
+
+    border-radius: 12px;
+
+    background: #FFFFFF;
+
+    color: #181622;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+.search-input-wrapper input::placeholder {
+    color: #AAA6B2;
+}
+
+.search-input-wrapper input:focus {
+
+    border-color: #7048E8;
+
+    box-shadow:
+        0 0 0 3px rgba(112, 72, 232, 0.08);
+}
+
+
+/* Search button */
+
+.search-form button {
+
+    height: 54px;
+
+    padding: 0 28px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #7048E8;
+
+    color: #FFFFFF;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.search-form button:hover {
+
+    background: #5F3BD0;
+
+    transform: translateY(-1px);
+}
+
+
+/* Hint */
+
+.search-hint {
+
+    margin: 11px 0 0;
+
+    font-size: 13px;
+
+    color: #88838F;
+}
+
+.search-hint span {
+
+    color: #7048E8;
+
+    font-weight: 500;
+}
+
+
+/* =========================================
+   SEARCH RESULTS
+========================================= */
+
+.search-results-section {
+    margin-bottom: 55px;
+}
+
+.results-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+.results-header h2 {
+
+    margin: 0;
+
+    font-size: 21px;
+
+    color: #181622;
+}
+
+#result-count {
+
+    font-size: 13px;
+
+    color: #88838F;
+}
+
+
+/* =========================================
+   EMPTY SEARCH STATE
+========================================= */
+
+.search-empty-state {
+
+    min-height: 230px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 35px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #EBE8F1;
+
+    border-radius: 16px;
+
+    background: #FFFFFF;
+
+    text-align: center;
+}
+
+
+/* Empty icon */
+
+.empty-icon {
+
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 14px;
+
+    border-radius: 50%;
+
+    background: #EEE9FF;
+
+    font-size: 25px;
+}
+
+
+/* Empty heading */
+
+.search-empty-state h3 {
+
+    margin: 0 0 8px;
+
+    font-size: 18px;
+
+    color: #181622;
+}
+
+
+/* Empty text */
+
+.search-empty-state p {
+
+    max-width: 480px;
+
+    margin: 0;
+
+    color: #85808C;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   HOW SMART SEARCH WORKS
+========================================= */
+
+.search-info {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 35px;
+
+    padding: 35px;
+
+    box-sizing: border-box;
+
+    border-radius: 18px;
+
+    background: #F4F0FF;
+}
+
+
+/* Left information */
+
+.info-text h2 {
+
+    margin: 8px 0 14px;
+
+    font-size: 25px;
+
+    line-height: 1.25;
+
+    color: #181622;
+}
+
+.info-text p {
+
+    margin: 0;
+
+    color: #686372;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================
+   SEARCH EXAMPLE CARD
+========================================= */
+
+.search-example {
+
+    padding: 25px;
+
+    border-radius: 14px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #EBE7F5;
+
+    box-sizing: border-box;
+}
+
+.example-row {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.example-label {
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    color: #7048E8;
+}
+
+.example-row strong {
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    color: #282431;
+}
+
+.example-arrow {
+
+    margin: 18px 0;
+
+    color: #7048E8;
+
+    font-size: 18px;
+}
+
+
+/* =========================================
+   SEARCH RESULT CARDS
+   (For when backend is connected)
+========================================= */
+
+.search-result-card {
+
+    display: block;
+
+    padding: 22px;
+
+    margin-bottom: 14px;
+
+    border: 1px solid #E9E6F0;
+
+    border-radius: 14px;
+
+    background: #FFFFFF;
+
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.search-result-card:hover {
+
+    border-color: #D7D0EF;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 18px rgba(40, 30, 70, 0.06);
+}
+
+.search-result-card h3 {
+
+    margin: 0 0 8px;
+
+    font-size: 18px;
+
+    color: #181622;
+}
+
+.search-result-card p {
+
+    margin: 0 0 12px;
+
+    color: #777383;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.search-result-meta {
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: center;
+
+    color: #8A8592;
+
+    font-size: 12px;
+}
+
+.search-result-category {
+
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    background: #EEE9FF;
+
+    color: #7048E8;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .search-page {
+        margin-left: 210px;
+
+        padding: 35px 25px;
+    }
+
+    .search-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .sidebar {
+        width: 70px;
+
+        padding: 20px 10px;
+    }
+
+    .sidebar-logo {
+        padding: 0;
+
+        text-align: center;
+    }
+
+    .sidebar-logo h2 {
+
+        font-size: 0;
+    }
+
+    .sidebar-logo h2::after {
+
+        content: "S";
+
+        font-size: 22px;
+
+        font-weight: 700;
+    }
+
+    .sidebar-nav a,
+    .sidebar-bottom a {
+
+        justify-content: center;
+
+        padding: 0;
+
+        font-size: 0;
+    }
+
+    .search-page {
+
+        margin-left: 70px;
+
+        padding: 25px 18px;
+    }
+
+    .search-header h1 {
+
+        font-size: 28px;
+    }
+
+    .search-form {
+
+        flex-direction: column;
+    }
+
+    .search-form button {
+
+        width: 100%;
+    }
+
+    .search-info {
+
+        padding: 25px;
+    }
+}

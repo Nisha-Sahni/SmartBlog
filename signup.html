@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <!-- LEFT SIDE -->
+        <div class="auth-intro">
+
+            <a href="home.html" class="auth-brand">
+                <span class="brand-mark">S</span>
+                <span>Smart<span>Blog</span></span>
+            </a>
+
+            <div class="auth-message">
+
+                <span class="auth-label">JOIN SMARTBLOG</span>
+
+                <h1>
+                    Start your
+                    <span>story.</span>
+                </h1>
+
+                <p>
+                    Create your SmartBlog account and discover
+                    meaningful content, personalized recommendations,
+                    and a community where ideas can be shared.
+                </p>
+
+            </div>
+
+            <div class="auth-quote">
+                <span>"</span>
+                Every great idea deserves a place to be shared.
+              <span>"</span>
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="auth-form-area">
+
+            <div class="auth-form-card">
+
+                <div class="auth-form-heading">
+
+                    <h2>Create account</h2>
+
+                    <p>
+                        Join SmartBlog and start exploring.
+                    </p>
+
+                </div>
+
+
+                <form id="signupForm">
+
+                    <!-- NAME -->
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+
+                        <label for="signupEmail">
+                            Email address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="signupEmail"
+                            name="email"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+                    <div class="form-group">
+
+                        <label for="signupPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="signupPassword"
+                            name="password"
+                            placeholder="Create a password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm your password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TERMS -->
+                    <div class="remember-row">
+
+                        <label class="remember-option">
+
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                required
+                            >
+
+                            <span>
+                                I agree to the SmartBlog terms
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- CREATE ACCOUNT -->
+                    <button
+                        type="submit"
+                        class="auth-submit"
+                    >
+                        Create Account
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+
+                <!-- DIVIDER -->
+
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+
+
+                <!-- LOGIN -->
+
+                <p class="auth-switch">
+
+                    Already have an account?
+
+                    <a href="login.html">
+                        Sign in
+                    </a>
+
+                </p>
+
+
+                <!-- BACK -->
+
+                <a href="home.html" class="back-home">
+                    ← Back to SmartBlog
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        document
+            .getElementById("signupForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const password =
+                    document.getElementById("signupPassword").value;
+
+                const confirmPassword =
+                    document.getElementById("confirmPassword").value;
+
+                if (password !== confirmPassword) {
+
+                    alert("Passwords do not match.");
+
+                    return;
+                }
+
+                alert(
+                    "Signup form is working. MySQL registration will be connected next."
+                );
+
+            });
+
+    </script>
+
+</body>
+
+</html>
