@@ -204,33 +204,72 @@
 
 
     <script>
+    document
+        .getElementById("signupForm")
+        .addEventListener("submit", async function(event) {
 
-        document
-            .getElementById("signupForm")
-            .addEventListener("submit", function(event) {
+            event.preventDefault();
 
-                event.preventDefault();
+            const name =
+                document.getElementById("name").value;
 
-                const password =
-                    document.getElementById("signupPassword").value;
+            const email =
+                document.getElementById("signupEmail").value;
 
-                const confirmPassword =
-                    document.getElementById("confirmPassword").value;
+            const password =
+                document.getElementById("signupPassword").value;
 
-                if (password !== confirmPassword) {
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
 
-                    alert("Passwords do not match.");
+            // Check passwords
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
 
-                    return;
-                }
+            try {
 
-                alert(
-                    "Signup form is working. MySQL registration will be connected next."
+                const response = await fetch(
+                    "http://127.0.0.1:5000/signup",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            password: password
+                        })
+                    }
                 );
 
-            });
+                const result = await response.json();
 
-    </script>
+                if (response.ok) {
+
+                    alert(result.message);
+
+                    // Go to login page after successful signup
+                    window.location.href = "login.html";
+
+                } else {
+
+                    alert(result.message);
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert("Could not connect to SmartBlog server.");
+            }
+
+        });
+</script>
 
 </body>
 

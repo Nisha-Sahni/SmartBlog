@@ -603,6 +603,25 @@
     </main>
 
 
+    <!-- ================= USER NAME ================= -->
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (user) {
+
+            document.querySelector(".dashboard-topbar h1 span").textContent =
+                user.name;
+
+            document.querySelector(".dashboard-user strong").textContent =
+                user.name;
+
+            document.querySelector(".user-avatar").textContent =
+                user.name.charAt(0).toUpperCase();
+
+        }
+    </script>
+
     <script src="script.js"></script>
 
 </body>
