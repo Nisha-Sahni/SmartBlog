@@ -1,629 +1,302 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dashboard | SmartBlog</title>
-
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | smartblog.</title>
+  <link rel="stylesheet" href="dashboard.css">
 </head>
+<body>
 
-<body class="dashboard-page">
+  <div class="announcement">
+    A little inspiration goes a long way.
+    <a href="#recommended">Find your next read ↗</a>
+  </div>
 
-    <!-- ================= SIDEBAR ================= -->
+  <div class="dashboard-layout">
 
     <aside class="sidebar">
+      <a class="brand" href="home.html">
+        <span class="brand-mark">S.</span>
+        smartblog.
+      </a>
 
-        <div class="sidebar-logo">
-            <h2>SmartBlog</h2>
+      <div class="profile">
+        <div class="profile-avatar">N</div>
+        <div>
+          <strong>Welcome back!</strong>
+          <small>Your reading corner</small>
         </div>
+      </div>
 
-        <nav class="sidebar-nav">
+      <p class="nav-heading">YOUR SPACE</p>
 
-            <a href="dashboard.html" class="active">
-                🏠 Home
-            </a>
+      <nav class="navigation">
+        <a class="nav-link active" href="dashboard.html"><span>⌂</span> Home</a>
+        <a class="nav-link" href="explore.html"><span>⌕</span> Explore stories</a>
+        <a class="nav-link" href="search.html"><span>↗</span> Search</a>
+        <a class="nav-link" href="questions.html"><span>✳</span> Community Q&A</a>
+        <a class="nav-link" href="profile.html"><span>◯</span> My profile</a>
+      </nav>
 
-            <a href="explore.html">
-                🔎 Explore
-            </a>
+      <p class="nav-heading topics-heading">YOUR INTERESTS</p>
 
-            <a href="search.html">
-                🔍 Search
-            </a>
+      <div class="sidebar-topics">
+        <button data-topic="All"><i class="lime-dot"></i> For you</button>
+        <button data-topic="Technology"><i class="lavender-dot"></i> Technology</button>
+        <button data-topic="Lifestyle"><i class="pink-dot"></i> Lifestyle</button>
+        <button data-topic="Creativity"><i class="orange-dot"></i> Creativity</button>
+        <button data-topic="Learning"><i class="blue-dot"></i> Learning</button>
+      </div>
 
-            <a href="create-blog.html">
-                ✍️ Create Blog
-            </a>
+      <div class="write-box">
+        <span class="write-star">✳</span>
+        <h3>Have an idea?</h3>
+        <p>Your story might be exactly what someone needs to read.</p>
+        <a href="create-blog.html" class="write-button">＋ Share your ideas</a>
+      </div>
 
-            <a href="questions.html">
-                💬 Questions
-            </a>
-
-            <a href="profile.html">
-                👤 Profile
-            </a>
-
-            <a href="settings.html">
-                ⚙️ Settings
-            </a>
-
-        </nav>
-
-        <div class="sidebar-bottom">
-
-            <a href="home.html">
-                🚪 Logout
-            </a>
-
-        </div>
-
+      <a href="home.html" class="back-link">← Back to the website</a>
     </aside>
 
+    <main class="main">
 
-    <!-- ================= MAIN ================= -->
+      <header class="topbar">
+        <div class="breadcrumb">Your space <span>/</span> <strong>Dashboard</strong></div>
+        <div class="topbar-right">
+          <a href="home.html">About</a>
+          <a href="questions.html">Community</a>
+          <a href="profile.html" class="small-avatar">N</a>
+        </div>
+      </header>
 
-    <main class="dashboard-main">
+      <div class="page-content">
 
-        <!-- TOP BAR -->
+        <!-- Dashboard welcome: no duplicated home-page hero -->
+        <section class="dashboard-welcome">
+          <div>
+            <span class="eyebrow"><i></i> YOUR READING SPACE</span>
+            <h1>Welcome back,<br><em>reader.</em></h1>
+            <p>There's always a new idea waiting to find you.</p>
+          </div>
+          <a href="create-blog.html" class="black-button">＋ Write a story ↗</a>
+        </section>
 
-        <header class="dashboard-topbar">
+        <!-- Search -->
+        <section class="search-area">
+          <div>
+            <span class="eyebrow">A WORLD OF IDEAS</span>
+            <h2>What are you curious about?</h2>
+          </div>
 
+          <label class="search-box">
+            <span>⌕</span>
+            <input type="search" id="searchInput" placeholder="Search stories, topics, ideas...">
+            <button id="searchBtn">Search ↗</button>
+          </label>
+        </section>
+
+        <!-- Topic filters -->
+        <section class="topics-area">
+          <div class="section-heading">
             <div>
-
-                <p class="dashboard-date">
-                    SUNDAY, SEPTEMBER 7, 2026
-                </p>
-
-                <h1>
-                    Good afternoon, <span>User</span> 👋
-                </h1>
-
-                <p class="dashboard-subtitle">
-                    Here's something worth reading today.
-                </p>
-
+              <span class="eyebrow">FOLLOW YOUR CURIOSITY</span>
+              <h2>Explore by topic</h2>
             </div>
+            <button id="clearFilters" class="underlined">View everything ↗</button>
+          </div>
 
-
-            <a href="profile.html" class="dashboard-user">
-
-                <div class="user-avatar">
-                    U
-                </div>
-
-                <div>
-                    <strong>User</strong>
-                    <small>Reader & Writer</small>
-                </div>
-
-            </a>
-
-        </header>
-
-
-        <!-- SEARCH -->
-
-        <section class="dashboard-search-section">
-
-            <div class="dashboard-search">
-
-                <span>⌕</span>
-
-                <input
-                    type="text"
-                    placeholder="Search blogs, topics, ideas..."
-                >
-
-                <button>
-                    Search
-                </button>
-
-            </div>
-
-            <p>
-                Search by meaning, not just keywords.
-            </p>
-
+          <div class="topic-chips">
+            <button class="chip selected" data-topic="All">✳ For you</button>
+            <button class="chip" data-topic="Technology">Technology</button>
+            <button class="chip" data-topic="Lifestyle">Lifestyle</button>
+            <button class="chip" data-topic="Creativity">Creativity</button>
+            <button class="chip" data-topic="Learning">Learning</button>
+          </div>
         </section>
 
+        <div class="content-grid">
 
-        <!-- ================= FEATURED ================= -->
+          <div class="feed">
 
-        <section class="dashboard-section">
-
-            <div class="dashboard-section-heading">
-
+            <!-- Recommended blogs -->
+            <section id="recommended" class="section">
+              <div class="section-heading">
                 <div>
-
-                    <span class="dashboard-label">
-                        FEATURED FOR YOU
-                    </span>
-
-                    <h2>
-                        Worth your time.
-                    </h2>
-
+                  <span class="eyebrow">A FEW GOOD READS</span>
+                  <h2>Stories you might love <span class="lime-star">✳</span></h2>
                 </div>
+                <a href="explore.html" class="underlined">Explore all ↗</a>
+              </div>
 
-                <a href="explore.html">
-                    View all →
-                </a>
+              <div class="story-grid" id="storyGrid">
 
-            </div>
-
-
-            <article class="dashboard-featured">
-
-                <div class="featured-image">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=85"
-                        alt="Artificial intelligence and technology"
-                    >
-
-                </div>
-
-
-                <div class="featured-content">
-
-                    <span class="blog-category">
-                        ARTIFICIAL INTELLIGENCE
-                    </span>
-
-                    <h3>
-                        How Artificial Intelligence
-                        Is Changing the Way We Learn
-                    </h3>
-
-                    <p>
-                        AI is becoming part of everyday learning.
-                        But what does that actually mean for students,
-                        educators and the future of education?
-                    </p>
-
-
-                    <div class="blog-author">
-
-                        <div class="small-avatar">
-                            A
-                        </div>
-
-                        <div>
-                            <strong>Alex Morgan</strong>
-
-                            <span>
-                                8 min read · 2 days ago
-                            </span>
-                        </div>
-
+                <article class="story-card story-large"
+                  data-topic="Technology"
+                  data-search="technology artificial intelligence future">
+                  <a class="story-image" href="explore.html">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85" alt="Electronic circuit board">
+                    <span class="image-label">TECHNOLOGY</span>
+                  </a>
+                  <div class="story-body">
+                    <span class="meta">FEATURED STORY · 6 MIN READ</span>
+                    <h3><a href="explore.html">The little things shaping our digital future</a></h3>
+                    <p>Exploring the ideas and inventions changing how we see the world.</p>
+                    <div class="story-footer">
+                      <span>smartblog. community</span>
+                      <button class="save-button">♡ Save</button>
                     </div>
-
-                    <a href="blog.html" class="read-btn">
-                        Read article →
-                    </a>
-
-                </div>
-
-            </article>
-
-        </section>
-
-
-        <!-- ================= RECOMMENDATIONS ================= -->
-
-        <section class="dashboard-section">
-
-            <div class="dashboard-section-heading">
-
-                <div>
-
-                    <span class="dashboard-label">
-                        RECOMMENDED FOR YOU
-                    </span>
-
-                    <h2>
-                        Because you might like these.
-                    </h2>
-
-                </div>
-
-                <a href="explore.html">
-                    Explore more →
-                </a>
-
-            </div>
-
-
-            <div class="dashboard-blog-grid">
-
-
-                <!-- BLOG 1 -->
-
-                <article class="dashboard-blog-card">
-
-                    <div class="dashboard-blog-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=800&q=85"
-                            alt="Machine learning"
-                        >
-
-                    </div>
-
-                    <div class="dashboard-blog-content">
-
-                        <span class="blog-category">
-                            MACHINE LEARNING
-                        </span>
-
-                        <h3>
-                            Machine Learning Without
-                            the Complicated Jargon
-                        </h3>
-
-                        <p>
-                            A beginner-friendly look at how
-                            machines learn from data.
-                        </p>
-
-                        <div class="card-footer">
-                            <span>6 min read</span>
-                            <span>♡ 84</span>
-                        </div>
-
-                    </div>
-
+                  </div>
                 </article>
 
-
-                <!-- BLOG 2 -->
-
-                <article class="dashboard-blog-card">
-
-                    <div class="dashboard-blog-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=85"
-                            alt="Programming and web development"
-                        >
-
+                <article class="story-card"
+                  data-topic="Creativity"
+                  data-search="creativity writing ideas inspiration">
+                  <a class="story-image" href="explore.html">
+                    <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=700&q=85" alt="Notebook and writing desk">
+                  </a>
+                  <div class="story-body">
+                    <span class="meta">CREATIVITY · 4 MIN READ</span>
+                    <h3><a href="explore.html">Making room for your next big idea</a></h3>
+                    <p>Sometimes the best ideas need a little breathing room.</p>
+                    <div class="story-footer">
+                      <span>Fresh perspective</span>
+                      <button class="save-button">♡ Save</button>
                     </div>
-
-                    <div class="dashboard-blog-content">
-
-                        <span class="blog-category">
-                            PROGRAMMING
-                        </span>
-
-                        <h3>
-                            What I Wish I Knew
-                            Before Learning to Code
-                        </h3>
-
-                        <p>
-                            Lessons that can make the beginning
-                            of your programming journey easier.
-                        </p>
-
-                        <div class="card-footer">
-                            <span>5 min read</span>
-                            <span>♡ 61</span>
-                        </div>
-
-                    </div>
-
+                  </div>
                 </article>
 
-
-                <!-- BLOG 3 -->
-
-                <article class="dashboard-blog-card">
-
-                    <div class="dashboard-blog-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=85"
-                            alt="Student productivity"
-                        >
-
+                <article class="story-card"
+                  data-topic="Lifestyle"
+                  data-search="lifestyle daily habits slow living">
+                  <a class="story-image" href="explore.html">
+                    <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=85" alt="A calm, sunlit workspace">
+                  </a>
+                  <div class="story-body">
+                    <span class="meta">LIFESTYLE · 5 MIN READ</span>
+                    <h3><a href="explore.html">A slower way to make every day count</a></h3>
+                    <p>Little rituals that bring more intention to ordinary days.</p>
+                    <div class="story-footer">
+                      <span>Everyday living</span>
+                      <button class="save-button">♡ Save</button>
                     </div>
-
-                    <div class="dashboard-blog-content">
-
-                        <span class="blog-category">
-                            PRODUCTIVITY
-                        </span>
-
-                        <h3>
-                            Building Better Study
-                            Habits That Actually Last
-                        </h3>
-
-                        <p>
-                            Simple strategies for making
-                            consistent progress.
-                        </p>
-
-                        <div class="card-footer">
-                            <span>7 min read</span>
-                            <span>♡ 109</span>
-                        </div>
-
-                    </div>
-
+                  </div>
                 </article>
 
-            </div>
-
-        </section>
-
-
-        <!-- ================= LOWER GRID ================= -->
-
-        <section class="dashboard-lower-grid">
-
-
-            <!-- READING HISTORY -->
-
-            <div class="dashboard-panel">
-
-                <div class="panel-heading">
-
-                    <div>
-
-                        <span class="dashboard-label">
-                            YOUR ACTIVITY
-                        </span>
-
-                        <h2>
-                            Continue reading
-                        </h2>
-
+                <article class="story-card"
+                  data-topic="Learning"
+                  data-search="learning curiosity books knowledge">
+                  <a class="story-image" href="explore.html">
+                    <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=85" alt="Books ready to be read">
+                  </a>
+                  <div class="story-body">
+                    <span class="meta">LEARNING · 7 MIN READ</span>
+                    <h3><a href="explore.html">Why staying curious changes everything</a></h3>
+                    <p>One question can open a door to an entirely new world.</p>
+                    <div class="story-footer">
+                      <span>Ideas worth keeping</span>
+                      <button class="save-button">♡ Save</button>
                     </div>
+                  </div>
+                </article>
 
-                    <a href="profile.html">
-                        History →
-                    </a>
+              </div>
 
+              <p id="emptyState" class="empty-state" hidden>
+                No stories found. Try another search or topic.
+              </p>
+            </section>
+
+            <!-- Reading history -->
+            <section class="section reading-section">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">PICK UP WHERE YOU LEFT OFF</span>
+                  <h2>Your reading history</h2>
                 </div>
+                <a href="profile.html" class="underlined">View all ↗</a>
+              </div>
 
-
-                <div class="reading-item">
-
-                    <div class="reading-number">
-                        01
-                    </div>
-
-                    <div class="reading-info">
-
-                        <span>
-                            DATA SCIENCE
-                        </span>
-
-                        <h3>
-                            Understanding Data
-                            Before Building a Model
-                        </h3>
-
-                        <p>
-                            You read 65% of this article
-                        </p>
-
-                        <div class="reading-progress">
-                            <div></div>
-                        </div>
-
-                    </div>
-
+              <div class="history-card">
+                <div class="history-icon">◷</div>
+                <div>
+                  <strong>Your next read starts here.</strong>
+                  <p>Stories you read will appear here once reading history is connected.</p>
                 </div>
+              </div>
+            </section>
 
+          </div>
 
-                <div class="reading-item">
+          <!-- Right column -->
+          <aside class="right-column">
 
-                    <div class="reading-number">
-                        02
-                    </div>
-
-                    <div class="reading-info">
-
-                        <span>
-                            CAREER
-                        </span>
-
-                        <h3>
-                            How to Build Your
-                            First Technical Portfolio
-                        </h3>
-
-                        <p>
-                            You read 32% of this article
-                        </p>
-
-                        <div class="reading-progress">
-                            <div></div>
-                        </div>
-
-                    </div>
-
+            <section class="side-section">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">POPULAR RIGHT NOW</span>
+                  <h2>Trending stories</h2>
                 </div>
+                <span class="lime-star">✳</span>
+              </div>
 
-            </div>
+              <a class="trending-item" href="explore.html">
+                <span class="trend-number">01</span>
+                <div><h3>The art of starting over</h3><small>Lifestyle · 5 min read</small></div>
+                <span>↗</span>
+              </a>
 
+              <a class="trending-item" href="explore.html">
+                <span class="trend-number">02</span>
+                <div><h3>Technology, but make it human</h3><small>Technology · 7 min read</small></div>
+                <span>↗</span>
+              </a>
 
-            <!-- POPULAR QUESTIONS -->
+              <a class="trending-item" href="explore.html">
+                <span class="trend-number">03</span>
+                <div><h3>Read more, scroll a little less</h3><small>Learning · 4 min read</small></div>
+                <span>↗</span>
+              </a>
 
-            <div class="dashboard-panel">
+              <a class="trending-item" href="explore.html">
+                <span class="trend-number">04</span>
+                <div><h3>Where creativity begins</h3><small>Creativity · 6 min read</small></div>
+                <span>↗</span>
+              </a>
+            </section>
 
-                <div class="panel-heading">
+            <section class="side-section recommendations">
+              <span class="eyebrow">A LITTLE INSPIRATION</span>
+              <h2>Picked for you.</h2>
+              <p>Good stories introduce you to ideas. Great stories change how you see them.</p>
+              <a href="explore.html" class="recommend-link">Find your next read ↗</a>
+              <div class="decor-star">✳</div>
+            </section>
 
-                    <div>
+            <section class="side-section community-box">
+              <span class="eyebrow">YOUR VOICE MATTERS</span>
+              <h2>Share an idea.</h2>
+              <p>Have a thought worth sharing? Give it a place to grow.</p>
+              <a class="black-button" href="create-blog.html">Write a story ↗</a>
+            </section>
 
-                        <span class="dashboard-label">
-                            COMMUNITY
-                        </span>
+          </aside>
+        </div>
 
-                        <h2>
-                            Popular questions
-                        </h2>
+        <footer class="footer">
+          <a class="brand footer-brand" href="home.html">
+            <span class="brand-mark">S.</span> smartblog.
+          </a>
+          <span>A home for curious minds and thoughtful stories.</span>
+        </footer>
 
-                    </div>
-
-                    <a href="questions.html">
-                        See all →
-                    </a>
-
-                </div>
-
-
-                <a href="questions.html" class="question-item">
-
-                    <div class="question-icon">
-                        ?
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            What is the best way to
-                            start learning AI?
-                        </h3>
-
-                        <span>
-                            24 answers · 182 views
-                        </span>
-
-                    </div>
-
-                </a>
-
-
-                <a href="questions.html" class="question-item">
-
-                    <div class="question-icon">
-                        ?
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Which programming language
-                            should beginners learn first?
-                        </h3>
-
-                        <span>
-                            18 answers · 143 views
-                        </span>
-
-                    </div>
-
-                </a>
-
-
-                <a href="questions.html" class="question-item">
-
-                    <div class="question-icon">
-                        ?
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            How do recommendation
-                            systems actually work?
-                        </h3>
-
-                        <span>
-                            12 answers · 96 views
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= TOPICS ================= -->
-
-        <section class="dashboard-topics">
-
-            <div>
-
-                <span class="dashboard-label">
-                    EXPLORE
-                </span>
-
-                <h2>
-                    Topics for you
-                </h2>
-
-            </div>
-
-
-            <div class="dashboard-topic-list">
-
-                <a href="explore.html">
-                    Artificial Intelligence
-                </a>
-
-                <a href="explore.html">
-                    Machine Learning
-                </a>
-
-                <a href="explore.html">
-                    Data Science
-                </a>
-
-                <a href="explore.html">
-                    Programming
-                </a>
-
-                <a href="explore.html">
-                    Web Development
-                </a>
-
-                <a href="explore.html">
-                    Productivity
-                </a>
-
-                <a href="explore.html">
-                    Career
-                </a>
-
-            </div>
-
-        </section>
-
+      </div>
     </main>
+  </div>
 
-
-    <!-- ================= USER NAME ================= -->
-
-    <script>
-        const user = JSON.parse(localStorage.getItem("user"));
-
-        if (user) {
-
-            document.querySelector(".dashboard-topbar h1 span").textContent =
-                user.name;
-
-            document.querySelector(".dashboard-user strong").textContent =
-                user.name;
-
-            document.querySelector(".user-avatar").textContent =
-                user.name.charAt(0).toUpperCase();
-
-        }
-    </script>
-
-    <script src="script.js"></script>
-
+  <script src="dashboard.js"></script>
 </body>
-
 </html>
+
+

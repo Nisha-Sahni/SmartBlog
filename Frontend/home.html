@@ -1,1185 +1,361 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBlog — Stories for Curious Minds</title>
 
-    <title>SmartBlog | Discover Ideas Worth Reading</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- ================= NAVBAR ================= -->
+    <div class="announcement">
+        A little inspiration goes a long way.
+        <a href="#explore">Find your next read ↗</a>
+    </div>
 
-    <header class="blog-navbar">
-
-        <a href="home.html" class="blog-brand">
-            <span class="brand-mark">S</span>
-            <span>Smart<span>Blog</span></span>
+    <header class="navbar">
+        <a href="home.html" class="logo">
+            <span class="logo-mark">S.</span>
+            <span>smartblog<span class="logo-dot">.</span></span>
         </a>
 
-        <nav class="blog-nav">
-
-            <a href="login.html">Explore</a>
-
-            <!-- Scrolls to topic section -->
-            <a href="#topics">Topics</a>
-
-            <!-- Scrolls to About section -->
+        <nav class="nav-links" id="navLinks">
+            <a href="home.html" class="active">Home</a>
+            <a href="explore.html">Explore</a>
             <a href="#about">About</a>
-
+            <a href="questions.html">Community</a>
         </nav>
 
-        <div class="blog-nav-actions">
-
-            <a href="login.html" class="nav-login">
-                Sign In
-            </a>
-
-            <a href="signup.html" class="nav-signup">
-                Create Account
-            </a>
-
+        <div class="nav-actions">
+            <a href="login.html" class="login-link">Log in</a>
+            <a href="signup.html" class="nav-cta">Start reading ↗</a>
         </div>
 
+        <button class="menu-toggle" id="menuToggle"
+                aria-label="Toggle navigation"
+                aria-expanded="false">☰</button>
     </header>
 
-
     <main>
-
-
-        <!-- =====================================================
-             HERO
-        ====================================================== -->
-
-        <section class="blog-hero">
-
-            <div class="hero-left">
-
-                <span class="hero-kicker">
-                    DISCOVER • READ • CREATE
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    YOUR CORNER OF THE INTERNET
                 </span>
 
                 <h1>
-                    Discover ideas
-                    <br>
-                    <span>worth reading.</span>
+                    Good ideas<br>
+                    deserve to be<br>
+                    <span class="highlight">discovered<span class="highlight-star">✳</span></span>
                 </h1>
 
-                <p>
-                    Explore stories, perspectives and ideas across
-                    topics that interest you. Follow what you love,
-                    discover something new, and share your own stories.
+                <p class="hero-description">
+                    A home for curious minds, thoughtful stories, and ideas
+                    that make you see the world a little differently.
                 </p>
 
                 <div class="hero-buttons">
-
-                    <a href="login.html" class="hero-primary">
-                        Explore Stories
-                        <span>→</span>
+                    <a href="explore.html" class="button-primary">
+                        Explore stories <span>↗</span>
                     </a>
-
-                    <a href="signup.html" class="hero-secondary">
-                        Start Writing
+                    <a href="signup.html" class="button-secondary">
+                        Share your ideas
                     </a>
-
                 </div>
 
+                <div class="hero-note">
+                    <div class="avatar-stack">
+                        <span>✍️</span>
+                        <span>📚</span>
+                        <span>💡</span>
+                    </div>
+                    <p>
+                        <strong>Read something meaningful.</strong><br>
+                        Discover ideas beyond your feed.
+                    </p>
+                </div>
             </div>
 
+            <div class="hero-art">
+                <div class="art-orbit orbit-one"></div>
+                <div class="art-orbit orbit-two"></div>
 
-            <!-- FEATURED STORY -->
-
-            <a href="login.html" class="hero-story">
-
-                <div class="hero-story-image">
-
+                <div class="hero-image-card">
                     <img
-                        src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85"
-                        alt="Technology and artificial intelligence"
-                    >
+                        src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1000&q=85"
+                        alt="A peaceful library filled with books">
 
-                    <span class="featured-badge">
-                        FEATURED STORY
-                    </span>
-
+                    <div class="image-overlay">
+                        <span class="image-label">THE READING ROOM</span>
+                        <h2>For the love<br>of learning.</h2>
+                        <span class="image-arrow">↗</span>
+                    </div>
                 </div>
 
-                <div class="hero-story-content">
-
-                    <div class="story-label-row">
-
-                        <span class="story-category">
-                            TECHNOLOGY
-                        </span>
-
-                        <span>
-                            6 min read
-                        </span>
-
+                <div class="floating-note note-yellow">
+                    <span class="note-icon">✳</span>
+                    <div>
+                        <strong>Stay curious.</strong>
+                        <small>There's always more to learn.</small>
                     </div>
-
-                    <h2>
-                        The Future of Artificial Intelligence
-                    </h2>
-
-                    <p>
-                        Exploring how AI is changing the way
-                        we learn, work and create.
-                    </p>
-
-                    <div class="story-author">
-
-                        <span class="author-avatar">
-                            SB
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                SmartBlog Editorial
-                            </strong>
-
-                            <small>
-                                Featured story
-                            </small>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
-            </a>
+                <div class="floating-note note-lilac">
+                    <span class="note-sparkle">✦</span>
+                    <span>Ideas live here.</span>
+                </div>
 
+                <span class="decor-star star-one">✳</span>
+                <span class="decor-star star-two">✦</span>
+            </div>
         </section>
 
-
-
-        <!-- =====================================================
-             TRENDING TOPICS
-        ====================================================== -->
-
-        <section class="topics-strip">
-
-            <div class="topics-title">
-
-                <span>
-                    TRENDING TOPICS
-                </span>
-
-                <h2>
-                    Explore what interests you.
-                </h2>
-
-            </div>
-
-
-            <div class="topic-pills">
-
-                <a href="login.html">
-                    Artificial Intelligence
-                </a>
-
-                <a href="login.html">
-                    Machine Learning
-                </a>
-
-                <a href="login.html">
-                    Programming
-                </a>
-
-                <a href="login.html">
-                    Web Development
-                </a>
-
-                <a href="login.html">
-                    Data Science
-                </a>
-
-                <a href="login.html">
-                    Career
-                </a>
-
-                <a href="login.html">
-                    College Life
-                </a>
-
-                <a href="login.html">
-                    Productivity
-                </a>
-
-                <a href="login.html">
-                    Design
-                </a>
-
-                <a href="login.html">
-                    Psychology
-                </a>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             LATEST STORIES
-        ====================================================== -->
-
-        <section class="stories-section">
-
-            <div class="section-header">
-
+        <!-- TOPICS -->
+        <section class="topic-section" id="explore">
+            <div class="section-heading">
                 <div>
-
-                    <span class="section-kicker">
-                        LATEST STORIES
-                    </span>
-
-                    <h2>
-                        Stories worth your time.
-                    </h2>
-
-                    <p class="section-description">
-                        Ideas, experiences and knowledge shared
-                        by people from different backgrounds.
-                    </p>
-
+                    <span class="section-kicker">FOLLOW YOUR CURIOSITY</span>
+                    <h2>What are you <em>into?</em></h2>
                 </div>
-
-                <a href="login.html" class="view-all">
-                    View all stories →
-                </a>
-
+                <a href="explore.html" class="text-link">Explore all topics ↗</a>
             </div>
 
-
-            <div class="stories-grid">
-
-
-                <!-- STORY 1 -->
-
-                <a href="login.html" class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=900&q=85"
-                            alt="Machine learning"
-                        >
-
-                    </div>
-
-                    <div class="blog-card-content">
-
-                        <div class="card-meta">
-
-                            <span>
-                                MACHINE LEARNING
-                            </span>
-
-                            <span>
-                                8 min read
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            Understanding Machine Learning
-                            Without the Hype
-                        </h3>
-
-                        <p>
-                            A simple introduction to how machines
-                            learn from data and improve over time.
-                        </p>
-
-                        <div class="card-author">
-
-                            <span class="mini-avatar">
-                                NS
-                            </span>
-
-                            <span>
-                                Nisha Sahni · May 26, 2026
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
-
-
-                <!-- STORY 2 -->
-
-                <a href="login.html" class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=85"
-                            alt="Student productivity"
-                        >
-
-                    </div>
-
-                    <div class="blog-card-content">
-
-                        <div class="card-meta">
-
-                            <span>
-                                PRODUCTIVITY
-                            </span>
-
-                            <span>
-                                5 min read
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            Building Better Habits
-                            as a Student
-                        </h3>
-
-                        <p>
-                            Small changes that can make learning
-                            more consistent and effective.
-                        </p>
-
-                        <div class="card-author">
-
-                            <span class="mini-avatar">
-                                AR
-                            </span>
-
-                            <span>
-                                Aditi Rao · May 24, 2026
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
-
-
-                <!-- STORY 3 -->
-
-                <a href="login.html" class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85"
-                            alt="Web development"
-                        >
-
-                    </div>
-
-                    <div class="blog-card-content">
-
-                        <div class="card-meta">
-
-                            <span>
-                                WEB DEVELOPMENT
-                            </span>
-
-                            <span>
-                                7 min read
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            From Idea to Your
-                            First Website
-                        </h3>
-
-                        <p>
-                            A beginner-friendly journey into
-                            building for the web.
-                        </p>
-
-                        <div class="card-author">
-
-                            <span class="mini-avatar">
-                                RK
-                            </span>
-
-                            <span>
-                                Rohan Kumar · May 21, 2026
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
-
-
-                <!-- STORY 4 -->
-
-                <a href="login.html" class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=85"
-                            alt="Students collaborating"
-                        >
-
-                    </div>
-
-                    <div class="blog-card-content">
-
-                        <div class="card-meta">
-
-                            <span>
-                                COLLEGE LIFE
-                            </span>
-
-                            <span>
-                                6 min read
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            What College Teaches
-                            Beyond the Classroom
-                        </h3>
-
-                        <p>
-                            Lessons, challenges and experiences
-                            that never appear in a syllabus.
-                        </p>
-
-                        <div class="card-author">
-
-                            <span class="mini-avatar">
-                                AM
-                            </span>
-
-                            <span>
-                                Ananya Mehta · May 19, 2026
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
-
-
-                <!-- STORY 5 -->
-
-                <a href="login.html" class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=85"
-                            alt="Career discussion"
-                        >
-
-                    </div>
-
-                    <div class="blog-card-content">
-
-                        <div class="card-meta">
-
-                            <span>
-                                CAREER
-                            </span>
-
-                            <span>
-                                9 min read
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            Finding Your Direction
-                            When You Feel Lost
-                        </h3>
-
-                        <p>
-                            A practical reflection on careers,
-                            choices and figuring things out.
-                        </p>
-
-                        <div class="card-author">
-
-                            <span class="mini-avatar">
-                                VS
-                            </span>
-
-                            <span>
-                                Vikram Shah · May 17, 2026
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
-
-
-                <!-- STORY 6 -->
-
-                <a href="login.html" class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=85"
-                            alt="Writing and creativity"
-                        >
-
-                    </div>
-
-                    <div class="blog-card-content">
-
-                        <div class="card-meta">
-
-                            <span>
-                                CREATIVITY
-                            </span>
-
-                            <span>
-                                4 min read
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            Why Writing Down
-                            Your Ideas Matters
-                        </h3>
-
-                        <p>
-                            Sometimes the best way to understand
-                            an idea is simply to write it down.
-                        </p>
-
-                        <div class="card-author">
-
-                            <span class="mini-avatar">
-                                SK
-                            </span>
-
-                            <span>
-                                Sana Kapoor · May 15, 2026
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
+            <div class="topic-list">
+                <a href="explore.html" class="topic-pill topic-peach"><span>✷</span> Technology</a>
+                <a href="explore.html" class="topic-pill topic-lilac"><span>◈</span> Creativity</a>
+                <a href="explore.html" class="topic-pill topic-green"><span>⌘</span> Science</a>
+                <a href="explore.html" class="topic-pill topic-blue"><span>✎</span> Lifestyle</a>
+                <a href="explore.html" class="topic-pill topic-pink"><span>♡</span> Personal growth</a>
+                <a href="explore.html" class="topic-pill topic-yellow"><span>✺</span> Everything else</a>
             </div>
-
         </section>
 
+        <!-- MOVING STORY CAROUSEL -->
+        <section class="stories-section">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">A GOOD PLACE TO START</span>
+                    <h2>Stories worth <em>your time.</em></h2>
+                </div>
 
-
-        <!-- =====================================================
-             EXPLORE BY TOPIC
-        ====================================================== -->
-
-        <section class="topic-explorer" id="topics">
-
-            <div class="topic-explorer-heading">
-
-                <span class="section-kicker">
-                    EXPLORE BY TOPIC
-                </span>
-
-                <h2>
-                    Find your corner of SmartBlog.
-                </h2>
-
-                <p>
-                    From technology and career advice to creativity,
-                    education and everyday experiences, explore ideas
-                    across topics that matter to you.
-                </p>
-
+                <div class="carousel-controls">
+                    <button class="carousel-btn" id="storyPrev"
+                            aria-label="Previous stories">←</button>
+                    <button class="carousel-btn" id="storyNext"
+                            aria-label="Next stories">→</button>
+                </div>
             </div>
 
+            <div class="story-slider" id="storySlider">
+                <div class="story-grid" id="storyTrack">
 
-            <div class="topic-groups">
-
-
-                <!-- TECHNOLOGY -->
-
-                <div class="topic-group">
-
-                    <h3>
-                        Technology
-                    </h3>
-
-                    <div class="topic-links">
-
-                        <a href="login.html">
-                            Artificial Intelligence
+                    <article class="story-card story-featured">
+                        <a href="explore.html" class="story-image">
+                            <img
+                                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=85"
+                                alt="Laptop and creative workspace">
+                            <span class="image-category">TECH & INNOVATION</span>
                         </a>
+                        <div class="story-content">
+                            <div class="story-meta">
+                                <span>6 MIN READ</span>
+                                <span>✳ EDITOR'S PICK</span>
+                            </div>
+                            <h3><a href="explore.html">The little habits that make learning to code easier</a></h3>
+                            <p>Progress isn't always about doing more. Sometimes it's about finding a better way to begin.</p>
+                            <div class="story-author">
+                                <span class="author-avatar avatar-orange">S</span>
+                                <span>SmartBlog Editorial</span>
+                            </div>
+                        </div>
+                    </article>
 
-                        <a href="login.html">
-                            Machine Learning
+                    <article class="story-card">
+                        <a href="explore.html" class="story-image">
+                            <img
+                                src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=85"
+                                alt="Notebook and pen on a desk">
+                            <span class="image-category">CREATIVITY</span>
                         </a>
+                        <div class="story-content">
+                            <div class="story-meta"><span>4 MIN READ</span></div>
+                            <h3><a href="explore.html">Make room for ideas that haven't found their shape yet</a></h3>
+                            <p>Why giving yourself permission to experiment can change everything.</p>
+                            <div class="story-author">
+                                <span class="author-avatar avatar-lilac">C</span>
+                                <span>Creative Notes</span>
+                            </div>
+                        </div>
+                    </article>
 
-                        <a href="login.html">
-                            Data Science
+                    <article class="story-card">
+                        <a href="explore.html" class="story-image">
+                            <img
+                                src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=85"
+                                alt="Mountains reflected in a lake">
+                            <span class="image-category">LIFESTYLE</span>
                         </a>
+                        <div class="story-content">
+                            <div class="story-meta"><span>5 MIN READ</span></div>
+                            <h3><a href="explore.html">A slower morning might be exactly what you need</a></h3>
+                            <p>Small ways to make everyday routines feel a little more intentional.</p>
+                            <div class="story-author">
+                                <span class="author-avatar avatar-green">M</span>
+                                <span>Mindful Living</span>
+                            </div>
+                        </div>
+                    </article>
 
-                        <a href="login.html">
-                            Programming
+                    <article class="story-card">
+                        <a href="explore.html" class="story-image">
+                            <img
+                                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85"
+                                alt="Person working on a laptop">
+                            <span class="image-category">DIGITAL LIFE</span>
                         </a>
+                        <div class="story-content">
+                            <div class="story-meta"><span>7 MIN READ</span></div>
+                            <h3><a href="explore.html">Building a digital life that works for you</a></h3>
+                            <p>Simple ways to make technology serve your goals and creativity.</p>
+                            <div class="story-author">
+                                <span class="author-avatar avatar-blue">D</span>
+                                <span>Digital Journal</span>
+                            </div>
+                        </div>
+                    </article>
 
-                        <a href="login.html">
-                            Web Development
+                    <article class="story-card">
+                        <a href="explore.html" class="story-image">
+                            <img
+                                src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=85"
+                                alt="Notebook on a writing desk">
+                            <span class="image-category">PERSONAL GROWTH</span>
                         </a>
-
-                        <a href="login.html">
-                            Cybersecurity
-                        </a>
-
-                        <a href="login.html">
-                            Cloud Computing
-                        </a>
-
-                    </div>
+                        <div class="story-content">
+                            <div class="story-meta"><span>3 MIN READ</span></div>
+                            <h3><a href="explore.html">You don't have to have it all figured out</a></h3>
+                            <p>A reminder that growing takes time, patience, and a little courage.</p>
+                            <div class="story-author">
+                                <span class="author-avatar avatar-pink">P</span>
+                                <span>Personal Pages</span>
+                            </div>
+                        </div>
+                    </article>
 
                 </div>
-
-
-
-                <!-- CAREER -->
-
-                <div class="topic-group">
-
-                    <h3>
-                        Career & Education
-                    </h3>
-
-                    <div class="topic-links">
-
-                        <a href="login.html">
-                            Career
-                        </a>
-
-                        <a href="login.html">
-                            College Life
-                        </a>
-
-                        <a href="login.html">
-                            Education
-                        </a>
-
-                        <a href="login.html">
-                            Productivity
-                        </a>
-
-                        <a href="login.html">
-                            Interviews
-                        </a>
-
-                        <a href="login.html">
-                            Personal Development
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- CREATIVE -->
-
-                <div class="topic-group">
-
-                    <h3>
-                        Creativity & Lifestyle
-                    </h3>
-
-                    <div class="topic-links">
-
-                        <a href="login.html">
-                            Design
-                        </a>
-
-                        <a href="login.html">
-                            Photography
-                        </a>
-
-                        <a href="login.html">
-                            Fashion
-                        </a>
-
-                        <a href="login.html">
-                            Travel
-                        </a>
-
-                        <a href="login.html">
-                            Books
-                        </a>
-
-                        <a href="login.html">
-                            Food
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- KNOWLEDGE -->
-
-                <div class="topic-group">
-
-                    <h3>
-                        Ideas & Knowledge
-                    </h3>
-
-                    <div class="topic-links">
-
-                        <a href="login.html">
-                            Science
-                        </a>
-
-                        <a href="login.html">
-                            Psychology
-                        </a>
-
-                        <a href="login.html">
-                            Finance
-                        </a>
-
-                        <a href="login.html">
-                            Business
-                        </a>
-
-                        <a href="login.html">
-                            Law
-                        </a>
-
-                        <a href="login.html">
-                            Environment
-                        </a>
-
-                    </div>
-
-                </div>
-
             </div>
 
-
-            <a href="login.html" class="explore-topics-button">
-                Explore All Topics →
-            </a>
-
+            <div class="carousel-caption">
+                <span class="carousel-dot"></span>
+                <span>Ideas worth discovering, one story at a time.</span>
+            </div>
         </section>
 
+        <!-- ABOUT SMARTBLOG -->
+        <section class="manifesto" id="about">
+            <div class="manifesto-decoration">✳</div>
 
-
-        <!-- =====================================================
-             ABOUT SMARTBLOG
-        ====================================================== -->
-
-        <section class="about-blog" id="about">
-
-            <div class="about-label">
-
-                <span>
-                    ABOUT SMARTBLOG
-                </span>
-
+            <div class="manifesto-content">
+                <span class="section-kicker">NOT JUST ANOTHER BLOG</span>
+                <h2>The internet is big.<br>Let's make it feel <em>personal.</em></h2>
+                <p>
+                    SmartBlog helps you discover stories, explore fresh perspectives,
+                    and make space for your own voice.
+                </p>
+                <a href="signup.html" class="button-dark">
+                    Find your people <span>↗</span>
+                </a>
             </div>
 
-
-            <div class="about-text">
-
-                <h2>
-                    There is always something
-                    <span>worth discovering.</span>
-                </h2>
-
-                <p>
-                    The internet is full of articles, opinions,
-                    experiences and ideas. But finding something
-                    genuinely relevant to you can take time.
-                </p>
-
-                <p>
-                    SmartBlog is built to make that experience
-                    easier. It gives readers a place to discover
-                    stories around their interests, explore different
-                    perspectives, keep track of what they read and
-                    find new ideas along the way.
-                </p>
-
-                <p>
-                    And when you have something worth sharing,
-                    SmartBlog gives you a place to turn your ideas,
-                    experiences and knowledge into stories for others.
-                </p>
-
-
-                <div class="about-highlights">
-
-                    <div>
-
-                        <strong>
-                            Discover
-                        </strong>
-
-                        <span>
-                            Find stories relevant to your interests.
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            Read
-                        </strong>
-
-                        <span>
-                            Build your own reading journey.
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>
-                            Create
-                        </strong>
-
-                        <span>
-                            Share your ideas with others.
-                        </span>
-
-                    </div>
-
-                </div>
-
+            <div class="manifesto-side">
+                <div class="manifesto-mini mini-yellow">Ideas<br>that stick. <span>✦</span></div>
+                <div class="manifesto-mini mini-lilac">Stories<br>that connect. <span>↗</span></div>
+                <div class="manifesto-mini mini-green">Space to<br>create. <span>✎</span></div>
             </div>
-
         </section>
 
-
-
-        <!-- =====================================================
-             WHY SMARTBLOG
-        ====================================================== -->
-
-        <section class="smart-section">
-
-            <div class="section-header centered">
-
-                <span class="section-kicker">
-                    WHY SMARTBLOG
-                </span>
-
-                <h2>
-                    More than just a place to publish.
-                </h2>
-
-                <p class="section-description center-description">
-                    SmartBlog combines blogging with intelligent
-                    discovery and a more personalized reading experience.
-                </p>
-
+        <!-- FEATURES -->
+        <section class="features-section">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">A SMARTER WAY TO READ</span>
+                    <h2>Made for the way <em>you think.</em></h2>
+                </div>
             </div>
 
-
-            <div class="smart-grid">
-
-                <article class="smart-card">
-
-                    <span class="smart-number">
-                        01
-                    </span>
-
-                    <h3>
-                        Search by Meaning
-                    </h3>
-
-                    <p>
-                        Discover relevant blogs even when your
-                        search does not use the exact words
-                        written in the article.
-                    </p>
-
+            <div class="features-grid">
+                <article class="feature-card feature-search">
+                    <div class="feature-icon">⌕</div>
+                    <span class="feature-number">01 / DISCOVER</span>
+                    <h3>Search by meaning.</h3>
+                    <p>Find articles based on what you're actually looking for, not just matching keywords.</p>
+                    <a href="explore.html" class="feature-link">Find your next read ↗</a>
                 </article>
 
-
-                <article class="smart-card">
-
-                    <span class="smart-number">
-                        02
-                    </span>
-
-                    <h3>
-                        Personalized Recommendations
-                    </h3>
-
-                    <p>
-                        Discover content based on your interests,
-                        reading activity and preferences.
-                    </p>
-
+                <article class="feature-card feature-recommend">
+                    <div class="feature-icon">✳</div>
+                    <span class="feature-number">02 / PERSONALIZE</span>
+                    <h3>Your interests, your feed.</h3>
+                    <p>Explore a reading experience designed around your interests and the stories you enjoy.</p>
+                    <a href="signup.html" class="feature-link">Make it yours ↗</a>
                 </article>
 
-
-                <article class="smart-card">
-
-                    <span class="smart-number">
-                        03
-                    </span>
-
-                    <h3>
-                        Your Reading History
-                    </h3>
-
-                    <p>
-                        Keep track of what you have read and
-                        return to stories whenever you want.
-                    </p>
-
+                <article class="feature-card feature-create">
+                    <div class="feature-icon">✎</div>
+                    <span class="feature-number">03 / CREATE</span>
+                    <h3>Your voice belongs here.</h3>
+                    <p>Turn your thoughts, lessons, and experiences into stories worth sharing.</p>
+                    <a href="signup.html" class="feature-link">Start writing ↗</a>
                 </article>
-
-
-                <article class="smart-card">
-
-                    <span class="smart-number">
-                        04
-                    </span>
-
-                    <h3>
-                        Create & Share
-                    </h3>
-
-                    <p>
-                        Turn your ideas, experiences and
-                        knowledge into stories for others.
-                    </p>
-
-                </article>
-
             </div>
-
         </section>
 
-
-
-        <!-- =====================================================
-             READERS / WRITERS
-        ====================================================== -->
-
-        <section class="audience-section">
-
-            <div class="audience-block">
-
-                <span class="section-kicker">
-                    FOR READERS
-                </span>
-
-                <h2>
-                    Find something
-                    worth reading.
-                </h2>
-
-                <p>
-                    Explore different topics, discover new
-                    perspectives and build a reading journey
-                    around what interests you.
-                </p>
-
-                <a href="login.html">
-                    Start Exploring →
-                </a>
-
-            </div>
-
-
-            <div class="audience-block">
-
-                <span class="section-kicker">
-                    FOR WRITERS
-                </span>
-
-                <h2>
-                    Your ideas deserve
-                    to be a story.
-                </h2>
-
-                <p>
-                    Share your knowledge, experiences and ideas
-                    with readers who are interested in them.
-                </p>
-
-                <a href="signup.html">
-                    Start Writing →
-                </a>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             FINAL CTA
-        ====================================================== -->
-
-        <section class="home-cta">
-
-            <span class="section-kicker">
-                JOIN SMARTBLOG
-            </span>
-
-            <h2>
-                Find something interesting.
-                <br>
-                Then share something of your own.
-            </h2>
-
+        <!-- WRITER CTA -->
+        <section class="writer-cta">
+            <div class="cta-sparkle">✳</div>
+            <span class="section-kicker">YOUR TURN NOW</span>
+            <h2>Got something<br>on your <em>mind?</em></h2>
             <p>
-                Create an account and start exploring
-                stories, topics and ideas that matter to you.
+                Every great story starts with a thought. Yours could be
+                someone's next favourite read.
             </p>
-
-            <div>
-
-                <a href="signup.html" class="hero-primary">
-                    Create Your Account
-                    <span>→</span>
-                </a>
-
-                <a href="login.html" class="cta-signin">
-                    Already have an account? Sign in
-                </a>
-
-            </div>
-
+            <a href="signup.html" class="button-dark">
+                Let's get writing <span>↗</span>
+            </a>
+            <div class="cta-decoration">✦</div>
         </section>
-
     </main>
 
+    <!-- FOOTER -->
+    <footer class="footer">
+        <a href="home.html" class="logo footer-logo">
+            <span class="logo-mark">S.</span>
+            <span>smartblog<span class="logo-dot">.</span></span>
+        </a>
 
+        <p>A little corner for big ideas.</p>
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer class="blog-footer">
-
-        <div class="footer-main">
-
-
-            <div>
-
-                <a href="home.html" class="blog-brand">
-
-                    <span class="brand-mark">
-                        S
-                    </span>
-
-                    <span>
-                        Smart<span>Blog</span>
-                    </span>
-
-                </a>
-
-                <p>
-                    Read. Discover. Create.
-                </p>
-
-            </div>
-
-
-            <div class="footer-column">
-
-                <strong>
-                    Explore
-                </strong>
-
-                <a href="login.html">
-                    Blogs
-                </a>
-
-                <a href="#topics">
-                    Topics
-                </a>
-
-                <a href="login.html">
-                    Questions
-                </a>
-
-            </div>
-
-
-            <div class="footer-column">
-
-                <strong>
-                    SmartBlog
-                </strong>
-
-                <a href="#about">
-                    About
-                </a>
-
-                <a href="login.html">
-                    Sign In
-                </a>
-
-                <a href="signup.html">
-                    Create Account
-                </a>
-
-            </div>
-
-
+        <div class="footer-links">
+            <a href="home.html">Home</a>
+            <a href="explore.html">Explore</a>
+            <a href="questions.html">Community</a>
+            <a href="login.html">Log in</a>
         </div>
-
 
         <div class="footer-bottom">
-
-            <span>
-                © 2026 SmartBlog
-            </span>
-
-            <span>
-                Built for curious minds.
-            </span>
-
+            <span>© 2026 SmartBlog. Made for curious minds.</span>
+            <span>Read curious. Think freely. ✳</span>
         </div>
-
     </footer>
 
-
-
     <script src="script.js"></script>
-
 </body>
-
 </html>
