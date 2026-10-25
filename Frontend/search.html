@@ -1,169 +1,102 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search - SmartBlog</title>
-
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="search.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search | smartblog.</title>
+  <link rel="stylesheet" href="search.css">
+  <script src="search.js" defer></script>
 </head>
-
 <body>
+  <aside class="sidebar">
+    <a class="logo" href="home.html">smartblog<span>.</span></a>
+    <p class="nav-label">YOUR WORKSPACE</p>
 
-<div class="dashboard-layout">
+    <nav>
+      <a href="dashboard.html"><span>⌂</span> Home</a>
+      <a href="explore.html"><span>◇</span> Explore</a>
+      <a class="active" href="search.html"><span>⌕</span> Search</a>
+      <a href="questions.html"><span>↗</span> Community</a>
+      <a href="create-blog.html"><span>＋</span> Create a story</a>
+      <a href="profile.html"><span>◎</span> My profile</a>
+    </nav>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
+    <div class="sidebar-bottom">
+      <div class="mini-mark">✳</div>
+      <strong>Ideas live here.</strong>
+      <p>Find a new perspective, one story at a time.</p>
+    </div>
+  </aside>
 
-        <div class="sidebar-logo">
-            <h2>SmartBlog</h2>
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">A WORLD OF IDEAS</p>
+        <h1>Find your next <span>read.</span></h1>
+        <p class="subtitle">Search stories, discover topics, and follow your curiosity.</p>
+      </div>
+      <a class="create-btn" href="create-blog.html">＋ Write a story</a>
+    </header>
+
+    <section class="search-panel">
+      <label class="search-box" for="searchInput">
+        <span class="search-icon">⌕</span>
+        <input id="searchInput" type="search"
+          placeholder="Try “learning”, “technology”, or “creative ideas”"
+          autocomplete="off">
+        <button id="searchButton" type="button">Search ↗</button>
+      </label>
+
+      <div class="search-options">
+        <span>Search in</span>
+        <label><input type="checkbox" id="searchTitles" checked> Titles</label>
+        <label><input type="checkbox" id="searchDescriptions" checked> Descriptions</label>
+        <label><input type="checkbox" id="searchTopics" checked> Topics</label>
+      </div>
+      <p class="search-note">Search matches words and related terms in the content stored in this browser.</p>
+    </section>
+
+    <section class="results-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR DISCOVERY SPACE</p>
+          <h2 id="resultsHeading">Explore all stories<span>.</span></h2>
         </div>
+        <span class="result-count" id="resultCount">Loading stories…</span>
+      </div>
 
-        <nav class="sidebar-nav">
+      <div class="filters" id="topicFilters">
+        <button class="filter active" data-topic="All" type="button">All topics</button>
+        <button class="filter" data-topic="Technology" type="button">Technology</button>
+        <button class="filter" data-topic="Lifestyle" type="button">Lifestyle</button>
+        <button class="filter" data-topic="Creativity" type="button">Creativity</button>
+        <button class="filter" data-topic="Learning" type="button">Learning</button>
+      </div>
 
-            <a href="dashboard.html">🏠 Home</a>
-            <a href="explore.html">🔍 Explore</a>
-            <a href="search.html" class="active">🔎 Search</a>
-            <a href="create-blog.html">✍️ Create Blog</a>
-            <a href="questions.html">💬 Questions</a>
-            <a href="profile.html">👤 Profile</a>
-            <a href="settings.html">⚙️ Settings</a>
+      <div class="result-grid" id="resultsGrid"></div>
 
-        </nav>
+      <div class="empty-state" id="emptyState" hidden>
+        <span class="empty-icon">⌕</span>
+        <h3>No stories found just yet.</h3>
+        <p>Try another keyword or choose a different topic.</p>
+        <button class="reset-button" id="resetSearch" type="button">Clear search</button>
+      </div>
+    </section>
 
-        <div class="sidebar-bottom">
-            <a href="login.html">🚪 Logout</a>
-        </div>
+    <section class="search-tip">
+      <span class="tip-icon">✳</span>
+      <div>
+        <h3>Not sure what to read?</h3>
+        <p>Start with a topic you're curious about. A small question can lead to a big idea.</p>
+      </div>
+      <a href="explore.html">Browse Explore ↗</a>
+    </section>
 
-    </aside>
-
-
-    <!-- Main Content -->
-    <main class="search-page">
-
-        <div class="search-header">
-
-            <span class="page-label">DISCOVER</span>
-
-            <h1>Search SmartBlog</h1>
-
-            <p>
-                Find blogs based on what you mean, not just the exact words you type.
-            </p>
-
-        </div>
-
-
-        <!-- Search Box -->
-        <section class="search-box-section">
-
-            <form class="search-form">
-
-                <div class="search-input-wrapper">
-
-                    <span class="search-icon">🔍</span>
-
-                    <input
-                        type="text"
-                        id="search-input"
-                        placeholder="What are you looking for?"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-                <button type="submit">
-                    Search
-                </button>
-
-            </form>
-
-            <p class="search-hint">
-                Try something like:
-                <span>machine learning for beginners</span>
-            </p>
-
-        </section>
-
-
-        <!-- Search Results -->
-        <section class="search-results-section">
-
-            <div class="results-header">
-
-                <h2>Search Results</h2>
-
-                <span id="result-count">0 results</span>
-
-            </div>
-
-
-            <!-- Empty State -->
-            <div class="search-empty-state" id="search-empty">
-
-                <div class="empty-icon">🔎</div>
-
-                <h3>Start exploring</h3>
-
-                <p>
-                    Search for a topic, idea, or question and discover
-                    relevant blogs from SmartBlog.
-                </p>
-
-            </div>
-
-
-            <!-- Results will appear here later -->
-            <div id="search-results"></div>
-
-        </section>
-
-
-        <!-- How Search Works -->
-        <section class="search-info">
-
-            <div class="info-text">
-
-                <span class="page-label">SMART SEARCH</span>
-
-                <h2>Search by meaning, not just keywords.</h2>
-
-                <p>
-                    SmartBlog uses NLP-powered semantic search to understand
-                    the meaning behind your query and find relevant blog
-                    content—even when the exact words aren't present.
-                </p>
-
-            </div>
-
-            <div class="search-example">
-
-                <div class="example-row">
-                    <span class="example-label">YOU SEARCH</span>
-                    <strong>How can I start learning AI?</strong>
-                </div>
-
-                <div class="example-arrow">↓</div>
-
-                <div class="example-row">
-                    <span class="example-label">SMARTBLOG FINDS</span>
-                    <strong>
-                        Beginner's Guide to Artificial Intelligence
-                    </strong>
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-</div>
-
-
-<script src="script.js"></script>
-
+    <footer>
+      <a class="footer-logo" href="home.html">smartblog<span>.</span></a>
+      <span>A home for curious minds and thoughtful stories.</span>
+    </footer>
+  </main>
 </body>
 </html>

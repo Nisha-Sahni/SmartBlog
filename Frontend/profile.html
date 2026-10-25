@@ -1,436 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Profile | SmartBlog</title>
-
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <title>My Profile | SmartBlog</title>
     <link rel="stylesheet" href="profile.css">
+    <script src="profile.js" defer></script>
 </head>
-
-<body class="profile-page">
-
-    <!-- ================= SIDEBAR ================= -->
-
+<body>
     <aside class="sidebar">
+        <a href="dashboard.html" class="logo">smart<span>blog.</span></a>
 
-        <div class="sidebar-logo">
-            <h2>SmartBlog</h2>
-        </div>
+        <p class="nav-label">YOUR WORKSPACE</p>
 
-        <nav class="sidebar-nav">
-
-            <a href="dashboard.html">
-                🏠 Home
-            </a>
-
-            <a href="explore.html">
-                🔎 Explore
-            </a>
-
-            <a href="search.html">
-                🔍 Search
-            </a>
-
-            <a href="create-blog.html">
-                ✍️ Create Blog
-            </a>
-
-            <a href="questions.html">
-                💬 Questions
-            </a>
-
-            <a href="profile.html" class="active">
-                👤 Profile
-            </a>
-
-            <a href="settings.html">
-                ⚙️ Settings
-            </a>
-
+        <nav>
+            <a href="dashboard.html"><span>⌂</span> Home</a>
+            <a href="explore.html"><span>◇</span> Explore</a>
+            <a href="questions.html"><span>↗</span> Community</a>
+            <a href="create-blog.html"><span>＋</span> Create a story</a>
+            <a href="profile.html" class="active"><span>◉</span> My profile</a>
         </nav>
 
         <div class="sidebar-bottom">
-
-            <a href="home.html">
-                🚪 Logout
-            </a>
-
+            <div class="mini-mark">✳</div>
+            <strong>Ideas live here.</strong>
+            <p>Read something new. Write something meaningful.</p>
         </div>
-
     </aside>
 
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">YOUR CREATIVE SPACE</p>
+                <h1>Your little corner<br>of the internet<span>.</span></h1>
+            </div>
+            <a href="create-blog.html" class="create-btn">＋ Write a story</a>
+        </header>
 
-    <!-- ================= MAIN ================= -->
+        <section class="hero">
+            <div class="hero-decoration decoration-one">✳</div>
+            <div class="hero-decoration decoration-two">✦</div>
 
-    <main class="profile-main">
+            <div class="hero-content">
+                <div class="avatar-wrap">
+                    <label for="profilePicInput" class="avatar-upload"
+                           title="Change profile picture">
+                        <img id="profilePicPreview"
+                             class="profile-pic hidden"
+                             alt="Profile picture">
 
+                        <span id="profileAvatar" class="avatar">N</span>
+                        <span class="camera-icon">✎</span>
+                    </label>
 
-        <!-- ================= PROFILE HEADER ================= -->
+                    <input type="file" id="profilePicInput"
+                           accept="image/png,image/jpeg,image/webp" hidden>
+                </div>
 
-        <section class="profile-header">
+                <div class="hero-info">
+                    <span class="creator-label">✳ THE CREATOR'S SPACE</span>
+                    <h2 id="displayName">Nisha</h2>
+                    <p id="displayUsername" class="username">@nisha</p>
 
-            <div class="profile-avatar">
-                NS
+                    <p id="displayBio" class="bio">
+                        Student, curious learner, and aspiring developer.
+                        I love exploring ideas and sharing what I learn.
+                    </p>
+
+                    <div class="interests" id="displayInterests">
+                        <span>Technology</span>
+                        <span>Programming</span>
+                        <span>Writing</span>
+                    </div>
+                </div>
+
+                <button id="editProfileBtn" class="edit-btn">
+                    ✎ Edit profile
+                </button>
             </div>
 
-
-            <div class="profile-info">
-
-                <span class="profile-label">
-                    SMARTBLOG MEMBER
-                </span>
-
-                <h1>
-                    Nisha Sharma
-                </h1>
-
-                <p class="profile-bio">
-                    Curious mind exploring technology,
-                    artificial intelligence and the world of ideas.
-                </p>
-
-                <p class="profile-joined">
-                    Member since 2026
-                </p>
-
+            <div class="hero-bottom">
+                <span>MADE OF THOUGHTS & LITTLE IDEAS</span>
+                <span>✳ KEEP CREATING</span>
             </div>
-
-
-            <button class="edit-profile-btn">
-                Edit Profile
-            </button>
-
         </section>
 
-
-
-        <!-- ================= STATS ================= -->
-
-        <section class="profile-stats">
-
-            <div class="profile-stat">
-
-                <strong>
-                    12
-                </strong>
-
-                <span>
-                    Blogs
-                </span>
-
+        <section id="editProfileSection" class="edit-card hidden">
+            <div class="edit-heading">
+                <div>
+                    <p class="eyebrow">MAKE IT YOURS</p>
+                    <h2>Edit your profile</h2>
+                </div>
+                <span class="edit-sparkle">✳</span>
             </div>
 
+            <form id="profileForm">
+                <label for="nameInput">Display name</label>
+                <input id="nameInput" type="text" maxlength="50" required>
 
-            <div class="profile-stat">
+                <label for="usernameInput">Username</label>
+                <input id="usernameInput" type="text" maxlength="30"
+                       pattern="[A-Za-z0-9_]+" required>
+                <p class="hint">Letters, numbers and underscores only.</p>
 
-                <strong>
-                    38
-                </strong>
+                <label for="bioInput">Your bio</label>
+                <textarea id="bioInput" rows="3" maxlength="250"
+                          placeholder="Tell readers about yourself"></textarea>
 
-                <span>
-                    Questions
-                </span>
+                <label for="interestsInput">Your interests</label>
+                <input id="interestsInput" type="text"
+                       placeholder="Technology, Programming, Writing">
+                <p class="hint">Separate interests with commas.</p>
 
-            </div>
-
-
-            <div class="profile-stat">
-
-                <strong>
-                    126
-                </strong>
-
-                <span>
-                    Followers
-                </span>
-
-            </div>
-
-
-            <div class="profile-stat">
-
-                <strong>
-                    84
-                </strong>
-
-                <span>
-                    Following
-                </span>
-
-            </div>
-
+                <div class="form-actions">
+                    <button type="button" id="cancelEditBtn"
+                            class="secondary-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">
+                        Save changes ↗
+                    </button>
+                </div>
+            </form>
         </section>
 
-
-
-        <!-- ================= CONTENT ================= -->
-
-        <section class="profile-content">
-
-
-            <!-- ================= MY BLOGS ================= -->
-
-            <div class="profile-section">
-
-                <div class="profile-section-heading">
-
-                    <div>
-
-                        <span class="profile-label">
-                            WRITING
-                        </span>
-
-                        <h2>
-                            My Blogs
-                        </h2>
-
-                    </div>
-
-                    <a href="create-blog.html">
-                        + Create Blog
-                    </a>
-
+        <section class="stats-grid">
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>✍</span><span>01</span>
                 </div>
+                <p>STORIES CREATED</p>
+                <h2 id="publishedCount">0</h2>
+                <span class="stat-caption">Your ideas, out in the world.</span>
+            </article>
 
-
-                <div class="profile-blog-grid">
-
-
-                    <!-- BLOG 1 -->
-
-                    <article class="profile-blog-card">
-
-                        <div class="profile-blog-image">
-                            AI
-                        </div>
-
-                        <div class="profile-blog-details">
-
-                            <span>
-                                ARTIFICIAL INTELLIGENCE
-                            </span>
-
-                            <h3>
-                                How AI is Changing the Way We Learn
-                            </h3>
-
-                            <p>
-                                Exploring how intelligent systems
-                                are transforming modern education.
-                            </p>
-
-                            <small>
-                                6 min read · 2 days ago
-                            </small>
-
-                        </div>
-
-                    </article>
-
-
-
-                    <!-- BLOG 2 -->
-
-                    <article class="profile-blog-card">
-
-                        <div class="profile-blog-image">
-                            ML
-                        </div>
-
-                        <div class="profile-blog-details">
-
-                            <span>
-                                MACHINE LEARNING
-                            </span>
-
-                            <h3>
-                                Understanding Machine Learning
-                                Without the Complexity
-                            </h3>
-
-                            <p>
-                                A simple introduction to the ideas
-                                behind modern machine learning.
-                            </p>
-
-                            <small>
-                                8 min read · 1 week ago
-                            </small>
-
-                        </div>
-
-                    </article>
-
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>♡</span><span>02</span>
                 </div>
+                <p>BOOKMARKED FINDS</p>
+                <h2 id="savedCount">0</h2>
+                <span class="stat-caption">Little things worth remembering.</span>
+            </article>
 
-            </div>
-
-
-
-            <!-- ================= INTERESTS ================= -->
-
-            <div class="profile-section">
-
-                <div class="profile-section-heading">
-
-                    <div>
-
-                        <span class="profile-label">
-                            PERSONALIZATION
-                        </span>
-
-                        <h2>
-                            My Interests
-                        </h2>
-
-                    </div>
-
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>⌁</span><span>03</span>
                 </div>
-
-
-                <div class="interest-list">
-
-                    <span>Artificial Intelligence</span>
-                    <span>Machine Learning</span>
-                    <span>Data Science</span>
-                    <span>Programming</span>
-                    <span>Technology</span>
-                    <span>Web Development</span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- ================= READING HISTORY ================= -->
-
-            <div class="profile-section">
-
-                <div class="profile-section-heading">
-
-                    <div>
-
-                        <span class="profile-label">
-                            ACTIVITY
-                        </span>
-
-                        <h2>
-                            Reading History
-                        </h2>
-
-                    </div>
-
-                    <a href="dashboard.html">
-                        View All →
-                    </a>
-
-                </div>
-
-
-                <div class="history-list">
-
-
-                    <!-- HISTORY 1 -->
-
-                    <div class="history-item">
-
-                        <div class="history-icon">
-                            AI
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                The Future of Generative AI
-                            </h3>
-
-                            <p>
-                                Technology · 5 min read
-                            </p>
-
-                        </div>
-
-                        <span>
-                            Yesterday
-                        </span>
-
-                    </div>
-
-
-
-                    <!-- HISTORY 2 -->
-
-                    <div class="history-item">
-
-                        <div class="history-icon">
-                            DS
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                Data Science Roadmap for Beginners
-                            </h3>
-
-                            <p>
-                                Data Science · 7 min read
-                            </p>
-
-                        </div>
-
-                        <span>
-                            3 days ago
-                        </span>
-
-                    </div>
-
-
-
-                    <!-- HISTORY 3 -->
-
-                    <div class="history-item">
-
-                        <div class="history-icon">
-                            WD
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                Building Your First Web Project
-                            </h3>
-
-                            <p>
-                                Web Development · 6 min read
-                            </p>
-
-                        </div>
-
-                        <span>
-                            1 week ago
-                        </span>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
+                <p>READING JOURNEY</p>
+                <h2 id="historyCount">0</h2>
+                <span class="stat-caption">Every read leaves an idea.</span>
+            </article>
         </section>
 
+        <section class="content-section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">YOUR CREATIVE WORK</p>
+                    <h2>Made by you<span>.</span></h2>
+                    <p class="section-subtitle">
+                        Your thoughts deserve a place to live.
+                    </p>
+                </div>
+                <a href="create-blog.html" class="text-link">
+                    + Create a story ↗
+                </a>
+            </div>
+
+            <div id="blogsGrid" class="blogs-grid"></div>
+
+            <p id="blogsEmpty" class="empty-state">
+                <span class="empty-icon">✳</span>
+                <strong>Your first story starts here.</strong>
+                <span>Got an idea? Turn it into something worth reading.</span>
+                <a href="create-blog.html" class="text-link">
+                    Write your first story →
+                </a>
+            </p>
+        </section>
+
+        <section class="content-section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">A COLLECTION OF GOOD IDEAS</p>
+                    <h2>Your reading list<span>.</span></h2>
+                    <p class="section-subtitle">
+                        Stories you want to come back to.
+                    </p>
+                </div>
+                <a href="explore.html" class="text-link">Explore stories ↗</a>
+            </div>
+
+            <div id="savedGrid" class="blogs-grid"></div>
+
+            <p id="savedEmpty" class="empty-state">
+                <span class="empty-icon">♡</span>
+                <strong>Your next favourite read is out there.</strong>
+                <span>Explore stories and keep the ones you love.</span>
+                <a href="explore.html" class="text-link">
+                    Explore stories →
+                </a>
+            </p>
+        </section>
+
+        <footer>
+            <a href="dashboard.html" class="footer-logo">
+                smart<span>blog.</span>
+            </a>
+            <span>KEEP YOUR CURIOSITY ALIVE ✳</span>
+        </footer>
     </main>
-
-
-    <script src="script.js"></script>
-
 </body>
-
 </html>
