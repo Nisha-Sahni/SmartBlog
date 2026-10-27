@@ -16,11 +16,6 @@ app = Flask(__name__)
 CORS(app)
 
 
-# --------------------------------------------------
-# DATABASE CONNECTION
-# Set SMARTBLOG_DB_PASSWORD in your environment first.
-# --------------------------------------------------
-
 def get_db_connection():
     try:
         return mysql.connector.connect(
@@ -29,33 +24,40 @@ def get_db_connection():
             password=os.getenv("SMARTBLOG_DB_PASSWORD"),
             database=os.getenv("SMARTBLOG_DB_NAME", "smartblog")
         )
-    except mysql.connector.Error as e:
-        app.logger.error("MySQL connection failed: %s", e)
+    except mysql.connector.Error as error:
+        app.logger.error("MySQL connection failed: %s", error)
         raise
 
-# --------------------------------------------------
-# HELPER FUNCTIONS
-# --------------------------------------------------
 
 def get_json_data():
     return request.get_json(silent=True) or {}
 
 
 def clean_text(value):
-    """Convert a value into safe, normalized text."""
     if value is None:
         return ""
     return re.sub(r"\s+", " ", str(value)).strip()
 
 
+def get_author_level(points):
+    if points >= 500:
+        return "Top Blogger"
+    elif points >= 300:
+        return "Expert"
+    elif points >= 150:
+        return "Advanced"
+    elif points >= 50:
+        return "Intermediate"
+    return "Beginner"
+
+
 def fetch_blogs():
-    """Fetch blogs and author names from MySQL."""
     connection = get_db_connection()
 
     try:
         cursor = connection.cursor(dictionary=True)
 
-        query = """
+        cursor.execute("""
             SELECT
                 b.blog_id,
                 b.title,
@@ -66,16 +68,16 @@ def fetch_blogs():
             FROM blogs b
             LEFT JOIN users u ON b.author_id = u.user_id
             ORDER BY b.created_at DESC, b.blog_id DESC
-        """
+        """)
 
-        cursor.execute(query)
         blogs = cursor.fetchall()
 
         for blog in blogs:
             blog["title"] = clean_text(blog.get("title"))
             blog["content"] = clean_text(blog.get("content"))
             blog["author_name"] = (
-                clean_text(blog.get("author_name")) or "SmartBlog writer"
+                clean_text(blog.get("author_name"))
+                or "SmartBlog writer"
             )
 
             if blog.get("created_at"):
@@ -83,9 +85,9 @@ def fetch_blogs():
             else:
                 blog["created_at"] = None
 
-            # Temporary excerpt for displaying search results.
             blog["excerpt"] = blog["content"][:220]
 
+        cursor.close()
         return blogs
 
     finally:
@@ -93,12 +95,6 @@ def fetch_blogs():
 
 
 def find_search_results(query, blogs):
-    """
-    Rank blogs using TF-IDF and cosine similarity.
-
-    This is text-similarity search, not a full semantic
-    embedding model.
-    """
     query = clean_text(query)
 
     if not blogs:
@@ -112,7 +108,6 @@ def find_search_results(query, blogs):
         for blog in blogs
     ]
 
-    # Handle an empty or whitespace-only corpus.
     if not any(document.strip() for document in documents):
         return []
 
@@ -127,14 +122,11 @@ def find_search_results(query, blogs):
         document_vectors = vectorizer.fit_transform(documents)
         query_vector = vectorizer.transform([query])
 
-        # If none of the query's words exist in the vocabulary,
-        # cosine similarity will be zero for every blog.
         scores = cosine_similarity(
             query_vector, document_vectors
         ).flatten()
 
     except ValueError:
-        # For example, if every document contains only stop words.
         return []
 
     results = []
@@ -155,10 +147,6 @@ def find_search_results(query, blogs):
 
     return results
 
-
-# --------------------------------------------------
-# HOME AND DATABASE TEST
-# --------------------------------------------------
 
 @app.route("/", methods=["GET"])
 def home():
@@ -181,9 +169,8 @@ def db_test():
             "message": "MySQL connection failed."
         }), 500
 
-    except Error as error:
-        app.logger.error("Database test failed: %s", error)
-
+    except Error:
+        app.logger.exception("Database test failed")
         return jsonify({
             "message": "Could not connect to MySQL. Check your configuration."
         }), 500
@@ -192,10 +179,6 @@ def db_test():
         if connection and connection.is_connected():
             connection.close()
 
-
-# --------------------------------------------------
-# SIGNUP
-# --------------------------------------------------
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -217,17 +200,17 @@ def signup():
 
     hashed_password = generate_password_hash(password)
     connection = None
+    cursor = None
 
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        query = """
+        cursor.execute("""
             INSERT INTO users (name, email, password)
             VALUES (%s, %s, %s)
-        """
+        """, (name, email, hashed_password))
 
-        cursor.execute(query, (name, email, hashed_password))
         connection.commit()
 
         return jsonify({
@@ -247,19 +230,17 @@ def signup():
             connection.rollback()
 
         app.logger.exception("Signup database error")
-
         return jsonify({
             "message": "Could not create your account."
         }), 500
 
     finally:
+        if cursor:
+            cursor.close()
+
         if connection and connection.is_connected():
             connection.close()
 
-
-# --------------------------------------------------
-# LOGIN
-# --------------------------------------------------
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -274,18 +255,18 @@ def login():
         }), 400
 
     connection = None
+    cursor = None
 
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        query = """
+        cursor.execute("""
             SELECT user_id, name, email, password
             FROM users
             WHERE email = %s
-        """
+        """, (email,))
 
-        cursor.execute(query, (email,))
         user = cursor.fetchone()
 
         if user and check_password_hash(user[3], password):
@@ -302,20 +283,17 @@ def login():
 
     except Error:
         app.logger.exception("Login database error")
-
         return jsonify({
             "message": "Could not complete login."
         }), 500
 
     finally:
+        if cursor:
+            cursor.close()
+
         if connection and connection.is_connected():
             connection.close()
 
-
-# --------------------------------------------------
-# GET ALL BLOGS
-# GET /blogs
-# --------------------------------------------------
 
 @app.route("/blogs", methods=["GET"])
 def get_blogs():
@@ -329,26 +307,21 @@ def get_blogs():
 
     except Error:
         app.logger.exception("Could not retrieve blogs")
-
         return jsonify({
             "message": "Could not retrieve blogs."
         }), 500
 
 
-# --------------------------------------------------
-# GET ONE BLOG
-# GET /blogs/1
-# --------------------------------------------------
-
 @app.route("/blogs/<int:blog_id>", methods=["GET"])
 def get_blog(blog_id):
     connection = None
+    cursor = None
 
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
-        query = """
+        cursor.execute("""
             SELECT
                 b.blog_id,
                 b.title,
@@ -359,9 +332,8 @@ def get_blog(blog_id):
             FROM blogs b
             LEFT JOIN users u ON b.author_id = u.user_id
             WHERE b.blog_id = %s
-        """
+        """, (blog_id,))
 
-        cursor.execute(query, (blog_id,))
         blog = cursor.fetchone()
 
         if not blog:
@@ -370,38 +342,69 @@ def get_blog(blog_id):
             }), 404
 
         blog["author_name"] = (
-            clean_text(blog.get("author_name")) or "SmartBlog writer"
+            clean_text(blog.get("author_name"))
+            or "SmartBlog writer"
         )
         blog["excerpt"] = clean_text(blog.get("content"))[:220]
 
         if blog.get("created_at"):
             blog["created_at"] = blog["created_at"].isoformat()
+        else:
+            blog["created_at"] = None
 
-        return jsonify({"blog": blog}), 200
+        reader_id = request.args.get("user_id", type=int)
+
+        if reader_id and reader_id > 0:
+            cursor.execute(
+                "SELECT user_id FROM users WHERE user_id = %s",
+                (reader_id,)
+            )
+            reader = cursor.fetchone()
+
+            if reader and reader_id != blog["author_id"]:
+                cursor.execute("""
+                    SELECT history_id
+                    FROM reading_history
+                    WHERE user_id = %s AND blog_id = %s
+                    LIMIT 1
+                """, (reader_id, blog_id))
+
+                already_read = cursor.fetchone()
+
+                if not already_read:
+                    cursor.execute("""
+                        INSERT INTO reading_history (user_id, blog_id)
+                        VALUES (%s, %s)
+                    """, (reader_id, blog_id))
+
+                    cursor.execute("""
+                        UPDATE users
+                        SET reputation_points = reputation_points + 1
+                        WHERE user_id = %s
+                    """, (blog["author_id"],))
+
+                    connection.commit()
+
+        return jsonify({
+            "blog": blog
+        }), 200
 
     except Error:
-        app.logger.exception("Could not retrieve blog")
+        if connection:
+            connection.rollback()
 
+        app.logger.exception("Could not retrieve blog")
         return jsonify({
             "message": "Could not retrieve blog."
         }), 500
 
     finally:
+        if cursor:
+            cursor.close()
+
         if connection and connection.is_connected():
             connection.close()
 
-
-# --------------------------------------------------
-# CREATE A BLOG
-# POST /blogs
-#
-# Expected JSON:
-# {
-#   "title": "My first blog",
-#   "content": "The full blog content...",
-#   "author_id": 1
-# }
-# --------------------------------------------------
 
 @app.route("/blogs", methods=["POST"])
 def create_blog():
@@ -433,12 +436,12 @@ def create_blog():
         }), 400
 
     connection = None
+    cursor = None
 
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Confirm the author exists.
         cursor.execute(
             "SELECT user_id FROM users WHERE user_id = %s",
             (author_id,)
@@ -449,14 +452,12 @@ def create_blog():
                 "message": "Author account not found."
             }), 404
 
-        query = """
+        cursor.execute("""
             INSERT INTO blogs (title, content, author_id)
             VALUES (%s, %s, %s)
-        """
+        """, (title, content, author_id))
 
-        cursor.execute(query, (title, content, author_id))
         connection.commit()
-
         new_blog_id = cursor.lastrowid
 
         return jsonify({
@@ -470,20 +471,17 @@ def create_blog():
             connection.rollback()
 
         app.logger.exception("Could not publish blog")
-
         return jsonify({
             "message": "Could not publish the blog."
         }), 500
 
     finally:
+        if cursor:
+            cursor.close()
+
         if connection and connection.is_connected():
             connection.close()
 
-
-# --------------------------------------------------
-# NLP SEARCH
-# GET /search?q=how+do+I+start+DSA
-# --------------------------------------------------
 
 @app.route("/search", methods=["GET"])
 def search_blogs():
@@ -516,11 +514,115 @@ def search_blogs():
 
     except Error:
         app.logger.exception("Search database error")
-
         return jsonify({
             "message": "Could not search blogs."
         }), 500
 
 
+@app.route("/leaderboard", methods=["GET"])
+def get_leaderboard():
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT user_id, name, reputation_points
+            FROM users
+            ORDER BY reputation_points DESC, user_id ASC
+        """)
+
+        authors = cursor.fetchall()
+
+        for rank, author in enumerate(authors, start=1):
+            author["rank"] = rank
+            author["level"] = get_author_level(
+                author["reputation_points"]
+            )
+
+        return jsonify({
+            "success": True,
+            "leaderboard": authors
+        }), 200
+
+    except Error:
+        app.logger.exception("Could not load leaderboard")
+        return jsonify({
+            "success": False,
+            "message": "Could not load leaderboard."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/authors/<int:user_id>/rank", methods=["GET"])
+def get_author_rank(user_id):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT user_id, name, reputation_points
+            FROM users
+            WHERE user_id = %s
+        """, (user_id,))
+
+        author = cursor.fetchone()
+
+        if not author:
+            return jsonify({
+                "success": False,
+                "message": "Author not found."
+            }), 404
+
+        points = author["reputation_points"]
+
+        cursor.execute("""
+            SELECT COUNT(*) + 1 AS author_rank
+            FROM users
+            WHERE reputation_points > %s
+               OR (
+                    reputation_points = %s
+                    AND user_id < %s
+               )
+        """, (points, points, user_id))
+
+        rank = cursor.fetchone()["author_rank"]
+
+        return jsonify({
+            "success": True,
+            "user_id": author["user_id"],
+            "name": author["name"],
+            "rank": rank,
+            "points": points,
+            "level": get_author_level(points)
+        }), 200
+
+    except Error:
+        app.logger.exception("Could not load author rank")
+        return jsonify({
+            "success": False,
+            "message": "Could not load author rank."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+

@@ -4,19 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questions & Answers | SmartBlog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="questions.css">
     <script src="questions.js" defer></script>
 </head>
 <body>
     <aside class="sidebar">
-        <h2 class="logo">Smart<span>Blog.</span></h2>
-        <nav>
-            <a href="dashboard.html">⌂ Home</a>
-            <a href="explore.html">⌕ Explore</a>
-            <a href="questions.html" class="active">？ Questions</a>
-            <a href="create-blog.html">＋ Create Blog</a>
-            <a href="profile.html">◉ Profile</a>
-        </nav>
+        <a class="brand" href="dashboard.html">
+            <span class="brand-mark">S.</span>
+            smartblog.
+        </a>
+
+        <a href="profile.html" class="profile">
+            <div class="profile-avatar">N</div>
+            <div>
+                <strong>Welcome back!</strong>
+                <small>Your reading corner</small>
+            </div>
+        </a>
+
+        <p class="nav-heading">YOUR SPACE</p>
+
+        <nav class="navigation">
+    <a class="nav-link active" href="dashboard.html">
+        <span>⌂</span> Home
+    </a>
+
+    <a class="nav-link" href="explore.html">
+        <span>⌕</span> Explore stories
+    </a>
+
+    <a class="nav-link" href="search.html">
+        <span>↗</span> Search
+    </a>
+
+    <a class="nav-link" href="questions.html">
+        <span>✳</span> Community Q&A
+    </a>
+
+    <a class="nav-link" href="create-blog.html">
+        <span>＋</span> Create a story
+    </a>
+
+    <a class="nav-link" href="profile.html">
+        <span>◯</span> My profile
+    </a>
+
+    <a class="nav-link" href="leaderboard.html">
+        <span>🏆</span> Leaderboard
+    </a>
+</nav>
+
+        <div class="write-box">
+            <span class="write-star">✳</span>
+            <h3>Have an idea?</h3>
+            <p>Your story might be exactly what someone needs to read.</p>
+            <a href="create-blog.html" class="write-button">＋ Share your ideas</a>
+        </div>
+
+        <a href="home.html" class="back-link">← Back to the website</a>
     </aside>
 
     <main class="main-content">

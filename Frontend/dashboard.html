@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | smartblog.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -22,23 +25,47 @@
         smartblog.
       </a>
 
-      <div class="profile">
+      <a href="profile.html" class="profile">
         <div class="profile-avatar">N</div>
         <div>
           <strong>Welcome back!</strong>
           <small>Your reading corner</small>
         </div>
-      </div>
+      </a>
 
       <p class="nav-heading">YOUR SPACE</p>
 
-      <nav class="navigation">
-        <a class="nav-link active" href="dashboard.html"><span>⌂</span> Home</a>
-        <a class="nav-link" href="explore.html"><span>⌕</span> Explore stories</a>
-        <a class="nav-link" href="search.html"><span>↗</span> Search</a>
-        <a class="nav-link" href="questions.html"><span>✳</span> Community Q&A</a>
-        <a class="nav-link" href="profile.html"><span>◯</span> My profile</a>
-      </nav>
+      
+<nav class="navigation">
+    <a class="nav-link active" href="dashboard.html">
+        <span>⌂</span> Home
+    </a>
+
+    <a class="nav-link" href="explore.html">
+        <span>⌕</span> Explore stories
+    </a>
+
+    <a class="nav-link" href="search.html">
+        <span>↗</span> Search
+    </a>
+
+    <a class="nav-link" href="questions.html">
+        <span>✳</span> Community Q&A
+    </a>
+
+    <a class="nav-link" href="create-blog.html">
+        <span>＋</span> Create a story
+    </a>
+
+    <a class="nav-link" href="profile.html">
+        <span>◯</span> My profile
+    </a>
+
+    <a class="nav-link" href="leaderboard.html">
+        <span>🏆</span> Leaderboard
+    </a>
+</nav>
+
 
       <p class="nav-heading topics-heading">YOUR INTERESTS</p>
 
@@ -63,6 +90,7 @@
     <main class="main">
 
       <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
         <div class="breadcrumb">Your space <span>/</span> <strong>Dashboard</strong></div>
         <div class="topbar-right">
           <a href="home.html">About</a>

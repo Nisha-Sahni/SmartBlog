@@ -10,6 +10,8 @@
   --pink: #ffd9df;
   --orange: #f6b18f;
   --blue: #cce5f8;
+  --serif: "Playfair Display", Georgia, serif;
+  --sans: "DM Sans", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -18,7 +20,7 @@ body {
   margin: 0;
   background: var(--cream);
   color: var(--ink);
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 14px;
 }
 

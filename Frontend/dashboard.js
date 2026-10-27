@@ -76,3 +76,20 @@ document.querySelectorAll(".save-button").forEach(button => {
   });
 });
 
+// Hydrate user session from localStorage if present
+try {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (storedUser && storedUser.name) {
+    const initial = storedUser.name.trim().charAt(0).toUpperCase();
+    document.querySelectorAll(".profile-avatar, .small-avatar").forEach(el => {
+      el.textContent = initial;
+    });
+    const welcomeHeading = document.querySelector(".dashboard-welcome h1");
+    if (welcomeHeading) {
+      welcomeHeading.innerHTML = `Welcome back,<br><em>${storedUser.name}.</em>`;
+    }
+  }
+} catch (e) {
+  // Graceful fallback
+}
+

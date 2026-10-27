@@ -78,6 +78,15 @@ function displayProfile() {
     profileAvatar.textContent = name.trim().charAt(0).toUpperCase() || "?";
   }
 
+  const sidebarAvatar = document.getElementById("sidebarAvatar");
+  const sidebarName = document.getElementById("sidebarName");
+  if (sidebarAvatar) {
+    sidebarAvatar.textContent = name.trim().charAt(0).toUpperCase() || "?";
+  }
+  if (sidebarName) {
+    sidebarName.textContent = name;
+  }
+
   const interestsContainer = document.getElementById("displayInterests");
 
   if (interestsContainer) {

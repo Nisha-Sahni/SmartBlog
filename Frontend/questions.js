@@ -229,3 +229,20 @@ searchInput.addEventListener("input", renderQuestions);
 topicFilter.addEventListener("change", renderQuestions);
 
 renderQuestions();
+
+// Hydrate user session from localStorage if present
+try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.name) {
+        const initial = storedUser.name.trim().charAt(0).toUpperCase();
+        document.querySelectorAll(".profile-avatar").forEach(el => {
+            el.textContent = initial;
+        });
+        const nameEl = document.querySelector(".profile strong");
+        if (nameEl) {
+            nameEl.textContent = storedUser.name;
+        }
+    }
+} catch (e) {
+    // Graceful fallback
+}
