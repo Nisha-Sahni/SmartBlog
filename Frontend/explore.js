@@ -1,14 +1,18 @@
 
+const API_BASE = "http://127.0.0.1:5000";
+
 const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
 const filters = document.querySelectorAll(".filter");
 const cards = document.querySelectorAll(".story-card");
 const emptyState = document.getElementById("emptyState");
 const storyCount = document.getElementById("storyCount");
+const sidebarContainer = document.querySelector(".sidebar-topics");
 
 const SAVED_KEY = "smartblog_saved_blogs_v1";
 
 let selectedTopic = "All";
+let userInterests = [];
 
 function getSavedBlogs() {
   try {
@@ -90,13 +94,15 @@ function updateStories() {
   let visibleCount = 0;
 
   cards.forEach(card => {
-    const topic = card.dataset.topic;
+    const topic = card.dataset.topic || "";
+
     const text = (
       card.innerText + " " + (card.dataset.search || "")
     ).toLowerCase();
 
     const topicMatches =
-      selectedTopic === "All" || topic === selectedTopic;
+      selectedTopic === "All" ||
+      topic.toLowerCase() === selectedTopic.toLowerCase();
 
     const searchMatches = text.includes(query);
     const visible = topicMatches && searchMatches;
@@ -112,18 +118,100 @@ function updateStories() {
     `${visibleCount} ${visibleCount === 1 ? "story" : "stories"}`;
 }
 
-filters.forEach(filter => {
-  filter.addEventListener("click", () => {
-    selectedTopic = filter.dataset.topic;
+function chooseTopic(topic) {
+  selectedTopic = topic;
 
-    filters.forEach(item => {
-      item.classList.toggle("active", item === filter);
-    });
-
-    updateStories();
+  document.querySelectorAll(".filter").forEach(filter => {
+    filter.classList.toggle(
+      "active",
+      filter.dataset.topic === topic
+    );
   });
-});
 
+  document.querySelectorAll(".sidebar-topics button").forEach(button => {
+    button.classList.toggle(
+      "topic-active",
+      button.dataset.topic === topic
+    );
+  });
+
+  updateStories();
+}
+
+function createTopicButton(topic) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.dataset.topic = topic;
+
+  const dotClasses = {
+    All: "lime-dot",
+    Technology: "lavender-dot",
+    Lifestyle: "pink-dot",
+    Creativity: "orange-dot",
+    Learning: "blue-dot"
+  };
+
+  const dot = document.createElement("i");
+  dot.className = dotClasses[topic] || "lime-dot";
+
+  const label = topic === "All" ? "For you" : topic;
+
+  button.appendChild(dot);
+  button.appendChild(document.createTextNode(label));
+
+  button.addEventListener("click", () => chooseTopic(topic));
+
+  return button;
+}
+
+function renderInterests(interests) {
+  sidebarContainer.innerHTML = "";
+
+  sidebarContainer.appendChild(createTopicButton("All"));
+
+  interests.forEach(topic => {
+    sidebarContainer.appendChild(createTopicButton(topic));
+  });
+
+  chooseTopic("All");
+}
+
+async function loadInterests() {
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const userId = storedUser?.user_id ?? storedUser?.id;
+
+    if (!userId) {
+      console.warn("User ID not found in localStorage.");
+      return;
+    }
+
+    const response = await fetch(
+      `${API_BASE}/interests/${encodeURIComponent(userId)}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Could not fetch interests.");
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Could not load interests.");
+    }
+
+    userInterests = Array.isArray(data.interests)
+      ? data.interests
+      : [];
+
+    renderInterests(userInterests);
+
+  } catch (error) {
+    console.error("Error loading interests:", error);
+  }
+}
+
+// SEARCH
 searchInput.addEventListener("input", updateStories);
 searchButton.addEventListener("click", updateStories);
 
@@ -131,6 +219,14 @@ searchInput.addEventListener("keydown", event => {
   if (event.key === "Enter") updateStories();
 });
 
+// TOPIC FILTERS
+filters.forEach(filter => {
+  filter.addEventListener("click", () => {
+    chooseTopic(filter.dataset.topic);
+  });
+});
+
+// SAVE BLOGS
 cards.forEach((card, index) => {
   const button = card.querySelector(".save-button");
 
@@ -141,8 +237,48 @@ cards.forEach((card, index) => {
   }
 });
 
+// PROFILE DROPDOWN
+const profileButton = document.getElementById("profileButton");
+const profileDropdown = document.getElementById("profileDropdown");
+
+profileButton.addEventListener("click", () => {
+  const isOpen = !profileDropdown.hidden;
+  profileDropdown.hidden = isOpen;
+  profileButton.setAttribute("aria-expanded", String(!isOpen));
+});
+
+document.addEventListener("click", event => {
+  if (
+    !event.target.closest(".profile-menu") &&
+    !profileDropdown.hidden
+  ) {
+    profileDropdown.hidden = true;
+    profileButton.setAttribute("aria-expanded", "false");
+  }
+});
+
+// LOG OUT
+document.getElementById("logoutButton").addEventListener("click", () => {
+  localStorage.removeItem("user");
+  window.location.href = "login.html";
+});
+
+// USER PROFILE INITIAL
+try {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  if (storedUser?.name) {
+    const initial = storedUser.name.trim().charAt(0).toUpperCase();
+
+    document.querySelectorAll(".small-avatar").forEach(avatar => {
+      avatar.textContent = initial;
+    });
+  }
+} catch (error) {
+  console.error("Could not load user details:", error);
+}
+
+// INITIALIZE
 updateStories();
 updateSaveButtons();
-
-
-
+loadInterests();

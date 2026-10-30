@@ -4,296 +4,415 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Template Studio | SmartBlog</title>
+  <title>Create a Story | smartblog.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="create-blog.css">
 </head>
 <body>
-<header class="topbar">
-  <a href="dashboard.html" class="logo">smart<span>blog.</span></a>
-  <nav class="navigation">
-    <a class="nav-link active" href="dashboard.html">
-        <span>⌂</span> Home
+
+  <!-- ANNOUNCEMENT -->
+  <div class="announcement">
+    A little inspiration goes a long way.
+    <a href="#template-grid">Explore your creative side ↗</a>
+  </div>
+
+  <!-- DASHBOARD HEADER -->
+  <header class="main-header">
+    <a class="brand" href="dashboard.html">
+      <span class="brand-mark">S.</span>
+      smartblog.
     </a>
 
-    <a class="nav-link" href="explore.html">
-        <span>⌕</span> Explore stories
+    <nav class="top-navigation">
+      <a href="dashboard.html" class="top-link">Home</a>
+      <a href="explore.html" class="top-link">Explore</a>
+      <a href="search.html" class="top-link">Search</a>
+      <a href="questions.html" class="top-link">Community Q&amp;A</a>
+      <a href="create-blog.html" class="top-link active">Create a story</a>
+      <a href="leaderboard.html" class="top-link">Leaderboard</a>
+    </nav>
+
+    <a href="profile.html" class="header-profile" title="My profile">
+      <span class="small-avatar">N</span>
+      <span class="profile-label">My profile</span>
     </a>
+  </header>
 
-    <a class="nav-link" href="search.html">
-        <span>↗</span> Search
-    </a>
+  <div class="dashboard-layout">
 
-    <a class="nav-link" href="questions.html">
-        <span>✳</span> Community Q&A
-    </a>
+    <!-- DASHBOARD INTERESTS SIDEBAR -->
+    <aside class="interests-sidebar">
 
-    <a class="nav-link" href="create-blog.html">
-        <span>＋</span> Create a story
-    </a>
-
-    <a class="nav-link" href="profile.html">
-        <span>◯</span> My profile
-    </a>
-
-    <a class="nav-link" href="leaderboard.html">
-        <span>🏆</span> Leaderboard
-    </a>
-</nav>
-  <a href="profile.html" class="profile-link">My Profile ↗</a>
-</header>
-
-<main class="page">
-  <section class="hero">
-    <span class="eyebrow">SMARTBLOG TEMPLATE STUDIO ✳</span>
-    <h1>Your blog. Your <span>aesthetic.</span></h1>
-    <p>Find a look that feels like you. Then make it yours.</p>
-  </section>
-
-  <section class="studio">
-    <div class="section-heading">
-      <div>
-        <span class="eyebrow">THE DESIGN LIBRARY</span>
-        <h2>Find your vibe.</h2>
-      </div>
-      <span id="result-count">12 templates</span>
-    </div>
-
-    <div class="library-tools">
-      <input id="template-search" type="search"
-             placeholder="Search templates, styles or topics...">
-      <div class="filters" id="template-filters">
-        <button class="filter active" data-filter="all">All styles</button>
-        <button class="filter" data-filter="Pinterest">Pinterest</button>
-        <button class="filter" data-filter="Soft">Soft & feminine</button>
-        <button class="filter" data-filter="Editorial">Editorial</button>
-        <button class="filter" data-filter="Travel">Travel</button>
-        <button class="filter" data-filter="Creative">Creative</button>
-        <button class="filter" data-filter="Professional">Professional</button>
-        <button class="filter" data-filter="Favorites">♥ Favorites</button>
-      </div>
-    </div>
-
-    <div class="template-grid" id="template-grid">
-      <button class="template-card selected" data-template="scrapbook" data-category="Pinterest" type="button">
-        <div class="template-art art-scrapbook">
-          <span class="art-label">LITTLE MEMORIES</span>
-          <span class="art-title">bits of<br>my world ✿</span>
-          <span class="art-foot">A PERSONAL JOURNAL</span>
-        </div>
-        <span class="template-name">Scrapbook Diary</span>
-        <span class="template-description">Collages · Memories</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="polaroid" data-category="Pinterest" type="button">
-        <div class="template-art art-polaroid">
-          <span class="art-label">PHOTO DIARY</span>
-          <span class="art-title">moments<br>to keep.</span>
-          <span class="art-foot">VOL. 01 — EVERYDAY</span>
-        </div>
-        <span class="template-name">Polaroid Memories</span>
-        <span class="template-description">Photography · Life</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="vintage" data-category="Pinterest" type="button">
-        <div class="template-art art-vintage">
-          <span class="art-label">ARCHIVE NO. 01</span>
-          <span class="art-title">dear<br>diary...</span>
-          <span class="art-foot">NOTES FROM ANOTHER TIME</span>
-        </div>
-        <span class="template-name">Vintage Paper</span>
-        <span class="template-description">Retro · Journaling</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="coquette" data-category="Soft" type="button">
-        <div class="template-art art-coquette">
-          <span class="art-label">A LOVE LETTER TO LIFE</span>
-          <span class="art-title">with love,<br>always ♡</span>
-          <span class="art-foot">THE COQUETTE JOURNAL</span>
-        </div>
-        <span class="template-name">Coquette</span>
-        <span class="template-description">Blush · Romantic</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="cottage" data-category="Soft" type="button">
-        <div class="template-art art-cottage">
-          <span class="art-label">SLOW DAYS CLUB</span>
-          <span class="art-title">a softer<br>kind of life.</span>
-          <span class="art-foot">GROW SLOWLY ✿</span>
-        </div>
-        <span class="template-name">Cottagecore</span>
-        <span class="template-description">Nature · Slow living</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="floral" data-category="Soft" type="button">
-        <div class="template-art art-floral">
-          <span class="art-label">THE LITTLE THINGS</span>
-          <span class="art-title">bloom in<br>your own time.</span>
-          <span class="art-foot">A FLORAL JOURNAL</span>
-        </div>
-        <span class="template-name">Floral Journal</span>
-        <span class="template-description">Flowers · Reflections</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="minimal" data-category="Editorial" type="button">
-        <div class="template-art art-minimal">
-          <span class="art-label">THE EDIT</span>
-          <span class="art-title">Less, but<br>better.</span>
-          <span class="art-foot">AN EDITORIAL JOURNAL</span>
-        </div>
-        <span class="template-name">Minimal Editorial</span>
-        <span class="template-description">Clean · Timeless</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="luxury" data-category="Editorial" type="button">
-        <div class="template-art art-luxury">
-          <span class="art-label">MAISON · EST. 2026</span>
-          <span class="art-title">The art<br>of living.</span>
-          <span class="art-foot">CULTURE · STYLE · IDEAS</span>
-        </div>
-        <span class="template-name">Luxury Magazine</span>
-        <span class="template-description">Fashion · Culture</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="travel" data-category="Travel" type="button">
-        <div class="template-art art-travel">
-          <span class="art-label">POSTCARDS FROM</span>
-          <span class="art-title">somewhere<br>out there.</span>
-          <span class="art-foot">THE TRAVEL DIARY</span>
-        </div>
-        <span class="template-name">Travel Journal</span>
-        <span class="template-description">Places · Adventures</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="studio" data-category="Creative" type="button">
-        <div class="template-art art-studio">
-          <span class="art-label">IN THE MAKING</span>
-          <span class="art-title">Ideas into<br>something new.</span>
-          <span class="art-foot">DESIGN YOUR OWN RULES</span>
-        </div>
-        <span class="template-name">Creative Studio</span>
-        <span class="template-description">Design · Art</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="developer" data-category="Professional" type="button">
-        <div class="template-art art-developer">
-          <span class="art-label">BUILD / LEARN / SHARE</span>
-          <span class="art-title">Hello,<br>world<span>.</span></span>
-          <span class="art-foot">NOTES FROM A DEVELOPER</span>
-        </div>
-        <span class="template-name">Developer Notes</span>
-        <span class="template-description">Code · Technology</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-
-      <button class="template-card" data-template="knowledge" data-category="Professional" type="button">
-        <div class="template-art art-knowledge">
-          <span class="art-label">THE KNOWLEDGE DESK</span>
-          <span class="art-title">Ideas worth<br>understanding.</span>
-          <span class="art-foot">RESEARCH · LEARN · GROW</span>
-        </div>
-        <span class="template-name">Knowledge Library</span>
-        <span class="template-description">Education · Research</span>
-        <span class="favorite" aria-label="Toggle favorite">♡</span>
-      </button>
-    </div>
-    <p id="empty-state" hidden>No matching templates. Try another search.</p>
-  </section>
-
-  <section class="editor-workspace">
-    <div class="editor-panel">
-      <span class="eyebrow">NEXT — CREATE YOUR STORY</span>
-      <h2>Make it yours.</h2>
-
-      <form id="blog-form">
-        <label for="blog-title">Title</label>
-        <input id="blog-title" maxlength="120" required
-               placeholder="Give your story a title">
-
-        <label for="blog-subtitle">Short introduction</label>
-        <input id="blog-subtitle" maxlength="200"
-               placeholder="What's your story about?">
-
-        <div class="form-row">
-          <div>
-            <label for="blog-topic">Topic</label>
-            <select id="blog-topic">
-              <option>Personal Stories</option>
-              <option>Technology</option>
-              <option>Lifestyle</option>
-              <option>Travel</option>
-              <option>Education</option>
-              <option>Creativity</option>
-              <option>Fashion</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div>
-            <label for="cover-url">Custom cover URL</label>
-            <input id="cover-url" type="url" placeholder="Optional image link">
-          </div>
-        </div>
-
-        <label for="blog-content">Your story</label>
-        <textarea id="blog-content" rows="12" required
-                  placeholder="Start writing here..."></textarea>
-
-        <div class="writing-meta">
-          <span id="word-count">0 words</span>
-          <button id="preview-button" class="text-button" type="button">View preview ↗</button>
-        </div>
-
-        <div class="form-actions">
-          <button class="button secondary" id="save-draft" type="button">Save draft</button>
-          <button class="button primary" type="submit">Save & continue →</button>
-        </div>
-        <p id="status-message" aria-live="polite"></p>
-      </form>
-    </div>
-
-    <aside class="preview-panel" id="preview-panel">
-      <div class="preview-heading">
+      <div class="interest-title">
         <div>
-          <span class="eyebrow">YOUR LIVE PREVIEW</span>
-          <h2 id="preview-template-name">Scrapbook Diary</h2>
+          <span class="eyebrow">PERSONALIZED FOR YOU</span>
+          <h2>Your interests</h2>
         </div>
-        <span class="live-dot">● LIVE</span>
+        <a href="interests.html" class="edit-interests-link">Edit ↗</a>
       </div>
 
-      <article id="live-article" class="live-article scrapbook">
-        <div id="live-cover" class="live-cover">
-          <span id="live-cover-label">LITTLE MEMORIES ✿</span>
-        </div>
-        <div class="live-article-body">
-          <span id="live-topic" class="article-topic">PERSONAL STORIES</span>
-          <p class="byline">A STORY BY YOU ✳</p>
-          <h2 id="live-title">Your story starts here.</h2>
-          <p id="live-subtitle" class="article-subtitle">A little introduction to your next great idea.</p>
-          <div class="article-divider"></div>
-          <p id="live-content" class="article-content">Your writing will appear here as you type.</p>
-          <span class="article-end">MADE WITH SMARTBLOG ✿</span>
-        </div>
-      </article>
-      <p class="preview-note">This is a frontend preview. Publishing and database storage are not connected yet.</p>
-    </aside>
-  </section>
-</main>
+      <p class="interest-description">
+        Explore stories based on what you love.
+      </p>
 
-<footer class="footer">
-  <a href="dashboard.html" class="logo">smart<span>blog.</span></a>
-  <span>Made for your kind of story. ✳</span>
-</footer>
-<script src="create-blog.js"></script>
+      <div class="sidebar-topics">
+        <button type="button" data-topic="All" class="topic-active">
+          <i class="lime-dot"></i> For you
+        </button>
+        <button type="button" data-topic="Technology">
+          <i class="lavender-dot"></i> Technology
+        </button>
+        <button type="button" data-topic="Lifestyle">
+          <i class="pink-dot"></i> Lifestyle
+        </button>
+        <button type="button" data-topic="Creativity">
+          <i class="orange-dot"></i> Creativity
+        </button>
+        <button type="button" data-topic="Learning">
+          <i class="blue-dot"></i> Learning
+        </button>
+      </div>
+
+      <div class="interest-note">
+        <span>✳</span>
+        <p>Your interests help us discover stories you'll enjoy.</p>
+      </div>
+
+      <div class="sidebar-write">
+        <h3>Have an idea?</h3>
+        <p>Your story might be exactly what someone needs to read.</p>
+        <a href="create-blog.html">＋ Share your ideas</a>
+      </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="page-content create-blog-page">
+
+        <!-- HERO -->
+        <section class="create-hero">
+          <span class="eyebrow">SMARTBLOG TEMPLATE STUDIO ✳</span>
+          <h1>Your blog. Your <span>aesthetic.</span></h1>
+          <p>Find a look that feels like you. Then make it yours.</p>
+        </section>
+
+        <!-- TEMPLATE LIBRARY -->
+        <section class="studio">
+
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">THE DESIGN LIBRARY</span>
+              <h2>Find your vibe.</h2>
+            </div>
+            <span id="result-count" class="result-count">12 templates</span>
+          </div>
+
+          <div class="library-tools">
+
+            <label class="template-search-box">
+              <span>⌕</span>
+              <input
+                id="template-search"
+                type="search"
+                placeholder="Search templates, styles or topics..."
+              >
+            </label>
+
+            <div class="filters" id="template-filters">
+              <button class="filter active" data-filter="all" type="button">All styles</button>
+              <button class="filter" data-filter="Pinterest" type="button">Pinterest</button>
+              <button class="filter" data-filter="Soft" type="button">Soft &amp; feminine</button>
+              <button class="filter" data-filter="Editorial" type="button">Editorial</button>
+              <button class="filter" data-filter="Travel" type="button">Travel</button>
+              <button class="filter" data-filter="Creative" type="button">Creative</button>
+              <button class="filter" data-filter="Professional" type="button">Professional</button>
+              <button class="filter" data-filter="Favorites" type="button">♥ Favorites</button>
+            </div>
+
+          </div>
+
+          <div class="template-grid" id="template-grid">
+
+            <button class="template-card selected" data-template="scrapbook" data-category="Pinterest" type="button">
+              <span class="template-art art-scrapbook">
+                <span class="art-label">LITTLE MEMORIES</span>
+                <span class="art-title">bits of<br>my world ✿</span>
+                <span class="art-foot">A PERSONAL JOURNAL</span>
+              </span>
+              <span class="template-name">Scrapbook Diary</span>
+              <span class="template-description">Collages · Memories</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="polaroid" data-category="Pinterest" type="button">
+              <span class="template-art art-polaroid">
+                <span class="art-label">PHOTO DIARY</span>
+                <span class="art-title">moments<br>to keep.</span>
+                <span class="art-foot">VOL. 01 — EVERYDAY</span>
+              </span>
+              <span class="template-name">Polaroid Memories</span>
+              <span class="template-description">Photography · Life</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="vintage" data-category="Pinterest" type="button">
+              <span class="template-art art-vintage">
+                <span class="art-label">ARCHIVE NO. 01</span>
+                <span class="art-title">dear<br>diary...</span>
+                <span class="art-foot">NOTES FROM ANOTHER TIME</span>
+              </span>
+              <span class="template-name">Vintage Paper</span>
+              <span class="template-description">Retro · Journaling</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="coquette" data-category="Soft" type="button">
+              <span class="template-art art-coquette">
+                <span class="art-label">A LOVE LETTER TO LIFE</span>
+                <span class="art-title">with love,<br>always ♡</span>
+                <span class="art-foot">THE COQUETTE JOURNAL</span>
+              </span>
+              <span class="template-name">Coquette</span>
+              <span class="template-description">Blush · Romantic</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="cottage" data-category="Soft" type="button">
+              <span class="template-art art-cottage">
+                <span class="art-label">SLOW DAYS CLUB</span>
+                <span class="art-title">a softer<br>kind of life.</span>
+                <span class="art-foot">GROW SLOWLY ✿</span>
+              </span>
+              <span class="template-name">Cottagecore</span>
+              <span class="template-description">Nature · Slow living</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="floral" data-category="Soft" type="button">
+              <span class="template-art art-floral">
+                <span class="art-label">THE LITTLE THINGS</span>
+                <span class="art-title">bloom in<br>your own time.</span>
+                <span class="art-foot">A FLORAL JOURNAL</span>
+              </span>
+              <span class="template-name">Floral Journal</span>
+              <span class="template-description">Flowers · Reflections</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="minimal" data-category="Editorial" type="button">
+              <span class="template-art art-minimal">
+                <span class="art-label">THE EDIT</span>
+                <span class="art-title">Less, but<br>better.</span>
+                <span class="art-foot">AN EDITORIAL JOURNAL</span>
+              </span>
+              <span class="template-name">Minimal Editorial</span>
+              <span class="template-description">Clean · Timeless</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="luxury" data-category="Editorial" type="button">
+              <span class="template-art art-luxury">
+                <span class="art-label">MAISON · EST. 2026</span>
+                <span class="art-title">The art<br>of living.</span>
+                <span class="art-foot">CULTURE · STYLE · IDEAS</span>
+              </span>
+              <span class="template-name">Luxury Magazine</span>
+              <span class="template-description">Fashion · Culture</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="travel" data-category="Travel" type="button">
+              <span class="template-art art-travel">
+                <span class="art-label">POSTCARDS FROM</span>
+                <span class="art-title">somewhere<br>out there.</span>
+                <span class="art-foot">THE TRAVEL DIARY</span>
+              </span>
+              <span class="template-name">Travel Journal</span>
+              <span class="template-description">Places · Adventures</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="studio" data-category="Creative" type="button">
+              <span class="template-art art-studio">
+                <span class="art-label">IN THE MAKING</span>
+                <span class="art-title">Ideas into<br>something new.</span>
+                <span class="art-foot">DESIGN YOUR OWN RULES</span>
+              </span>
+              <span class="template-name">Creative Studio</span>
+              <span class="template-description">Design · Art</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="developer" data-category="Professional" type="button">
+              <span class="template-art art-developer">
+                <span class="art-label">BUILD / LEARN / SHARE</span>
+                <span class="art-title">Hello,<br>world<span>.</span></span>
+                <span class="art-foot">NOTES FROM A DEVELOPER</span>
+              </span>
+              <span class="template-name">Developer Notes</span>
+              <span class="template-description">Code · Technology</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+            <button class="template-card" data-template="knowledge" data-category="Professional" type="button">
+              <span class="template-art art-knowledge">
+                <span class="art-label">THE KNOWLEDGE DESK</span>
+                <span class="art-title">Ideas worth<br>understanding.</span>
+                <span class="art-foot">RESEARCH · LEARN · GROW</span>
+              </span>
+              <span class="template-name">Knowledge Library</span>
+              <span class="template-description">Education · Research</span>
+              <span class="favorite" aria-label="Toggle favorite">♡</span>
+            </button>
+
+          </div>
+
+          <p id="empty-state" class="empty-state" hidden>
+            No matching templates. Try another search.
+          </p>
+
+        </section>
+
+        <!-- EDITOR AND PREVIEW -->
+        <section class="editor-workspace">
+
+          <div class="editor-panel">
+
+            <span class="eyebrow">NEXT — CREATE YOUR STORY</span>
+            <h2>Make it yours.</h2>
+            <p class="editor-intro">Add your details and watch your story take shape.</p>
+
+            <form id="blog-form">
+
+              <label for="blog-title">Title</label>
+              <input
+                id="blog-title"
+                maxlength="120"
+                required
+                placeholder="Give your story a title"
+              >
+
+              <label for="blog-subtitle">Short introduction</label>
+              <input
+                id="blog-subtitle"
+                maxlength="200"
+                placeholder="What's your story about?"
+              >
+
+              <div class="form-row">
+                <div>
+                  <label for="blog-topic">Topic</label>
+                  <select id="blog-topic">
+                    <option>Personal Stories</option>
+                    <option>Technology</option>
+                    <option>Lifestyle</option>
+                    <option>Travel</option>
+                    <option>Education</option>
+                    <option>Creativity</option>
+                    <option>Fashion</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="cover-url">Custom cover URL</label>
+                  <input
+                    id="cover-url"
+                    type="url"
+                    placeholder="Optional image link"
+                  >
+                </div>
+              </div>
+
+              <label for="blog-content">Your story</label>
+              <textarea
+                id="blog-content"
+                rows="12"
+                required
+                placeholder="Start writing here..."
+              ></textarea>
+
+              <div class="writing-meta">
+                <span id="word-count">0 words</span>
+                <button id="preview-button" class="text-button" type="button">
+                  View preview ↗
+                </button>
+              </div>
+
+              <div class="form-actions">
+                <button class="button secondary" id="save-draft" type="button">
+                  Save draft
+                </button>
+                <button class="button primary" type="submit">
+                  Save &amp; continue →
+                </button>
+              </div>
+
+              <p id="status-message" aria-live="polite"></p>
+
+            </form>
+          </div>
+
+          <!-- LIVE PREVIEW -->
+          <aside class="preview-panel" id="preview-panel">
+
+            <div class="preview-heading">
+              <div>
+                <span class="eyebrow">YOUR LIVE PREVIEW</span>
+                <h2 id="preview-template-name">Scrapbook Diary</h2>
+              </div>
+              <span class="live-dot">● LIVE</span>
+            </div>
+
+            <article id="live-article" class="live-article scrapbook">
+
+              <div id="live-cover" class="live-cover">
+                <span id="live-cover-label">LITTLE MEMORIES ✿</span>
+              </div>
+
+              <div class="live-article-body">
+                <span id="live-topic" class="article-topic">PERSONAL STORIES</span>
+                <p class="byline">A STORY BY YOU ✳</p>
+                <h2 id="live-title">Your story starts here.</h2>
+                <p id="live-subtitle" class="article-subtitle">
+                  A little introduction to your next great idea.
+                </p>
+                <div class="article-divider"></div>
+                <p id="live-content" class="article-content">
+                  Your writing will appear here as you type.
+                </p>
+                <span class="article-end">MADE WITH SMARTBLOG ✿</span>
+              </div>
+
+            </article>
+
+            <p class="preview-note">
+              This is a frontend preview. Publishing and database storage are not connected yet.
+            </p>
+
+          </aside>
+
+        </section>
+
+        <!-- DASHBOARD FOOTER -->
+        <footer class="footer">
+          <a class="brand footer-brand" href="dashboard.html">
+            <span class="brand-mark">S.</span>
+            smartblog.
+          </a>
+          <span>A home for curious minds and thoughtful stories.</span>
+        </footer>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="create-blog.js"></script>
 </body>
 </html>
-
-

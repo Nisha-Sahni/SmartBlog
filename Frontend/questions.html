@@ -1,134 +1,359 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questions & Answers | SmartBlog</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="questions.css">
-    <script src="questions.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Community Q&A | SmartBlog</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Shared Dashboard styles -->
+  <link rel="stylesheet" href="dashboard.css">
+
+  <!-- Q&A page styles -->
+  <link rel="stylesheet" href="questions.css">
+
+  <script src="questions.js" defer></script>
 </head>
+
 <body>
-    <aside class="sidebar">
-        <a class="brand" href="dashboard.html">
-            <span class="brand-mark">S.</span>
-            smartblog.
-        </a>
 
-        <a href="profile.html" class="profile">
-            <div class="profile-avatar">N</div>
-            <div>
-                <strong>Welcome back!</strong>
-                <small>Your reading corner</small>
-            </div>
-        </a>
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="announcement">
+    A little inspiration goes a long way.
+    <a href="explore.html">Find your next read ↗</a>
+  </div>
 
-        <p class="nav-heading">YOUR SPACE</p>
+  <!-- MAIN HEADER -->
+  <header class="main-header">
 
-        <nav class="navigation">
-    <a class="nav-link active" href="dashboard.html">
-        <span>⌂</span> Home
+    <a href="dashboard.html" class="brand">
+      <span class="brand-mark">S.</span>
+      <span>SmartBlog</span>
     </a>
 
-    <a class="nav-link" href="explore.html">
-        <span>⌕</span> Explore stories
+    <nav class="top-navigation">
+      <a href="dashboard.html" class="top-link">Home</a>
+      <a href="explore.html" class="top-link">Explore</a>
+      <a href="search.html" class="top-link">Search</a>
+      <a href="questions.html" class="top-link active-link">Community Q&A</a>
+      <a href="create-blog.html" class="top-link">Create a story</a>
+      <a href="leaderboard.html" class="top-link">Leaderboard</a>
+    </nav>
+
+    <a href="profile.html" class="header-profile">
+      <span class="small-avatar">U</span>
+      <span class="profile-label">My profile</span>
     </a>
 
-    <a class="nav-link" href="search.html">
-        <span>↗</span> Search
-    </a>
+  </header>
 
-    <a class="nav-link" href="questions.html">
-        <span>✳</span> Community Q&A
-    </a>
+  <!-- DASHBOARD LAYOUT -->
+  <div class="dashboard-layout">
 
-    <a class="nav-link" href="create-blog.html">
-        <span>＋</span> Create a story
-    </a>
+    <!-- INTERESTS SIDEBAR -->
+    <aside class="interests-sidebar">
 
-    <a class="nav-link" href="profile.html">
-        <span>◯</span> My profile
-    </a>
-
-    <a class="nav-link" href="leaderboard.html">
-        <span>🏆</span> Leaderboard
-    </a>
-</nav>
-
-        <div class="write-box">
-            <span class="write-star">✳</span>
-            <h3>Have an idea?</h3>
-            <p>Your story might be exactly what someone needs to read.</p>
-            <a href="create-blog.html" class="write-button">＋ Share your ideas</a>
+      <div class="interest-title">
+        <div>
+          <span class="eyebrow">PERSONALIZED FOR YOU</span>
+          <h2>Your interests</h2>
         </div>
 
-        <a href="home.html" class="back-link">← Back to the website</a>
+        <a href="interests.html" class="edit-interests-link">
+          Edit ↗
+        </a>
+      </div>
+
+      <p class="interest-description">
+        Explore stories based on what you love.
+      </p>
+
+      <div class="sidebar-topics" id="sidebarTopics">
+
+        <button type="button" data-topic="All" class="topic-active">
+          <i class="lime-dot"></i>
+          For you
+        </button>
+
+        <button type="button" data-topic="Technology">
+          <i class="lavender-dot"></i>
+          Technology
+        </button>
+
+        <button type="button" data-topic="Lifestyle">
+          <i class="pink-dot"></i>
+          Lifestyle
+        </button>
+
+        <button type="button" data-topic="Creativity">
+          <i class="orange-dot"></i>
+          Creativity
+        </button>
+
+        <button type="button" data-topic="Learning">
+          <i class="blue-dot"></i>
+          Learning
+        </button>
+
+      </div>
+
+      <div class="interest-note">
+        <span>✳</span>
+        <p>
+          Your interests help us discover stories you'll enjoy.
+        </p>
+      </div>
+
+      <div class="sidebar-write">
+        <h3>Have an idea?</h3>
+
+        <p>
+          Your story might be exactly what someone needs to read.
+        </p>
+
+        <a href="create-blog.html">
+          ＋ Share your ideas
+        </a>
+      </div>
+
     </aside>
 
+    <!-- Q&A MAIN CONTENT -->
     <main class="main-content">
-        <header class="topbar">
-            <div>
-                <p class="eyebrow">COMMUNITY SPACE</p>
-                <h1>Questions & Answers</h1>
-                <p class="subtitle">Ask questions, share knowledge, and learn together.</p>
-            </div>
-            <button id="askQuestionBtn" class="primary-btn">+ Ask a question</button>
-        </header>
 
-        <section class="search-area">
-            <input id="searchInput" type="search"
-                placeholder="Search questions by title or topic...">
-            <select id="topicFilter">
-                <option value="All">All topics</option>
-                <option value="Technology">Technology</option>
-                <option value="Programming">Programming</option>
-                <option value="Career">Career</option>
-                <option value="College">College</option>
-                <option value="Writing">Writing</option>
-            </select>
-        </section>
+      <div class="page-content questions-page">
 
-        <section id="questionFormSection" class="question-form hidden">
-            <h2>Ask the community</h2>
-            <form id="questionForm">
-                <label for="questionTitle">Question title</label>
-                <input id="questionTitle" type="text"
-                    placeholder="What do you want to know?" required>
+        <!-- HERO SECTION -->
+        <section class="qa-hero">
 
-                <label for="questionDetails">Add details</label>
-                <textarea id="questionDetails"
-                    placeholder="Explain your question..." rows="4"></textarea>
+          <div class="qa-hero-content">
 
-                <label for="questionTopic">Topic</label>
-                <select id="questionTopic" required>
-                    <option value="Technology">Technology</option>
-                    <option value="Programming">Programming</option>
-                    <option value="Career">Career</option>
-                    <option value="College">College</option>
-                    <option value="Writing">Writing</option>
-                </select>
+            <span class="eyebrow">A SPACE FOR CURIOUS MINDS</span>
 
-                <div class="form-actions">
-                    <button type="button" id="cancelQuestionBtn" class="secondary-btn">
-                        Cancel
-                    </button>
-                    <button type="submit" class="primary-btn">Post question</button>
-                </div>
-            </form>
-        </section>
+            <h1>
+              Questions spark
+              <em>conversations.</em>
+            </h1>
 
-        <section class="question-section">
-            <div class="section-heading">
-                <h2>Community questions</h2>
-                <span id="questionCount">0 questions</span>
-            </div>
-            <div id="questionsList"></div>
-            <p id="emptyMessage" class="empty-message hidden">
-                No questions found. Try another search or ask a question!
+            <p>
+              Have something on your mind? Ask the community,
+              exchange ideas and learn from people who share your curiosity.
             </p>
+
+            <button
+              type="button"
+              class="black-button"
+              id="askQuestionBtn"
+            >
+              Ask a question <span>↗</span>
+            </button>
+
+          </div>
+
+          <div class="qa-hero-art">
+
+            <div class="qa-art-circle">
+              <span class="qa-question-mark">?</span>
+            </div>
+
+            <div class="qa-floating-note note-one">
+              <span>✦</span> Ask freely
+            </div>
+
+            <div class="qa-floating-note note-two">
+              Ideas grow here.
+            </div>
+
+          </div>
+
         </section>
+
+        <!-- INTRO SECTION -->
+        <section class="qa-intro-row">
+
+          <div>
+            <span class="eyebrow">THE COMMUNITY</span>
+            <h2>Let's figure it out together.</h2>
+          </div>
+
+          <p>
+            No question is too small when there's something new to learn.
+          </p>
+
+        </section>
+
+        <!-- SEARCH AND TOPIC FILTER -->
+        <section class="qa-toolbar">
+
+          <div class="qa-search-box">
+
+            <span class="qa-search-icon">⌕</span>
+
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search questions, topics or keywords..."
+              aria-label="Search community questions"
+            >
+
+            <button type="button" id="searchBtn">
+              Search
+            </button>
+
+          </div>
+
+          <select
+            id="topicFilter"
+            aria-label="Filter questions by topic"
+          >
+            <option value="All">All topics</option>
+            <option value="Technology">Technology</option>
+            <option value="Programming">Programming</option>
+            <option value="Learning">Learning</option>
+            <option value="Career">Career</option>
+            <option value="Writing">Writing</option>
+            <option value="Lifestyle">Lifestyle</option>
+            <option value="College">College</option>
+            <option value="Creativity">Creativity</option>
+          </select>
+
+        </section>
+
+        <!-- ASK QUESTION FORM -->
+        <section
+          class="qa-form-section"
+          id="questionFormSection"
+          hidden
+        >
+
+          <div class="qa-form-heading">
+
+            <div>
+              <span class="eyebrow">START A CONVERSATION</span>
+              <h2>What's on your mind?</h2>
+              <p>
+                Share your question with the SmartBlog community.
+              </p>
+            </div>
+
+            <span class="qa-form-decoration">?</span>
+
+          </div>
+
+          <form id="questionForm">
+
+            <label for="questionTitle">Question title</label>
+
+            <input
+              type="text"
+              id="questionTitle"
+              placeholder="e.g. How do I get started with machine learning?"
+              required
+              maxlength="180"
+            >
+
+            <label for="questionDetails">Add more details</label>
+
+            <textarea
+              id="questionDetails"
+              rows="4"
+              placeholder="Explain what you're curious about..."
+              required
+              maxlength="1500"
+            ></textarea>
+
+            <label for="questionTopic">Choose a topic</label>
+
+            <select id="questionTopic" required>
+              <option value="">Select a topic</option>
+              <option value="Technology">Technology</option>
+              <option value="Programming">Programming</option>
+              <option value="Learning">Learning</option>
+              <option value="Career">Career</option>
+              <option value="Writing">Writing</option>
+              <option value="Lifestyle">Lifestyle</option>
+              <option value="College">College</option>
+              <option value="Creativity">Creativity</option>
+            </select>
+
+            <div class="qa-form-actions">
+
+              <button
+                type="button"
+                class="qa-cancel-btn"
+                id="cancelQuestionBtn"
+              >
+                Cancel
+              </button>
+
+              <button type="submit" class="black-button">
+                Post your question ↗
+              </button>
+
+            </div>
+
+          </form>
+
+        </section>
+
+        <!-- COMMUNITY QUESTION FEED -->
+        <section class="qa-feed-section">
+
+          <div class="qa-feed-heading">
+
+            <div>
+              <span class="eyebrow">EXPLORE & CONTRIBUTE</span>
+              <h2>Community questions</h2>
+            </div>
+
+            <span id="questionCount" class="qa-question-count">
+              Questions
+            </span>
+
+          </div>
+
+          <div id="questionsList" class="questions-list"></div>
+
+          <div id="emptyMessage" class="qa-empty-state" hidden>
+
+            <span class="qa-empty-icon">?</span>
+
+            <h3>No questions found</h3>
+
+            <p>
+              Try a different search or be the first to start a conversation.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
     </main>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+
+    <div class="footer-brand">
+      <span class="brand-mark">S.</span>
+      <span>SmartBlog</span>
+    </div>
+
+    <p>Ideas grow when they're shared.</p>
+
+  </footer>
+
 </body>
 </html>

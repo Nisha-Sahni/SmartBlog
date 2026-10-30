@@ -5,9 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | smartblog.</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -17,101 +19,95 @@
     <a href="#recommended">Find your next read ↗</a>
   </div>
 
+  <!-- TOP NAVIGATION -->
+  <header class="main-header">
+    <a class="brand" href="dashboard.html">
+      <span class="brand-mark">S.</span>
+      smartblog.
+    </a>
+
+    <nav class="top-navigation">
+      <a href="dashboard.html" class="top-link active">Home</a>
+      <a href="explore.html" class="top-link">Explore</a>
+      <a href="search.html" class="top-link">Search</a>
+      <a href="questions.html" class="top-link">Community Q&A</a>
+      <a href="create-blog.html" class="top-link">Create a story</a>
+      <a href="leaderboard.html" class="top-link">Leaderboard</a>
+    </nav>
+
+    <a href="profile.html" class="header-profile" title="My profile">
+      <span class="small-avatar">N</span>
+      <span class="profile-label">My profile</span>
+    </a>
+  </header>
+
   <div class="dashboard-layout">
 
-    <aside class="sidebar">
-      <a class="brand" href="home.html">
-        <span class="brand-mark">S.</span>
-        smartblog.
-      </a>
+    <!-- INTERESTS SIDEBAR -->
+    <aside class="interests-sidebar">
 
-      <a href="profile.html" class="profile">
-        <div class="profile-avatar">N</div>
+      <div class="interest-title">
         <div>
-          <strong>Welcome back!</strong>
-          <small>Your reading corner</small>
+          <span class="eyebrow">PERSONALIZED FOR YOU</span>
+          <h2>Your interests</h2>
         </div>
-      </a>
+        <a href="interests.html" class="edit-interests-link">Edit ↗</a>
+      </div>
 
-      <p class="nav-heading">YOUR SPACE</p>
-
-      
-<nav class="navigation">
-    <a class="nav-link active" href="dashboard.html">
-        <span>⌂</span> Home
-    </a>
-
-    <a class="nav-link" href="explore.html">
-        <span>⌕</span> Explore stories
-    </a>
-
-    <a class="nav-link" href="search.html">
-        <span>↗</span> Search
-    </a>
-
-    <a class="nav-link" href="questions.html">
-        <span>✳</span> Community Q&A
-    </a>
-
-    <a class="nav-link" href="create-blog.html">
-        <span>＋</span> Create a story
-    </a>
-
-    <a class="nav-link" href="profile.html">
-        <span>◯</span> My profile
-    </a>
-
-    <a class="nav-link" href="leaderboard.html">
-        <span>🏆</span> Leaderboard
-    </a>
-</nav>
-
-
-      <p class="nav-heading topics-heading">YOUR INTERESTS</p>
+      <p class="interest-description">
+        Explore stories based on what you love.
+      </p>
 
       <div class="sidebar-topics">
-        <button data-topic="All"><i class="lime-dot"></i> For you</button>
-        <button data-topic="Technology"><i class="lavender-dot"></i> Technology</button>
-        <button data-topic="Lifestyle"><i class="pink-dot"></i> Lifestyle</button>
-        <button data-topic="Creativity"><i class="orange-dot"></i> Creativity</button>
-        <button data-topic="Learning"><i class="blue-dot"></i> Learning</button>
+        <button type="button" data-topic="All" class="topic-active">
+          <i class="lime-dot"></i> For you
+        </button>
+        <button type="button" data-topic="Technology">
+          <i class="lavender-dot"></i> Technology
+        </button>
+        <button type="button" data-topic="Lifestyle">
+          <i class="pink-dot"></i> Lifestyle
+        </button>
+        <button type="button" data-topic="Creativity">
+          <i class="orange-dot"></i> Creativity
+        </button>
+        <button type="button" data-topic="Learning">
+          <i class="blue-dot"></i> Learning
+        </button>
       </div>
 
-      <div class="write-box">
-        <span class="write-star">✳</span>
+      <div class="interest-note">
+        <span>✳</span>
+        <p>Your interests help us discover stories you'll enjoy.</p>
+      </div>
+
+      <div class="sidebar-write">
         <h3>Have an idea?</h3>
         <p>Your story might be exactly what someone needs to read.</p>
-        <a href="create-blog.html" class="write-button">＋ Share your ideas</a>
+        <a href="create-blog.html">＋ Share your ideas</a>
       </div>
 
-      <a href="home.html" class="back-link">← Back to the website</a>
     </aside>
 
-    <main class="main">
-
-      <header class="topbar">
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
-        <div class="breadcrumb">Your space <span>/</span> <strong>Dashboard</strong></div>
-        <div class="topbar-right">
-          <a href="home.html">About</a>
-          <a href="questions.html">Community</a>
-          <a href="profile.html" class="small-avatar">N</a>
-        </div>
-      </header>
+    <!-- MAIN AREA -->
+    <main class="main-content">
 
       <div class="page-content">
 
-        <!-- Dashboard welcome: no duplicated home-page hero -->
+        <!-- WELCOME -->
         <section class="dashboard-welcome">
           <div>
             <span class="eyebrow"><i></i> YOUR READING SPACE</span>
             <h1>Welcome back,<br><em>reader.</em></h1>
             <p>There's always a new idea waiting to find you.</p>
           </div>
-          <a href="create-blog.html" class="black-button">＋ Write a story ↗</a>
+
+          <a href="create-blog.html" class="black-button">
+            ＋ Write a story ↗
+          </a>
         </section>
 
-        <!-- Search -->
+        <!-- SEARCH -->
         <section class="search-area">
           <div>
             <span class="eyebrow">A WORLD OF IDEAS</span>
@@ -120,36 +116,22 @@
 
           <label class="search-box">
             <span>⌕</span>
-            <input type="search" id="searchInput" placeholder="Search stories, topics, ideas...">
-            <button id="searchBtn">Search ↗</button>
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Search stories, topics, ideas..."
+            >
+            <button id="searchBtn" type="button">Search ↗</button>
           </label>
-        </section>
-
-        <!-- Topic filters -->
-        <section class="topics-area">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">FOLLOW YOUR CURIOSITY</span>
-              <h2>Explore by topic</h2>
-            </div>
-            <button id="clearFilters" class="underlined">View everything ↗</button>
-          </div>
-
-          <div class="topic-chips">
-            <button class="chip selected" data-topic="All">✳ For you</button>
-            <button class="chip" data-topic="Technology">Technology</button>
-            <button class="chip" data-topic="Lifestyle">Lifestyle</button>
-            <button class="chip" data-topic="Creativity">Creativity</button>
-            <button class="chip" data-topic="Learning">Learning</button>
-          </div>
         </section>
 
         <div class="content-grid">
 
           <div class="feed">
 
-            <!-- Recommended blogs -->
+            <!-- RECOMMENDED STORIES -->
             <section id="recommended" class="section">
+
               <div class="section-heading">
                 <div>
                   <span class="eyebrow">A FEW GOOD READS</span>
@@ -163,17 +145,19 @@
                 <article class="story-card story-large"
                   data-topic="Technology"
                   data-search="technology artificial intelligence future">
+
                   <a class="story-image" href="explore.html">
                     <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85" alt="Electronic circuit board">
                     <span class="image-label">TECHNOLOGY</span>
                   </a>
+
                   <div class="story-body">
                     <span class="meta">FEATURED STORY · 6 MIN READ</span>
                     <h3><a href="explore.html">The little things shaping our digital future</a></h3>
                     <p>Exploring the ideas and inventions changing how we see the world.</p>
                     <div class="story-footer">
                       <span>smartblog. community</span>
-                      <button class="save-button">♡ Save</button>
+                      <button class="save-button" type="button">♡ Save</button>
                     </div>
                   </div>
                 </article>
@@ -181,16 +165,18 @@
                 <article class="story-card"
                   data-topic="Creativity"
                   data-search="creativity writing ideas inspiration">
+
                   <a class="story-image" href="explore.html">
                     <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=700&q=85" alt="Notebook and writing desk">
                   </a>
+
                   <div class="story-body">
                     <span class="meta">CREATIVITY · 4 MIN READ</span>
                     <h3><a href="explore.html">Making room for your next big idea</a></h3>
                     <p>Sometimes the best ideas need a little breathing room.</p>
                     <div class="story-footer">
                       <span>Fresh perspective</span>
-                      <button class="save-button">♡ Save</button>
+                      <button class="save-button" type="button">♡ Save</button>
                     </div>
                   </div>
                 </article>
@@ -198,16 +184,18 @@
                 <article class="story-card"
                   data-topic="Lifestyle"
                   data-search="lifestyle daily habits slow living">
+
                   <a class="story-image" href="explore.html">
                     <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=85" alt="A calm, sunlit workspace">
                   </a>
+
                   <div class="story-body">
                     <span class="meta">LIFESTYLE · 5 MIN READ</span>
                     <h3><a href="explore.html">A slower way to make every day count</a></h3>
                     <p>Little rituals that bring more intention to ordinary days.</p>
                     <div class="story-footer">
                       <span>Everyday living</span>
-                      <button class="save-button">♡ Save</button>
+                      <button class="save-button" type="button">♡ Save</button>
                     </div>
                   </div>
                 </article>
@@ -215,16 +203,18 @@
                 <article class="story-card"
                   data-topic="Learning"
                   data-search="learning curiosity books knowledge">
+
                   <a class="story-image" href="explore.html">
                     <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=85" alt="Books ready to be read">
                   </a>
+
                   <div class="story-body">
                     <span class="meta">LEARNING · 7 MIN READ</span>
                     <h3><a href="explore.html">Why staying curious changes everything</a></h3>
                     <p>One question can open a door to an entirely new world.</p>
                     <div class="story-footer">
                       <span>Ideas worth keeping</span>
-                      <button class="save-button">♡ Save</button>
+                      <button class="save-button" type="button">♡ Save</button>
                     </div>
                   </div>
                 </article>
@@ -236,7 +226,7 @@
               </p>
             </section>
 
-            <!-- Reading history -->
+            <!-- READING HISTORY -->
             <section class="section reading-section">
               <div class="section-heading">
                 <div>
@@ -257,7 +247,7 @@
 
           </div>
 
-          <!-- Right column -->
+          <!-- RIGHT COLUMN -->
           <aside class="right-column">
 
             <section class="side-section">
@@ -313,8 +303,9 @@
         </div>
 
         <footer class="footer">
-          <a class="brand footer-brand" href="home.html">
-            <span class="brand-mark">S.</span> smartblog.
+          <a class="brand footer-brand" href="dashboard.html">
+            <span class="brand-mark">S.</span>
+            smartblog.
           </a>
           <span>A home for curious minds and thoughtful stories.</span>
         </footer>
@@ -326,5 +317,3 @@
   <script src="dashboard.js"></script>
 </body>
 </html>
-
-

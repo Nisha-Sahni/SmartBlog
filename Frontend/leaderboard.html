@@ -1,159 +1,281 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaderboard | smartblog.</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+    <title>Leaderboard | SmartBlog</title>
 
-  <link rel="stylesheet" href="leaderboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+
+    <!-- Shared dashboard design -->
+    <link rel="stylesheet" href="dashboard.css">
+
+    <!-- Leaderboard-specific design -->
+    <link rel="stylesheet" href="leaderboard.css">
 </head>
-<body>
-  <div class="announcement">
-    Every thoughtful story makes a difference.
-    <a href="dashboard.html">Discover your next read ↗</a>
-  </div>
 
-  <div class="dashboard-layout">
-    <aside class="sidebar">
-      <a class="brand" href="home.html">
-        <span class="brand-mark">S.</span>
-        smartblog.
-      </a>
+<body class="dashboard-page">
 
-      <a href="profile.html" class="profile">
-        <div class="profile-avatar">N</div>
-        <div>
-          <strong>Your profile</strong>
-          <small>Your writing journey</small>
-        </div>
-      </a>
+    <div class="announcement">
+        Every thoughtful story makes a difference.
+        <a href="explore.html">Discover your next read ↗</a>
+    </div>
 
-      <p class="nav-heading">YOUR SPACE</p>
+    <!-- HEADER -->
+    <header class="main-header">
 
-      <nav class="navigation">
-        <a class="nav-link" href="dashboard.html"><span>⌂</span> Home</a>
-        <a class="nav-link" href="explore.html"><span>⌕</span> Explore stories</a>
-        <a class="nav-link" href="search.html"><span>↗</span> Search</a>
-        <a class="nav-link" href="questions.html"><span>✳</span> Community Q&amp;A</a>
-        <a class="nav-link" href="create-blog.html"><span>＋</span> Create a story</a>
-        <a class="nav-link" href="profile.html"><span>◯</span> My profile</a>
-        <a class="nav-link active" href="leaderboard.html"><span>♛</span> Leaderboard</a>
-      </nav>
+        <a href="home.html" class="brand">
+            <span class="brand-mark">S.</span>
+            smartblog.
+        </a>
 
-      <div class="write-box">
-        <span class="write-star">✳</span>
-        <h3>Have an idea?</h3>
-        <p>Your story might be exactly what someone needs to read.</p>
-        <a href="create-blog.html" class="write-button">＋ Share your ideas</a>
-      </div>
+        <nav class="top-navigation">
+            <a href="dashboard.html" class="top-link">Home</a>
+            <a href="explore.html" class="top-link">Explore</a>
+            <a href="search.html" class="top-link">Search</a>
+            <a href="questions.html" class="top-link">Community Q&amp;A</a>
+            <a href="create-blog.html" class="top-link">Create a story</a>
+            <a href="leaderboard.html" class="top-link active">Leaderboard</a>
+        </nav>
 
-      <a href="home.html" class="back-link">← Back to the website</a>
-    </aside>
+        <a href="profile.html" class="header-profile">
+            <span class="small-avatar">N</span>
+            <span class="profile-label">My profile</span>
+        </a>
 
-    <main class="main">
-      <header class="topbar">
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
-        <div class="breadcrumb">Your space <span>/</span> <strong>Leaderboard</strong></div>
-        <div class="topbar-right">
-          <a href="home.html">About</a>
-          <a href="questions.html">Community</a>
-          <a href="profile.html" class="small-avatar">N</a>
-        </div>
-      </header>
+    </header>
 
-      <div class="page-content">
-        <section class="leaderboard-hero">
-          <span class="eyebrow"><i></i> THE SMARTBLOG COMMUNITY</span>
-          <h1>Good ideas deserve<br><em>to be celebrated.</em></h1>
-          <p>Meet the authors making their mark through stories, ideas, and meaningful contributions.</p>
-        </section>
 
-        <section class="stats-grid">
-          <article class="stat-card">
-            <span class="stat-icon">♛</span>
-            <span class="stat-label">AUTHORS RANKED</span>
-            <strong id="authorCount">—</strong>
-          </article>
-          <article class="stat-card">
-            <span class="stat-icon">✳</span>
-            <span class="stat-label">TOP AUTHOR</span>
-            <strong id="topAuthor">—</strong>
-          </article>
-          <article class="stat-card">
-            <span class="stat-icon">★</span>
-            <span class="stat-label">HIGHEST POINTS</span>
-            <strong id="topPoints">—</strong>
-          </article>
-        </section>
+    <!-- MAIN LAYOUT -->
+    <div class="dashboard-layout">
 
-        <section class="leaderboard-section">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">CELEBRATING OUR WRITERS</span>
-              <h2>Author leaderboard <span class="lime-star">✳</span></h2>
+        <!-- INTERESTS SIDEBAR -->
+        <aside class="interests-sidebar">
+
+            <div class="interest-heading">
+                <h3 class="interest-title">Your interests</h3>
+                <a href="interests.html">Edit</a>
             </div>
-            <button class="refresh-button" id="refreshButton">↻ Refresh</button>
-          </div>
 
-          <p class="section-description">
-            Authors are ranked by their reputation points. Keep sharing thoughtful work and growing with the community.
-          </p>
+            <p class="interest-description">
+                Explore stories based on what you love.
+            </p>
 
-          <div id="loadingMessage" class="status-message">Loading the SmartBlog authors…</div>
+            <div class="sidebar-topics">
+                <a href="dashboard.html" class="topic-link">
+                    <span class="topic-dot"></span>
+                    For you
+                </a>
 
-          <div id="errorMessage" class="status-message error-message" hidden>
-            <strong>We couldn't load the leaderboard.</strong>
-            <p>Check that the backend and MySQL are running, then try again.</p>
-            <button class="black-button" id="retryButton">Try again ↻</button>
-          </div>
+                <a href="explore.html" class="topic-link">
+                    <span class="topic-dot technology-dot"></span>
+                    Technology
+                </a>
 
-          <div id="emptyMessage" class="status-message" hidden>
-            No authors to rank yet. Join the community and start writing!
-          </div>
+                <a href="explore.html" class="topic-link">
+                    <span class="topic-dot lifestyle-dot"></span>
+                    Lifestyle
+                </a>
 
-          <div class="table-wrapper" id="tableWrapper" hidden>
-            <table>
-              <thead>
-                <tr>
-                  <th>RANK</th>
-                  <th>AUTHOR</th>
-                  <th>AUTHOR LEVEL</th>
-                  <th>REPUTATION POINTS</th>
-                </tr>
-              </thead>
-              <tbody id="leaderboardBody"></tbody>
-            </table>
-          </div>
+                <a href="explore.html" class="topic-link">
+                    <span class="topic-dot creativity-dot"></span>
+                    Creativity
+                </a>
 
-          <p class="updated-note" id="updatedNote"></p>
-        </section>
+                <a href="explore.html" class="topic-link">
+                    <span class="topic-dot learning-dot"></span>
+                    Learning
+                </a>
+            </div>
 
-        <section class="bottom-note">
-          <div class="bottom-note-icon">✳</div>
-          <div>
-            <span class="eyebrow">YOUR STORY MATTERS</span>
-            <h2>Every author starts somewhere.</h2>
-            <p>Share what you know, explore new ideas, and help make SmartBlog a thoughtful place to learn.</p>
-            <a href="create-blog.html" class="black-button">Write a story ↗</a>
-          </div>
-        </section>
+            <div class="interest-note">
+                <span>✳</span>
+                <p>
+                    The best ideas often come from exploring something new.
+                </p>
+            </div>
 
-        <footer class="footer">
-          <a class="brand footer-brand" href="home.html">
-            <span class="brand-mark">S.</span> smartblog.
-          </a>
-          <span>A home for curious minds and thoughtful stories.</span>
-        </footer>
-      </div>
-    </main>
-  </div>
+            <a href="create-blog.html" class="sidebar-write">
+                <span>＋</span>
+                Write a story
+            </a>
 
-  <script src="leaderboard.js"></script>
+        </aside>
+
+
+        <!-- LEADERBOARD CONTENT -->
+        <main class="main-content">
+
+            <div class="page-content leaderboard-page">
+
+                <!-- INTRODUCTION -->
+                <section class="leaderboard-hero">
+
+                    <span class="eyebrow">
+                        <i></i>
+                        THE SMARTBLOG COMMUNITY
+                    </span>
+
+                    <h1>
+                        Good ideas deserve<br>
+                        <em>to be celebrated.</em>
+                    </h1>
+
+                    <p>
+                        Meet the authors making their mark through stories,
+                        ideas, and meaningful contributions.
+                    </p>
+
+                </section>
+
+
+                <!-- STATISTICS -->
+                <section class="stats-grid">
+
+                    <article class="stat-card">
+                        <span class="stat-icon">♛</span>
+                        <span class="stat-label">AUTHORS RANKED</span>
+                        <strong id="authorCount">—</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-icon">✳</span>
+                        <span class="stat-label">TOP AUTHOR</span>
+                        <strong id="topAuthor">—</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-icon">★</span>
+                        <span class="stat-label">HIGHEST POINTS</span>
+                        <strong id="topPoints">—</strong>
+                    </article>
+
+                </section>
+
+
+                <!-- LEADERBOARD TABLE -->
+                <section class="leaderboard-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="eyebrow">CELEBRATING OUR WRITERS</span>
+
+                            <h2>
+                                Author leaderboard
+                                <span class="lime-star">✳</span>
+                            </h2>
+                        </div>
+
+                        <button class="refresh-button" id="refreshButton">
+                            ↻ Refresh
+                        </button>
+
+                    </div>
+
+                    <p class="section-description">
+                        Authors are ranked by their reputation points.
+                        Keep sharing thoughtful work and growing with the community.
+                    </p>
+
+
+                    <div id="loadingMessage" class="status-message">
+                        Loading the SmartBlog authors…
+                    </div>
+
+
+                    <div id="errorMessage" class="status-message error-message" hidden>
+
+                        <strong>We couldn't load the leaderboard.</strong>
+
+                        <p>
+                            Check that the backend and MySQL are running,
+                            then try again.
+                        </p>
+
+                        <button class="black-button" id="retryButton">
+                            Try again ↻
+                        </button>
+
+                    </div>
+
+
+                    <div id="emptyMessage" class="status-message" hidden>
+                        No authors to rank yet. Join the community and start writing!
+                    </div>
+
+
+                    <div class="table-wrapper" id="tableWrapper" hidden>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>RANK</th>
+                                    <th>AUTHOR</th>
+                                    <th>AUTHOR LEVEL</th>
+                                    <th>REPUTATION POINTS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="leaderboardBody"></tbody>
+                        </table>
+
+                    </div>
+
+                    <p class="updated-note" id="updatedNote"></p>
+
+                </section>
+
+
+                <!-- BOTTOM MESSAGE -->
+                <section class="bottom-note">
+
+                    <div class="bottom-note-icon">✳</div>
+
+                    <div>
+                        <span class="eyebrow">YOUR STORY MATTERS</span>
+
+                        <h2>Every author starts somewhere.</h2>
+
+                        <p>
+                            Share what you know, explore new ideas, and help
+                            make SmartBlog a thoughtful place to learn.
+                        </p>
+
+                        <a href="create-blog.html" class="black-button">
+                            Write a story ↗
+                        </a>
+                    </div>
+
+                </section>
+
+
+                <!-- FOOTER -->
+                <footer class="footer">
+
+                    <a class="brand footer-brand" href="home.html">
+                        <span class="brand-mark">S.</span>
+                        smartblog.
+                    </a>
+
+                    <span>
+                        A home for curious minds and thoughtful stories.
+                    </span>
+
+                </footer>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="leaderboard.js"></script>
+
 </body>
 </html>
-```

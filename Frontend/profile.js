@@ -359,3 +359,78 @@ function initializeProfile() {
 }
 
 initializeProfile();
+
+const API_BASE_URL = "http://127.0.0.1:5000";
+
+async function loadAuthorRank() {
+    const profileBio = document.getElementById("displayBio");
+    if (!profileBio) return;
+
+    let rankCard = document.getElementById("authorRankCard");
+
+    if (!rankCard) {
+        rankCard = document.createElement("section");
+        rankCard.id = "authorRankCard";
+        rankCard.style.cssText = `
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #fff;
+            color: #1e293b;
+        `;
+
+        profileBio.insertAdjacentElement("afterend", rankCard);
+    }
+
+    let user;
+
+    try {
+        user = JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+        user = null;
+    }
+
+    if (!user?.user_id) {
+        rankCard.textContent = "Please sign in to view your author ranking.";
+        return;
+    }
+
+    rankCard.textContent = "Loading author ranking...";
+
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/authors/${user.user_id}/rank`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Could not load ranking.");
+        }
+
+        rankCard.replaceChildren();
+
+        const heading = document.createElement("h3");
+        heading.textContent = "🏆 Author Ranking";
+        heading.style.marginTop = "0";
+
+        const rank = document.createElement("p");
+        rank.textContent = `Global Rank: #${data.rank}`;
+
+        const points = document.createElement("p");
+        points.textContent = `Reputation Points: ${data.points}`;
+
+        const level = document.createElement("p");
+        level.textContent = `Author Level: ${data.level}`;
+
+        rankCard.append(heading, rank, points, level);
+
+    } catch (error) {
+        console.error("Author ranking error:", error);
+        rankCard.textContent =
+            "Unable to load ranking. Please check that the backend is running.";
+    }
+}
+
+loadAuthorRank();

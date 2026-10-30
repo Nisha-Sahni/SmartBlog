@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Interests | SmartBlog</title>
+    <link rel="stylesheet" href="interests.css">
+</head>
+<body>
+    <main class="interests-container">
+        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+
+        <header class="page-header">
+            <span class="eyebrow">PERSONALIZE YOUR EXPERIENCE</span>
+            <h1>What do you love reading about?</h1>
+            <p>Choose as many topics as you like. We'll use them to personalize your blog recommendations.</p>
+        </header>
+
+        <div class="selection-toolbar">
+            <span id="selectionCount">0 topics selected</span>
+            <button type="button" id="selectAllBtn" class="text-button">
+                Select all
+            </button>
+        </div>
+
+        <section id="topicsGrid" class="topics-grid" aria-label="Choose your interests"></section>
+
+        <section class="custom-topic-section">
+            <h2>Have another interest?</h2>
+            <p>Add your own topic.</p>
+            <form id="customTopicForm">
+                <input
+                    type="text"
+                    id="customTopicInput"
+                    placeholder="e.g. Robotics, Gardening..."
+                    maxlength="100"
+                    autocomplete="off"
+                >
+                <button type="submit" class="add-button">Add topic</button>
+            </form>
+            <div id="customTopics" class="custom-topics"></div>
+        </section>
+
+        <p id="statusMessage" role="status" aria-live="polite"></p>
+
+        <div class="actions">
+            <button type="button" id="saveInterestsBtn" class="save-button">
+                Save my interests
+            </button>
+            <button type="button" id="clearBtn" class="clear-button">
+                Clear selection
+            </button>
+        </div>
+    </main>
+
+    <script src="interests.js"></script>
+</body>
+</html>

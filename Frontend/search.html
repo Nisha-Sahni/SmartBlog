@@ -1,141 +1,226 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search | smartblog.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="search.css">
-  <script src="search.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search | SmartBlog</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="search.css">
 </head>
-<body>
-  <aside class="sidebar">
-    <a class="brand" href="dashboard.html">
-      <span class="brand-mark">S.</span>
-      smartblog.
-    </a>
 
-    <a href="profile.html" class="profile">
-      <div class="profile-avatar">N</div>
-      <div>
-        <strong>Welcome back!</strong>
-        <small>Your reading corner</small>
-      </div>
-    </a>
+<body class="search-page">
 
-    <p class="nav-heading">YOUR SPACE</p>
-
-    <nav class="navigation">
-    <a class="nav-link active" href="dashboard.html">
-        <span>⌂</span> Home
-    </a>
-
-    <a class="nav-link" href="explore.html">
-        <span>⌕</span> Explore stories
-    </a>
-
-    <a class="nav-link" href="search.html">
-        <span>↗</span> Search
-    </a>
-
-    <a class="nav-link" href="questions.html">
-        <span>✳</span> Community Q&A
-    </a>
-
-    <a class="nav-link" href="create-blog.html">
-        <span>＋</span> Create a story
-    </a>
-
-    <a class="nav-link" href="profile.html">
-        <span>◯</span> My profile
-    </a>
-
-    <a class="nav-link" href="leaderboard.html">
-        <span>🏆</span> Leaderboard
-    </a>
-</nav>
-
-    <div class="write-box">
-      <span class="write-star">✳</span>
-      <h3>Have an idea?</h3>
-      <p>Your story might be exactly what someone needs to read.</p>
-      <a href="create-blog.html" class="write-button">＋ Share your ideas</a>
+    <div class="top-announcement">
+        A little inspiration goes a long way.
+        <a href="explore.html">Find your next read ↗</a>
     </div>
 
-    <a href="home.html" class="back-link">← Back to the website</a>
-  </aside>
+    <header class="main-header">
+        <a href="dashboard.html" class="brand">
+            <span class="brand-mark">S.</span>
+            <span>smartblog.</span>
+        </a>
 
-  <main class="main-content">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">A WORLD OF IDEAS</p>
-        <h1>Find your next <span>read.</span></h1>
-        <p class="subtitle">Search stories, discover topics, and follow your curiosity.</p>
-      </div>
-      <a class="create-btn" href="create-blog.html">＋ Write a story</a>
+        <nav class="main-nav">
+            <a href="dashboard.html">Home</a>
+            <a href="explore.html">Explore</a>
+            <a href="search.html" class="active">Search</a>
+            <a href="questions.html">Community Q&amp;A</a>
+            <a href="create-blog.html">Create a story</a>
+            <a href="leaderboard.html">Leaderboard</a>
+        </nav>
+
+        <a href="profile.html" class="header-profile">
+            <span class="profile-avatar" id="userAvatar">U</span>
+            <span id="userName">User</span>
+        </a>
     </header>
 
-    <section class="search-panel">
-      <label class="search-box" for="searchInput">
-        <span class="search-icon">⌕</span>
-        <input id="searchInput" type="search"
-          placeholder="Try “learning”, “technology”, or “creative ideas”"
-          autocomplete="off">
-        <button id="searchButton" type="button">Search ↗</button>
-      </label>
+    <main class="search-layout">
 
-      <div class="search-options">
-        <span>Search in</span>
-        <label><input type="checkbox" id="searchTitles" checked> Titles</label>
-        <label><input type="checkbox" id="searchDescriptions" checked> Descriptions</label>
-        <label><input type="checkbox" id="searchTopics" checked> Topics</label>
-      </div>
-      <p class="search-note">Search matches words and related terms in the content stored in this browser.</p>
-    </section>
+        <!-- LEFT INTERESTS PANEL -->
+        <aside class="interests-sidebar">
 
-    <section class="results-section">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">YOUR DISCOVERY SPACE</p>
-          <h2 id="resultsHeading">Explore all stories<span>.</span></h2>
+            <div class="sidebar-heading">
+                <span class="section-label">PERSONALIZED FOR YOU</span>
+                <a href="interests.html">Edit ↗</a>
+            </div>
+
+            <h2>Your interests</h2>
+
+            <p class="sidebar-description">
+                Explore stories based on what you love.
+            </p>
+
+            <div class="interest-list">
+                <a href="explore.html" class="interest-item active">
+                    <span class="interest-dot"></span>
+                    For you
+                </a>
+
+                <a href="explore.html" class="interest-item">
+                    <span class="interest-dot"></span>
+                    Health &amp; Fitness
+                </a>
+
+                <a href="explore.html" class="interest-item">
+                    <span class="interest-dot"></span>
+                    Programming
+                </a>
+
+                <a href="explore.html" class="interest-item">
+                    <span class="interest-dot"></span>
+                    Business
+                </a>
+
+                <a href="explore.html" class="interest-item">
+                    <span class="interest-dot"></span>
+                    Lifestyle
+                </a>
+            </div>
+
+            <div class="interest-note">
+                <span>✳</span>
+                <p>Your interests help us discover stories you'll enjoy.</p>
+            </div>
+
+            <div class="sidebar-idea">
+                <h3>Have an idea?</h3>
+                <p>Your story might be exactly what someone needs to read.</p>
+                <a href="create-blog.html">+ Share your ideas ↗</a>
+            </div>
+
+        </aside>
+
+        <!-- RIGHT SEARCH CONTENT -->
+        <div class="search-content">
+
+            <section class="search-topbar">
+                <div>
+                    <p class="search-date" id="currentDate"></p>
+                    <h1>Find something <span>interesting.</span></h1>
+                    <p class="search-subtitle">
+                        Explore stories, ideas and topics that inspire you.
+                    </p>
+                </div>
+            </section>
+
+            <section class="search-hero">
+
+                <span class="section-label">DISCOVER SOMETHING NEW</span>
+
+                <h2>What are you <span>curious about?</span></h2>
+
+                <p>
+                    Search for topics, ideas or questions. Find stories
+                    that connect with what you're interested in.
+                </p>
+
+                <div class="search-box">
+                    <span class="search-icon">⌕</span>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Try 'how to build better study habits'..."
+                        autocomplete="off"
+                    >
+
+                    <button id="searchButton" type="button">
+                        Search →
+                    </button>
+                </div>
+
+                <div class="search-options">
+                    <label>
+                        <input type="checkbox" id="searchTitles" checked>
+                        Titles
+                    </label>
+
+                    <label>
+                        <input type="checkbox" id="searchDescriptions" checked>
+                        Descriptions
+                    </label>
+
+                    <label>
+                        <input type="checkbox" id="searchTopics" checked>
+                        Topics
+                    </label>
+                </div>
+
+                <p class="search-note">
+                    ✦ Discover stories by meaning and ideas, not just exact keywords.
+                </p>
+
+            </section>
+
+            <section class="results-section">
+
+                <div class="results-heading">
+                    <div>
+                        <span class="section-label">YOUR DISCOVERY SPACE</span>
+                        <h2 id="resultsHeading">Explore all stories</h2>
+                        <p id="resultCount">Loading stories...</p>
+                    </div>
+
+                    <a href="create-blog.html" class="create-btn">
+                        + Write a story
+                    </a>
+                </div>
+
+                <div class="topic-filters">
+                    <button class="filter active" data-topic="All">All</button>
+                    <button class="filter" data-topic="Technology">Technology</button>
+                    <button class="filter" data-topic="Lifestyle">Lifestyle</button>
+                    <button class="filter" data-topic="Health">Health</button>
+                    <button class="filter" data-topic="Education">Education</button>
+                    <button class="filter" data-topic="Business">Business</button>
+                    <button class="filter" data-topic="Programming">Programming</button>
+                </div>
+
+                <p class="search-status" id="searchStatus"></p>
+
+                <div class="results-grid" id="resultsGrid"></div>
+
+                <div class="empty-state" id="emptyState" hidden>
+                    <div class="empty-icon">✦</div>
+                    <h3>No stories found</h3>
+                    <p>Try another search or explore all available stories.</p>
+                    <button type="button" id="resetSearch">
+                        Clear search
+                    </button>
+                </div>
+
+            </section>
+
+            <section class="search-tip">
+                <div>
+                    <span class="section-label">HAVE SOMETHING TO SHARE?</span>
+                    <h2>Every idea deserves a story.</h2>
+                    <p>
+                        Turn your thoughts, experiences and discoveries
+                        into something worth reading.
+                    </p>
+                </div>
+
+                <a href="create-blog.html">Start writing ↗</a>
+            </section>
+
+            <footer class="search-footer">
+                <span>© 2026 SmartBlog. A space for curious minds.</span>
+                <span>Read. Discover. Share.</span>
+            </footer>
+
         </div>
-        <span class="result-count" id="resultCount">Loading stories…</span>
-      </div>
+    </main>
 
-      <div class="filters" id="topicFilters">
-        <button class="filter active" data-topic="All" type="button">All topics</button>
-        <button class="filter" data-topic="Technology" type="button">Technology</button>
-        <button class="filter" data-topic="Lifestyle" type="button">Lifestyle</button>
-        <button class="filter" data-topic="Creativity" type="button">Creativity</button>
-        <button class="filter" data-topic="Learning" type="button">Learning</button>
-      </div>
-
-      <div class="result-grid" id="resultsGrid"></div>
-
-      <div class="empty-state" id="emptyState" hidden>
-        <span class="empty-icon">⌕</span>
-        <h3>No stories found just yet.</h3>
-        <p>Try another keyword or choose a different topic.</p>
-        <button class="reset-button" id="resetSearch" type="button">Clear search</button>
-      </div>
-    </section>
-
-    <section class="search-tip">
-      <span class="tip-icon">✳</span>
-      <div>
-        <h3>Not sure what to read?</h3>
-        <p>Start with a topic you're curious about. A small question can lead to a big idea.</p>
-      </div>
-      <a href="explore.html">Browse Explore ↗</a>
-    </section>
-
-    <footer>
-      <a class="footer-logo" href="home.html">smartblog<span>.</span></a>
-      <span>A home for curious minds and thoughtful stories.</span>
-    </footer>
-  </main>
+    <script src="search.js"></script>
 </body>
 </html>
