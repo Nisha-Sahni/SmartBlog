@@ -7,6 +7,10 @@
 
     <title>Settings | SmartBlog</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="settings.css">
@@ -23,41 +27,47 @@
         </div>
 
         <nav class="navigation">
-    <a class="nav-link active" href="dashboard.html">
-        <span>⌂</span> Home
-    </a>
-
-    <a class="nav-link" href="explore.html">
-        <span>⌕</span> Explore stories
-    </a>
-
-    <a class="nav-link" href="search.html">
-        <span>↗</span> Search
-    </a>
-
-    <a class="nav-link" href="questions.html">
-        <span>✳</span> Community Q&A
-    </a>
-
-    <a class="nav-link" href="create-blog.html">
-        <span>＋</span> Create a story
-    </a>
-
-    <a class="nav-link" href="profile.html">
-        <span>◯</span> My profile
-    </a>
-
-    <a class="nav-link" href="leaderboard.html">
-        <span>🏆</span> Leaderboard
-    </a>
-</nav>
-
-        <div class="sidebar-bottom">
-
-            <a href="home.html">
-                🚪 Logout
+            <a class="nav-link" href="dashboard.html">
+                <span>⌂</span> Home
             </a>
 
+            <a class="nav-link" href="explore.html">
+                <span>⌕</span> Explore stories
+            </a>
+
+            <a class="nav-link" href="search.html">
+                <span>↗</span> Search
+            </a>
+
+            <a class="nav-link" href="questions.html">
+                <span>✳</span> Community Q&amp;A
+            </a>
+
+            <a class="nav-link" href="create-blog.html">
+                <span>＋</span> Create a story
+            </a>
+
+            <a class="nav-link" href="profile.html">
+                <span>◯</span> My profile
+            </a>
+
+            <a class="nav-link" href="leaderboard.html">
+                <span>🏆</span> Leaderboard
+            </a>
+
+            <a class="nav-link active" href="settings.html">
+                <span>⚙</span> Settings
+            </a>
+
+            <a class="nav-link" href="help.html">
+                <span>❓</span> Help &amp; Support
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button type="button" class="sidebar-logout-btn logout-btn">
+                🚪 Log Out
+            </button>
         </div>
 
     </aside>
@@ -67,276 +77,299 @@
 
     <main class="settings-main">
 
-        <section class="settings-header">
+        <header class="settings-header">
+            <span class="settings-label">PREFERENCES &amp; SECURITY</span>
+            <h1>Settings</h1>
+            <p>Manage your account, reading preferences, security, and appearance.</p>
+        </header>
 
-            <span class="settings-label">
-                ACCOUNT
-            </span>
+        <!-- Global Feedback Message -->
+        <div id="settingsFeedback" class="settings-feedback" hidden></div>
 
-            <h1>
-                Settings
-            </h1>
+        <!-- ================= 1. ACCOUNT INFORMATION ================= -->
 
-            <p>
-                Manage your account and SmartBlog preferences.
-            </p>
-
-        </section>
-
-
-        <!-- ================= ACCOUNT ================= -->
-
-        <section class="settings-section">
+        <section class="settings-section" id="accountSection">
 
             <div class="settings-section-header">
-
                 <div>
-                    <span class="settings-label">
-                        PROFILE
-                    </span>
-
-                    <h2>
-                        Account information
-                    </h2>
+                    <span class="settings-label">PROFILE IDENTITY</span>
+                    <h2>Account information</h2>
                 </div>
-
             </div>
-
 
             <div class="settings-card">
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Name</strong>
-                        <p>Nisha Sharma</p>
-                    </div>
-
-                    <button type="button">
-                        Edit
-                    </button>
-
-                </div>
-
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Email</strong>
-                        <p>nisha@example.com</p>
-                    </div>
-
-                    <button type="button">
-                        Change
-                    </button>
-
-                </div>
-
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Password</strong>
-                        <p>••••••••</p>
-                    </div>
-
-                    <button type="button">
-                        Change
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= PERSONALIZATION ================= -->
-
-        <section class="settings-section">
-
-            <div class="settings-section-header">
-
-                <div>
-                    <span class="settings-label">
-                        PERSONALIZATION
-                    </span>
-
-                    <h2>
-                        Content preferences
-                    </h2>
-                </div>
-
-            </div>
-
-
-            <div class="settings-card">
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Recommended blogs</strong>
-
-                        <p>
-                            Use your interests and reading activity
-                            to personalize recommendations.
-                        </p>
-                    </div>
-
-                    <label class="toggle">
-
+                <form id="accountForm">
+                    <div class="settings-form-row">
+                        <label for="settingsNameInput">Full name</label>
                         <input
-                            type="checkbox"
-                            checked
+                            type="text"
+                            id="settingsNameInput"
+                            name="name"
+                            placeholder="Your full name"
+                            maxlength="100"
+                            required
                         >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Reading history</strong>
-
-                        <p>
-                            Keep track of blogs you have read.
-                        </p>
+                        <small class="field-hint">This name will be displayed as the author of your stories and throughout SmartBlog.</small>
                     </div>
 
-                    <label class="toggle">
-
+                    <div class="settings-form-row">
+                        <label for="settingsEmailInput">Email address</label>
                         <input
-                            type="checkbox"
-                            checked
+                            type="email"
+                            id="settingsEmailInput"
+                            name="email"
+                            placeholder="you@example.com"
+                            maxlength="150"
+                            required
                         >
+                        <small class="field-hint">Your email is used for sign-in, account notifications, and communication.</small>
+                    </div>
 
-                        <span class="toggle-slider"></span>
+                    <div class="settings-form-row">
+                        <label for="settingsUsernameInput">Username</label>
+                        <input
+                            type="text"
+                            id="settingsUsernameInput"
+                            placeholder="@user"
+                            readonly
+                            disabled
+                        >
+                        <small class="field-hint">Generated automatically from your display name.</small>
+                    </div>
 
-                    </label>
-
-                </div>
-
+                    <div class="settings-actions">
+                        <button type="submit" id="saveAccountBtn" class="btn-primary">
+                            Save Changes
+                        </button>
+                        <button type="button" id="cancelAccountBtn" class="btn-secondary">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
 
         </section>
 
 
-        <!-- ================= NOTIFICATIONS ================= -->
+        <!-- ================= 2. PASSWORD & SECURITY ================= -->
 
-        <section class="settings-section">
+        <section class="settings-section" id="securitySection">
 
             <div class="settings-section-header">
-
                 <div>
-                    <span class="settings-label">
-                        NOTIFICATIONS
-                    </span>
-
-                    <h2>
-                        Notifications
-                    </h2>
+                    <span class="settings-label">SECURITY</span>
+                    <h2>Password &amp; Security</h2>
                 </div>
-
             </div>
 
-
             <div class="settings-card">
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>New recommendations</strong>
-
-                        <p>
-                            Get notified when SmartBlog has new
-                            recommendations for you.
-                        </p>
-                    </div>
-
-                    <label class="toggle">
-
+                <form id="passwordForm">
+                    <div class="settings-form-row">
+                        <label for="currentPasswordInput">Current password</label>
                         <input
-                            type="checkbox"
-                            checked
+                            type="password"
+                            id="currentPasswordInput"
+                            placeholder="Enter current password"
+                            required
+                            autocomplete="current-password"
                         >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Community activity</strong>
-
-                        <p>
-                            Notifications about answers and activity
-                            on your questions.
-                        </p>
                     </div>
 
-                    <label class="toggle">
+                    <div class="settings-form-row">
+                        <label for="newPasswordInput">New password</label>
+                        <input
+                            type="password"
+                            id="newPasswordInput"
+                            placeholder="At least 8 characters"
+                            minlength="8"
+                            required
+                            autocomplete="new-password"
+                        >
+                    </div>
 
-                        <input type="checkbox">
+                    <div class="settings-form-row">
+                        <label for="confirmPasswordInput">Confirm new password</label>
+                        <input
+                            type="password"
+                            id="confirmPasswordInput"
+                            placeholder="Re-enter new password"
+                            minlength="8"
+                            required
+                            autocomplete="new-password"
+                        >
+                    </div>
 
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
+                    <div class="settings-actions">
+                        <button type="submit" id="changePasswordBtn" class="btn-primary">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
             </div>
 
         </section>
 
 
-        <!-- ================= DANGER ZONE ================= -->
+        <!-- ================= 3. READING PREFERENCES ================= -->
 
-        <section class="settings-section danger-section">
+        <section class="settings-section" id="interestsSection">
 
             <div class="settings-section-header">
-
                 <div>
-                    <span class="settings-label">
-                        ACCOUNT
-                    </span>
-
-                    <h2>
-                        Account actions
-                    </h2>
+                    <span class="settings-label">PERSONALIZATION</span>
+                    <h2>Reading preferences</h2>
                 </div>
-
             </div>
 
-
             <div class="settings-card">
+                <p class="settings-card-intro">
+                    Your preferred topics power SmartBlog's personalized recommendation engine and explore feed.
+                </p>
 
-                <div class="settings-row">
-
-                    <div>
-                        <strong>Log out</strong>
-
-                        <p>
-                            Sign out of your SmartBlog account.
-                        </p>
+                <div class="interests-container">
+                    <label>Active Interests</label>
+                    <div id="interestsTagList" class="interests-tag-list">
+                        <!-- Rendered dynamically -->
                     </div>
+                </div>
 
-                    <a
-                        href="home.html"
-                        class="logout-settings-btn"
+                <div class="add-interest-box">
+                    <input
+                        type="text"
+                        id="newInterestInput"
+                        placeholder="Add another topic (e.g. Robotics, Architecture)..."
+                        maxlength="50"
                     >
-                        Log out
-                    </a>
-
+                    <button type="button" id="addInterestBtn" class="btn-secondary">
+                        + Add Topic
+                    </button>
                 </div>
 
+                <div class="suggested-interests">
+                    <span class="suggested-label">Popular topics:</span>
+                    <div id="popularInterestsList" class="popular-tags-list">
+                        <!-- Predefined popular topics -->
+                    </div>
+                </div>
+
+                <div class="settings-actions" style="margin-top: 20px;">
+                    <button type="button" id="saveInterestsBtn" class="btn-primary">
+                        Save Preferences
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= 4. APPEARANCE ================= -->
+
+        <section class="settings-section" id="appearanceSection">
+
+            <div class="settings-section-header">
+                <div>
+                    <span class="settings-label">EXPERIENCE</span>
+                    <h2>Appearance &amp; Theme</h2>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <p class="settings-card-intro">
+                    Choose how SmartBlog looks to you. The selected theme will persist across all pages on your device.
+                </p>
+
+                <div class="theme-options-grid">
+                    <label class="theme-option-card" id="themeCardLight">
+                        <input type="radio" name="appTheme" value="light" id="themeLightRadio" checked>
+                        <div class="theme-preview light-preview">
+                            <div class="preview-header"></div>
+                            <div class="preview-body">
+                                <div class="preview-line"></div>
+                                <div class="preview-line short"></div>
+                            </div>
+                        </div>
+                        <div class="theme-option-info">
+                            <strong>Light theme</strong>
+                            <p>Classic warm cream and paper palette (Default)</p>
+                        </div>
+                    </label>
+
+                    <label class="theme-option-card" id="themeCardDark">
+                        <input type="radio" name="appTheme" value="dark" id="themeDarkRadio">
+                        <div class="theme-preview dark-preview">
+                            <div class="preview-header"></div>
+                            <div class="preview-body">
+                                <div class="preview-line"></div>
+                                <div class="preview-line short"></div>
+                            </div>
+                        </div>
+                        <div class="theme-option-info">
+                            <strong>Dark theme</strong>
+                            <p>Subtle dark ink palette, easy on the eyes</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= 5. PRIVACY & ACCOUNT MANAGEMENT ================= -->
+
+        <section class="settings-section danger-section" id="accountActionsSection">
+
+            <div class="settings-section-header">
+                <div>
+                    <span class="settings-label">DANGER ZONE</span>
+                    <h2>Account actions</h2>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="settings-row">
+                    <div>
+                        <strong>Sign out</strong>
+                        <p>End your current session safely on this device.</p>
+                    </div>
+                    <button type="button" class="logout-btn logout-btn-themed" style="width: auto; margin-top: 0;">
+                        🚪 Log Out
+                    </button>
+                </div>
+
+                <div class="settings-row" style="border-top: 1px solid var(--line, #e9e5db);">
+                    <div>
+                        <strong>Delete account</strong>
+                        <p>Permanently remove your account, published blogs, comments, reading history, and profile data.</p>
+                    </div>
+                    <button type="button" id="startDeleteAccountBtn" class="btn-danger-outline">
+                        Delete Account
+                    </button>
+                </div>
+
+                <!-- Account deletion confirmation panel -->
+                <div id="deleteAccountPanel" class="delete-account-panel" hidden>
+                    <div class="delete-warning-box">
+                        <strong>⚠️ Warning: This action cannot be undone</strong>
+                        <p>All your authored stories, comments, community questions, and reading records will be permanently erased from SmartBlog.</p>
+                        <div class="delete-input-group">
+                            <label for="deleteConfirmPassword">Please enter your password to confirm:</label>
+                            <input
+                                type="password"
+                                id="deleteConfirmPassword"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                            >
+                        </div>
+                        <div class="settings-actions">
+                            <button type="button" id="confirmDeleteAccountBtn" class="btn-danger">
+                                Permanently Delete Account
+                            </button>
+                            <button type="button" id="cancelDeleteAccountBtn" class="btn-secondary">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </section>
@@ -344,7 +377,8 @@
     </main>
 
 
-    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="settings.js"></script>
 
 </body>
 

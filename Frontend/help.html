@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help &amp; Support | SmartBlog</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="help.css">
+</head>
+<body class="help-page">
+
+    <div class="announcement">
+        Need assistance? We're here to help you get the most out of SmartBlog.
+        <a href="#contactSection">Contact support ↗</a>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="main-header">
+        <a class="brand" href="dashboard.html">
+            <span class="brand-mark">S.</span>
+            smartblog.
+        </a>
+
+        <nav class="top-navigation">
+            <a href="dashboard.html" class="top-link">Home</a>
+            <a href="explore.html" class="top-link">Explore</a>
+            <a href="search.html" class="top-link">Search</a>
+            <a href="questions.html" class="top-link">Community Q&amp;A</a>
+            <a href="create-blog.html" class="top-link">Create a story</a>
+            <a href="leaderboard.html" class="top-link">Leaderboard</a>
+            <a href="help.html" class="top-link active">Help</a>
+        </nav>
+
+        <div class="profile-menu">
+            <button class="profile-button" id="profileButton" aria-expanded="false" title="Account Menu">
+                <span class="small-avatar">U</span>
+                <span>⌄</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown" hidden>
+                <a href="profile.html">My Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="help.html">Help &amp; Support</a>
+                <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout help-layout">
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="interests-sidebar help-sidebar">
+            <div class="interest-title">
+                <div>
+                    <span class="eyebrow">HELP &amp; RESOURCES</span>
+                    <h2>Navigation</h2>
+                </div>
+            </div>
+
+            <p class="interest-description">
+                Quickly jump to answers or reach our support team.
+            </p>
+
+            <div class="sidebar-topics">
+                <a href="#welcomeSection" class="help-nav-link topic-active">
+                    <i class="lime-dot"></i> Welcome &amp; Overview
+                </a>
+                <a href="#faqSection" class="help-nav-link">
+                    <i class="lavender-dot"></i> Frequently Asked Questions
+                </a>
+                <a href="#contactSection" class="help-nav-link">
+                    <i class="orange-dot"></i> Submit a Request
+                </a>
+                <a href="#statusSection" class="help-nav-link">
+                    <i class="blue-dot"></i> My Support Requests
+                </a>
+            </div>
+
+            <div class="sidebar-write" style="margin-top: 30px;">
+                <h3>Need direct help?</h3>
+                <p>Submit a ticket and our support team will review your inquiry.</p>
+                <a href="#contactSection">Submit request ↗</a>
+            </div>
+
+            <button type="button" class="sidebar-logout-btn logout-btn" style="margin-top: 25px;">
+                🚪 Sign out
+            </button>
+        </aside>
+
+        <!-- MAIN HELP CONTENT -->
+        <main class="main-content">
+            <div class="page-content">
+
+                <!-- WELCOME SECTION -->
+                <section id="welcomeSection" class="help-hero">
+                    <div>
+                        <span class="eyebrow"><i></i> SMARTBLOG ASSISTANCE</span>
+                        <h1>Help &amp; Support <span>Center.</span></h1>
+                        <p>
+                            Everything you need to know about reading, writing, searching, and personalizing your SmartBlog experience.
+                            Find instant answers in our FAQ or submit a support ticket below.
+                        </p>
+                    </div>
+
+                    <div class="help-quick-actions">
+                        <a href="#faqSection" class="black-button">Browse FAQs ↓</a>
+                        <a href="#contactSection" class="outline-button">Contact Support ↗</a>
+                    </div>
+                </section>
+
+                <!-- FAQ SECTION -->
+                <section id="faqSection" class="section faq-section">
+                    <div class="section-heading">
+                        <div>
+                            <span class="eyebrow">FREQUENTLY ASKED QUESTIONS</span>
+                            <h2>Find quick answers <span class="lime-star">✳</span></h2>
+                        </div>
+                        <span class="faq-count-label" id="faqCountLabel">12 answers available</span>
+                    </div>
+
+                    <div class="faq-accordion" id="faqAccordion">
+
+                        <!-- CATEGORY 1: ACCOUNT & AUTHENTICATION -->
+                        <div class="faq-category-header">Account &amp; Security</div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>1. How do I create a SmartBlog account?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    To create an account, click the <strong>Get Started</strong> button on the home page or navigate to <a href="signup.html">signup.html</a>.
+                                    Enter your full name, email address, and a secure password. Once submitted, your account is created immediately and you will be guided to your personalized dashboard.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>2. How do I log in and securely log out?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    You can log in from <a href="login.html">login.html</a> with your registered email and password.
+                                    To log out securely, click your profile avatar in the upper right corner of <em>any page</em> (or the logout link in the sidebar) and select <strong>Log Out</strong>.
+                                    Confirm the prompt, and SmartBlog will clear all authentication tokens and safely sign you out.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>3. How do I update my profile information?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Visit <a href="profile.html">My Profile</a> from the navigation bar. You can view your author statistics, published stories, reputation points, and community standing.
+                                    To adjust account settings or update your password, open <a href="settings.html">Settings</a> from the profile menu.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>4. How do I change my account settings?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Click your profile avatar and choose <a href="settings.html">Settings</a>. From the settings panel, you can review your registered email, manage notification options, review active sessions, and access security controls.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- CATEGORY 2: PUBLISHING & STORIES -->
+                        <div class="faq-category-header">Creating &amp; Managing Content</div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>5. How do I create and publish a blog story?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Click <strong>Create a story</strong> in the top navigation. Provide an engaging title, an introductory subtitle, select an appropriate category/topic (such as Technology, Lifestyle, or Programming), and choose a visual layout template. Write your content in the editor and click <strong>Publish story</strong>. Your story is instantly available for others to read.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>6. How do I edit or update my published blogs?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Navigate to <a href="profile.html">My Profile</a> to view the stories you have written. Click on any of your articles and choose the edit action to update the text, subtitle, or cover image. When you save your changes, the backend immediately updates your blog and re-computes its semantic representation.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- CATEGORY 3: SEARCH & AI DISCOVERY -->
+                        <div class="faq-category-header">Search &amp; AI Recommendations</div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>7. How do I search for blogs?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Go to <a href="search.html">Search</a> from the top navigation. Type keywords, concepts, or full natural-language questions (e.g., <em>"How to build better morning habits?"</em>) into the search bar. You can also filter results by topics such as Technology, Health, Business, or Programming.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>8. How does NLP-based Semantic Search work?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    SmartBlog uses a lightweight pre-trained sentence embedding model (<strong>all-MiniLM-L6-v2</strong>) to understand the semantic meaning of your search queries.
+                                    Instead of strictly matching exact words, it converts both queries and blog contents into 384-dimensional vector embeddings and calculates cosine similarity.
+                                    This allows you to find relevant stories even if they use completely different wording.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>9. How does the Personalized Recommendation System work?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    SmartBlog constructs a personalized user preference profile based on your selected interests, reading history, and saved bookmarks.
+                                    Using content-based NLP filtering, it compares your profile against all available stories to recommend content tailored specifically to your taste.
+                                    Stories matching your preferred topics receive a relevance boost, and unread stories are prioritized.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- CATEGORY 4: PERSONALIZATION & ENGAGEMENT -->
+                        <div class="faq-category-header">Personalization, Reading &amp; Community</div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>10. How do I save or bookmark stories for later?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Whenever you see a story card on the Dashboard, Explore, or Search page, click the <strong>♡ Save</strong> button in the bottom right corner. The button will change to <strong>♥ Saved</strong> and the story will be saved to your reading list.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>11. How does SmartBlog track and manage reading history?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    Whenever you open and read a blog story while logged in, SmartBlog securely records the visit in your reading history.
+                                    You can pick up right where you left off from the <strong>Your reading history</strong> section on your dashboard, and your reading activity helps refine your personalized recommendations.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button type="button" class="faq-question" aria-expanded="false">
+                                <span>12. How do I use comments and Community Q&amp;A?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" hidden>
+                                <p>
+                                    You can engage with authors by writing comments at the bottom of any blog post.
+                                    Additionally, you can visit the <a href="questions.html">Community Q&amp;A</a> hub to ask questions, post helpful answers, discuss ideas with other readers, and earn author reputation points.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- CONTACT SUPPORT FORM SECTION -->
+                <section id="contactSection" class="section support-contact-section">
+                    <div class="section-heading">
+                        <div>
+                            <span class="eyebrow">HAVE A QUESTION OR ISSUE?</span>
+                            <h2>Contact Support <span class="lime-star">✳</span></h2>
+                        </div>
+                    </div>
+
+                    <div class="support-form-card">
+                        <div class="form-header">
+                            <h3>Submit a Support Request</h3>
+                            <p>Fill out the form below and our team will assist you as soon as possible.</p>
+                        </div>
+
+                        <div id="supportFeedback" class="support-feedback" hidden></div>
+
+                        <form id="supportForm" novalidate>
+                            <div class="form-group">
+                                <label for="supportSubject">Subject <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    id="supportSubject"
+                                    name="subject"
+                                    placeholder="Brief summary of your inquiry (e.g., Issue editing blog cover)"
+                                    required
+                                    minlength="3"
+                                    maxlength="200"
+                                >
+                                <small class="form-hint">Between 3 and 200 characters.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="supportCategory">Issue Category <span class="required">*</span></label>
+                                <select id="supportCategory" name="category" required>
+                                    <option value="" disabled selected>-- Select a category --</option>
+                                    <option value="Account and Login">Account and Login</option>
+                                    <option value="Blog Creation">Blog Creation</option>
+                                    <option value="Search and Recommendations">Search and Recommendations</option>
+                                    <option value="Profile and Settings">Profile and Settings</option>
+                                    <option value="Technical Issue">Technical Issue</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="supportDescription">Description <span class="required">*</span></label>
+                                <textarea
+                                    id="supportDescription"
+                                    name="description"
+                                    rows="5"
+                                    placeholder="Please provide details about what happened, steps to reproduce, or what you need help with..."
+                                    required
+                                    minlength="10"
+                                    maxlength="5000"
+                                ></textarea>
+                                <small class="form-hint">Provide clear details (at least 10 characters).</small>
+                            </div>
+
+                            <button type="submit" id="submitSupportBtn" class="black-button">
+                                Submit Request ↗
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- USER'S SUPPORT REQUESTS STATUS SECTION -->
+                <section id="statusSection" class="section support-status-section">
+                    <div class="section-heading">
+                        <div>
+                            <span class="eyebrow">TRACK YOUR TICKETS</span>
+                            <h2>Your Support Requests <span class="lime-star">✳</span></h2>
+                        </div>
+                        <button type="button" id="refreshTicketsBtn" class="refresh-recs-btn" title="Refresh support tickets">↻ Refresh</button>
+                    </div>
+
+                    <div id="ticketsLoading" class="recs-loading" hidden>
+                        <span>✳</span> Loading your support tickets...
+                    </div>
+
+                    <div id="ticketsContainer" class="tickets-grid">
+                        <!-- Dynamically populated by help.js -->
+                    </div>
+
+                    <div id="ticketsEmptyState" class="empty-state" hidden>
+                        <div class="empty-icon">✦</div>
+                        <h3>No support requests yet</h3>
+                        <p>Have an inquiry or experiencing an issue? Use the form above to reach out to our team.</p>
+                    </div>
+                </section>
+
+                <footer class="help-footer">
+                    <span>© 2026 SmartBlog. A space for curious minds.</span>
+                    <span>Read. Discover. Share.</span>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="help.js"></script>
+</body>
+</html>
+

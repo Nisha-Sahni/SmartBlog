@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="explore.css">
 </head>
 <body>
@@ -29,18 +30,20 @@
       <a class="nav-link" href="questions.html"> Community Q&A</a>
       <a class="nav-link" href="create-blog.html"> Create a Story</a>
       <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+      <a class="nav-link" href="help.html">Help</a>
     </nav>
 
     <div class="profile-menu">
-      <button class="profile-button" id="profileButton" aria-expanded="false">
-        <span class="small-avatar">N</span>
+      <button class="profile-button" id="profileButton" aria-expanded="false" title="Account Menu">
+        <span class="small-avatar">U</span>
         <span>⌄</span>
       </button>
 
       <div class="profile-dropdown" id="profileDropdown" hidden>
         <a href="profile.html">My Profile</a>
         <a href="settings.html">Settings</a>
-        <button id="logoutButton">Log Out</button>
+        <a href="help.html">Help &amp; Support</a>
+        <button type="button" id="logoutButton" class="logout-btn">Log Out</button>
       </div>
     </div>
   </header>
@@ -90,6 +93,10 @@
 </p>
         <a href="create-blog.html">+ Share your ideas</a>
       </div>
+
+      <button type="button" class="sidebar-logout-btn logout-btn">
+        🚪 Log Out
+      </button>
     </aside>
 
     <main class="main-content">
@@ -268,6 +275,7 @@
     </main>
   </div>
 
+  <script src="auth.js"></script>
   <script src="explore.js"></script>
 </body>
 </html>

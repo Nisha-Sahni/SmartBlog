@@ -258,10 +258,18 @@ document.addEventListener("click", event => {
 });
 
 // LOG OUT
-document.getElementById("logoutButton").addEventListener("click", () => {
-  localStorage.removeItem("user");
-  window.location.href = "login.html";
-});
+const logoutBtn = document.getElementById("logoutButton");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    if (window.SmartBlogAuth) {
+      window.SmartBlogAuth.logout(true);
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    }
+  });
+}
 
 // USER PROFILE INITIAL
 try {

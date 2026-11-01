@@ -33,12 +33,21 @@
       <a href="questions.html" class="top-link">Community Q&A</a>
       <a href="create-blog.html" class="top-link">Create a story</a>
       <a href="leaderboard.html" class="top-link">Leaderboard</a>
+      <a href="help.html" class="top-link">Help</a>
     </nav>
 
-    <a href="profile.html" class="header-profile" title="My profile">
-      <span class="small-avatar">N</span>
-      <span class="profile-label">My profile</span>
-    </a>
+    <div class="profile-menu">
+      <button class="profile-button" id="profileButton" aria-expanded="false" title="Account Menu">
+        <span class="small-avatar">U</span>
+        <span>⌄</span>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown" hidden>
+        <a href="profile.html">My Profile</a>
+        <a href="settings.html">Settings</a>
+        <a href="help.html">Help &amp; Support</a>
+        <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+      </div>
+    </div>
   </header>
 
   <div class="dashboard-layout">
@@ -87,6 +96,10 @@
         <a href="create-blog.html">＋ Share your ideas</a>
       </div>
 
+      <button type="button" class="sidebar-logout-btn logout-btn">
+        🚪 Sign out
+      </button>
+
     </aside>
 
     <!-- MAIN AREA -->
@@ -134,95 +147,25 @@
 
               <div class="section-heading">
                 <div>
-                  <span class="eyebrow">A FEW GOOD READS</span>
-                  <h2>Stories you might love <span class="lime-star">✳</span></h2>
+                  <span class="eyebrow">PERSONALIZED FOR YOU</span>
+                  <h2 id="recommendedHeading">Recommended for You <span class="lime-star">✳</span></h2>
                 </div>
-                <a href="explore.html" class="underlined">Explore all ↗</a>
+                <div class="heading-controls">
+                  <button type="button" id="refreshRecsBtn" class="refresh-recs-btn" title="Refresh recommendations">↻ Refresh</button>
+                  <a href="explore.html" class="underlined">Explore all ↗</a>
+                </div>
+              </div>
+
+              <div id="recsLoading" class="recs-loading" hidden>
+                <span>✳</span> Discovering stories tailored to your interests...
               </div>
 
               <div class="story-grid" id="storyGrid">
-
-                <article class="story-card story-large"
-                  data-topic="Technology"
-                  data-search="technology artificial intelligence future">
-
-                  <a class="story-image" href="explore.html">
-                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85" alt="Electronic circuit board">
-                    <span class="image-label">TECHNOLOGY</span>
-                  </a>
-
-                  <div class="story-body">
-                    <span class="meta">FEATURED STORY · 6 MIN READ</span>
-                    <h3><a href="explore.html">The little things shaping our digital future</a></h3>
-                    <p>Exploring the ideas and inventions changing how we see the world.</p>
-                    <div class="story-footer">
-                      <span>smartblog. community</span>
-                      <button class="save-button" type="button">♡ Save</button>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="story-card"
-                  data-topic="Creativity"
-                  data-search="creativity writing ideas inspiration">
-
-                  <a class="story-image" href="explore.html">
-                    <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=700&q=85" alt="Notebook and writing desk">
-                  </a>
-
-                  <div class="story-body">
-                    <span class="meta">CREATIVITY · 4 MIN READ</span>
-                    <h3><a href="explore.html">Making room for your next big idea</a></h3>
-                    <p>Sometimes the best ideas need a little breathing room.</p>
-                    <div class="story-footer">
-                      <span>Fresh perspective</span>
-                      <button class="save-button" type="button">♡ Save</button>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="story-card"
-                  data-topic="Lifestyle"
-                  data-search="lifestyle daily habits slow living">
-
-                  <a class="story-image" href="explore.html">
-                    <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=85" alt="A calm, sunlit workspace">
-                  </a>
-
-                  <div class="story-body">
-                    <span class="meta">LIFESTYLE · 5 MIN READ</span>
-                    <h3><a href="explore.html">A slower way to make every day count</a></h3>
-                    <p>Little rituals that bring more intention to ordinary days.</p>
-                    <div class="story-footer">
-                      <span>Everyday living</span>
-                      <button class="save-button" type="button">♡ Save</button>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="story-card"
-                  data-topic="Learning"
-                  data-search="learning curiosity books knowledge">
-
-                  <a class="story-image" href="explore.html">
-                    <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=700&q=85" alt="Books ready to be read">
-                  </a>
-
-                  <div class="story-body">
-                    <span class="meta">LEARNING · 7 MIN READ</span>
-                    <h3><a href="explore.html">Why staying curious changes everything</a></h3>
-                    <p>One question can open a door to an entirely new world.</p>
-                    <div class="story-footer">
-                      <span>Ideas worth keeping</span>
-                      <button class="save-button" type="button">♡ Save</button>
-                    </div>
-                  </div>
-                </article>
-
+                <!-- Dynamically loaded from /recommendations -->
               </div>
 
               <p id="emptyState" class="empty-state" hidden>
-                No stories found. Try another search or topic.
+                No recommendations found right now. Explore all stories or update your interests!
               </p>
             </section>
 
@@ -314,6 +257,7 @@
     </main>
   </div>
 
+  <script src="auth.js"></script>
   <script src="dashboard.js"></script>
 </body>
 </html>

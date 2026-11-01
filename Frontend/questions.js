@@ -51,6 +51,10 @@ const demoQuestions = [
   }
 ];
 
+// =====================================
+// ELEMENTS
+// =====================================
+
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const topicFilter = document.getElementById("topicFilter");
@@ -60,7 +64,10 @@ const questionCount = document.getElementById("questionCount");
 const emptyMessage = document.getElementById("emptyMessage");
 
 const askQuestionBtn = document.getElementById("askQuestionBtn");
-const askQuestionPanel = document.getElementById("askQuestion");
+
+// FIXED: Matches the ID in questions.html
+const askQuestionPanel = document.getElementById("questionFormSection");
+
 const questionForm = document.getElementById("questionForm");
 const cancelQuestionBtn = document.getElementById("cancelQuestionBtn");
 
@@ -68,7 +75,6 @@ const sidebarTopics = document.getElementById("sidebarTopics");
 
 let questions = loadQuestions();
 let activeTopic = "All";
-
 
 // =====================================
 // LOAD AND SAVE QUESTIONS
@@ -94,11 +100,9 @@ function loadQuestions() {
   return [...demoQuestions];
 }
 
-
 function saveQuestions() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
 }
-
 
 // =====================================
 // CURRENT USER
@@ -107,14 +111,12 @@ function saveQuestions() {
 function getCurrentUser() {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
-
     return user?.name?.trim() || "You";
   } catch (error) {
     console.error("Could not read user:", error);
     return "You";
   }
 }
-
 
 function updateProfile() {
   const user = getCurrentUser();
@@ -124,7 +126,6 @@ function updateProfile() {
     avatar.textContent = initial;
   });
 }
-
 
 // =====================================
 // FORMAT DATE
@@ -144,13 +145,12 @@ function formatDate(dateValue) {
   });
 }
 
-
 // =====================================
 // ESCAPE HTML
 // =====================================
 
 function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, character => {
+  return String(value ?? "").replace(/[&<>"']/g, character => {
     const entities = {
       "&": "&amp;",
       "<": "&lt;",
@@ -162,7 +162,6 @@ function escapeHTML(value) {
     return entities[character];
   });
 }
-
 
 // =====================================
 // RENDER QUESTIONS
@@ -205,37 +204,30 @@ function renderQuestions() {
   emptyMessage.hidden = filteredQuestions.length !== 0;
 }
 
-
 // =====================================
 // CREATE QUESTION CARD
 // =====================================
 
 function createQuestionCard(question) {
   const card = document.createElement("article");
-
   card.className = "question-card";
 
   const answers = Array.isArray(question.answers)
     ? question.answers
     : [];
 
-  const safeTitle = escapeHTML(question.title);
-  const safeDetails = escapeHTML(question.details);
-  const safeTopic = escapeHTML(question.topic);
-  const safeAuthor = escapeHTML(question.author);
-
   card.innerHTML = `
     <div class="question-card-top">
-      <span class="question-topic">${safeTopic}</span>
+      <span class="question-topic">${escapeHTML(question.topic)}</span>
       <span class="question-date">${formatDate(question.createdAt)}</span>
     </div>
 
-    <h3>${safeTitle}</h3>
+    <h3>${escapeHTML(question.title)}</h3>
 
-    <p class="question-details">${safeDetails}</p>
+    <p class="question-details">${escapeHTML(question.details)}</p>
 
     <div class="question-meta">
-      <span>Asked by <strong>${safeAuthor}</strong></span>
+      <span>Asked by <strong>${escapeHTML(question.author)}</strong></span>
       <span class="meta-spacer"></span>
       <span>${answers.length} ${answers.length === 1 ? "answer" : "answers"}</span>
 
@@ -268,10 +260,9 @@ function createQuestionCard(question) {
   const answerToggle = card.querySelector(".answer-toggle");
   const answerForm = card.querySelector(".answer-form");
 
-  // Render existing answers.
   renderAnswers(answersList, answers);
 
-  // Show or hide answers.
+  // Show or hide answers
   answerToggle.addEventListener("click", () => {
     const isHidden = answersPanel.hidden;
 
@@ -282,7 +273,7 @@ function createQuestionCard(question) {
       : "View answers ↓";
   });
 
-  // Submit a new answer.
+  // Post answer
   answerForm.addEventListener("submit", event => {
     event.preventDefault();
 
@@ -313,7 +304,6 @@ function createQuestionCard(question) {
   return card;
 }
 
-
 // =====================================
 // RENDER ANSWERS
 // =====================================
@@ -325,7 +315,8 @@ function renderAnswers(container, answers) {
     const message = document.createElement("p");
 
     message.className = "no-answers";
-    message.textContent = "No answers yet. Be the first to share your thoughts!";
+    message.textContent =
+      "No answers yet. Be the first to share your thoughts!";
 
     container.appendChild(message);
     return;
@@ -333,7 +324,6 @@ function renderAnswers(container, answers) {
 
   answers.forEach(answer => {
     const answerItem = document.createElement("div");
-
     answerItem.className = "answer-item";
 
     const author = document.createElement("span");
@@ -350,7 +340,6 @@ function renderAnswers(container, answers) {
   });
 }
 
-
 // =====================================
 // ASK QUESTION PANEL
 // =====================================
@@ -366,12 +355,10 @@ askQuestionBtn.addEventListener("click", () => {
   document.getElementById("questionTitle").focus();
 });
 
-
 cancelQuestionBtn.addEventListener("click", () => {
   questionForm.reset();
   askQuestionPanel.hidden = true;
 });
-
 
 // =====================================
 // SUBMIT QUESTION
@@ -405,7 +392,7 @@ questionForm.addEventListener("submit", event => {
   questionForm.reset();
   askQuestionPanel.hidden = true;
 
-  // Reset filters so the new question is visible.
+  // Reset filters to make the new question visible
   searchInput.value = "";
   topicFilter.value = "All";
   activeTopic = "All";
@@ -425,28 +412,25 @@ questionForm.addEventListener("submit", event => {
   });
 });
 
-
 // =====================================
 // SEARCH
 // =====================================
 
 searchInput.addEventListener("input", renderQuestions);
-
 searchBtn.addEventListener("click", renderQuestions);
 
 searchInput.addEventListener("keydown", event => {
   if (event.key === "Enter") {
+    event.preventDefault();
     renderQuestions();
   }
 });
-
 
 // =====================================
 // TOPIC FILTER
 // =====================================
 
 topicFilter.addEventListener("change", renderQuestions);
-
 
 function chooseTopic(topic) {
   activeTopic = topic;
@@ -458,7 +442,6 @@ function chooseTopic(topic) {
     );
   });
 
-  // Keep the dropdown consistent with the selected topic.
   const matchingOption = [...topicFilter.options].find(
     option => option.value.toLowerCase() === topic.toLowerCase()
   );
@@ -467,7 +450,6 @@ function chooseTopic(topic) {
 
   renderQuestions();
 }
-
 
 // =====================================
 // SIDEBAR INTERESTS
@@ -501,7 +483,6 @@ function createTopicButton(topic) {
   return button;
 }
 
-
 function renderInterests(interests) {
   sidebarTopics.innerHTML = "";
 
@@ -522,11 +503,9 @@ function renderInterests(interests) {
   chooseTopic("All");
 }
 
-
 async function loadInterests() {
   try {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-
     const userId = storedUser?.user_id ?? storedUser?.id;
 
     if (!userId) {
@@ -557,7 +536,6 @@ async function loadInterests() {
   }
 }
 
-
 // =====================================
 // INITIALIZE
 // =====================================
@@ -565,5 +543,4 @@ async function loadInterests() {
 updateProfile();
 renderQuestions();
 loadInterests();
-
 

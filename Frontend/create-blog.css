@@ -1098,3 +1098,38 @@
     width: 100%;
   }
 }
+/* SHOW MORE TEMPLATES */
+
+.template-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.show-more-templates {
+  padding: 12px 24px;
+  border: 1px solid var(--ink);
+  border-radius: 30px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.show-more-templates:hover {
+  background: var(--lime);
+  border-color: var(--lime);
+  transform: translateY(-2px);
+}
+
+.show-more-templates:focus-visible {
+  outline: 3px solid #a5c83d;
+  outline-offset: 3px;
+}
+
+.show-more-templates[hidden] {
+  display: none !important;
+}

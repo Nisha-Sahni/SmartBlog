@@ -88,14 +88,25 @@ function normalizeBlog(blog) {
     return {
         id: blog.id ?? blog.blog_id,
         title: blog.title || "Untitled story",
-        description: blog.description || blog.content || "",
+        description: blog.subtitle || blog.description || blog.content || "",
         content: blog.content || "",
         topic: blog.topic || blog.category || "General",
-        image: blog.image || blog.image_url || "",
+        image: blog.cover_url || blog.image || blog.image_url || "",
         author: blog.author || blog.author_name || "SmartBlog Writer",
         createdAt: blog.created_at || blog.date || "",
-        link: blog.link || `blog.html?id=${blog.id ?? blog.blog_id}`
+        link: blog.link || `blog.html?id=${blog.id ?? blog.blog_id}`,
+        relevanceScore: blog.relevance_score ?? blog.relevanceScore ?? null
     };
+}
+
+/* GET ACTIVE SEARCH FIELDS */
+
+function getActiveSearchFields() {
+    const fields = [];
+    if (searchTitles && searchTitles.checked) fields.push("title");
+    if (searchDescriptions && searchDescriptions.checked) fields.push("description");
+    if (searchTopics && searchTopics.checked) fields.push("topic");
+    return fields;
 }
 
 /* LOAD BLOGS */
@@ -138,15 +149,19 @@ async function searchBlogs() {
         return;
     }
 
-    searchStatus.textContent = "Finding relevant stories...";
+    searchStatus.textContent = "Finding relevant stories using NLP semantic search...";
     resultsGrid.innerHTML = "";
     emptyState.hidden = true;
     resultsHeading.textContent = `Results for "${query}"`;
 
+    const activeFields = getActiveSearchFields();
+    let queryUrl = `${API_BASE}/search?q=${encodeURIComponent(query)}`;
+    if (activeFields.length && activeFields.length < 3) {
+        queryUrl += `&fields=${encodeURIComponent(activeFields.join(","))}`;
+    }
+
     try {
-        const response = await fetch(
-            `${API_BASE}/search?q=${encodeURIComponent(query)}`
-        );
+        const response = await fetch(queryUrl);
 
         if (!response.ok) {
             throw new Error("Search request failed.");
@@ -173,44 +188,14 @@ async function searchBlogs() {
     }
 }
 
-/* FIELD FILTERING */
-
-function matchesSelectedFields(blog, query) {
-    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-
-    if (!terms.length) return true;
-
-    const fields = [];
-
-    if (searchTitles.checked) fields.push(blog.title);
-    if (searchDescriptions.checked) {
-        fields.push(blog.description, blog.content);
-    }
-    if (searchTopics.checked) fields.push(blog.topic);
-
-    if (!fields.length) return false;
-
-    const searchableText = fields.join(" ").toLowerCase();
-
-    return terms.every(term => searchableText.includes(term));
-}
-
 /* TOPIC FILTER */
 
 function applyTopicFilter() {
-    const query = searchInput.value.trim();
-
     let filtered = [...currentResults];
 
     if (selectedTopic !== "All") {
         filtered = filtered.filter(blog =>
             blog.topic.toLowerCase().includes(selectedTopic.toLowerCase())
-        );
-    }
-
-    if (query) {
-        filtered = filtered.filter(blog =>
-            matchesSelectedFields(blog, query)
         );
     }
 
@@ -251,19 +236,30 @@ function createStoryCard(blog) {
     title.textContent = blog.title;
 
     const description = document.createElement("p");
-    description.textContent = blog.description.slice(0, 180);
+    description.textContent = (blog.description || blog.content || "").slice(0, 180);
 
     const meta = document.createElement("div");
     meta.className = "story-meta";
 
     const author = document.createElement("span");
+    author.className = "story-author";
     author.textContent = `By ${blog.author}`;
+    meta.appendChild(author);
+
+    if (blog.relevanceScore !== null && blog.relevanceScore !== undefined && searchInput.value.trim()) {
+        const scoreBadge = document.createElement("span");
+        scoreBadge.className = "story-match";
+        const pct = Math.min(100, Math.round(blog.relevanceScore * 100));
+        scoreBadge.textContent = `✦ ${pct}% match`;
+        scoreBadge.title = `Semantic similarity score: ${blog.relevanceScore}`;
+        meta.appendChild(scoreBadge);
+    }
 
     const readLink = document.createElement("a");
     readLink.href = blog.link;
     readLink.textContent = "Read story →";
+    meta.appendChild(readLink);
 
-    meta.append(author, readLink);
     content.append(category, title, description, meta);
     article.append(imageContainer, content);
 
@@ -340,7 +336,13 @@ filters.forEach(filter => {
 });
 
 [searchTitles, searchDescriptions, searchTopics].forEach(input => {
-    input.addEventListener("change", applyTopicFilter);
+    input.addEventListener("change", () => {
+        if (searchInput.value.trim()) {
+            searchBlogs();
+        } else {
+            applyTopicFilter();
+        }
+    });
 });
 
 resetSearch.addEventListener("click", clearSearch);
@@ -350,4 +352,3 @@ resetSearch.addEventListener("click", clearSearch);
 setCurrentDate();
 loadUserProfile();
 fetchBlogs();
-

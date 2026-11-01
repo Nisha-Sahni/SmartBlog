@@ -27,9 +27,109 @@ function showState(state) {
 
 
 // Create Table Cell
-function createCell(text) {
+function createCell(className = "") {
     const cell = document.createElement("td");
-    cell.textContent = text;
+
+    if (className) {
+        cell.className = className;
+    }
+
+    return cell;
+}
+
+
+// Safely format author name
+function getAuthorName(author) {
+    const name = String(author.name || "").trim();
+    return name || "SmartBlog author";
+}
+
+
+// Safely format reputation points
+function getPoints(author) {
+    const points = Number(author.reputation_points);
+    return Number.isFinite(points) ? points : 0;
+}
+
+
+// Create Author Cell
+function createAuthorCell(author) {
+    const cell = createCell();
+
+    const authorInfo = document.createElement("div");
+    authorInfo.className = "author-cell";
+
+    const authorName = getAuthorName(author);
+
+    const avatar = document.createElement("span");
+    avatar.className = "author-avatar";
+    avatar.textContent = authorName.charAt(0).toUpperCase();
+
+    const details = document.createElement("div");
+    details.className = "author-details";
+
+    const name = document.createElement("span");
+    name.className = "author-name";
+    name.textContent = authorName;
+
+    const id = document.createElement("span");
+    id.className = "author-id";
+
+    id.textContent =
+        author.user_id !== null && author.user_id !== undefined
+            ? `Author ID: ${author.user_id}`
+            : "SmartBlog author";
+
+    details.append(name, id);
+    authorInfo.append(avatar, details);
+    cell.appendChild(authorInfo);
+
+    return cell;
+}
+
+
+// Create Rank Cell
+function createRankCell(author) {
+    const cell = createCell();
+
+    const rankBadge = document.createElement("span");
+    rankBadge.className = "rank-number";
+
+    const rank = Number(author.rank);
+
+    if (Number.isFinite(rank) && rank <= 3 && rank >= 1) {
+        rankBadge.classList.add("top-rank");
+    }
+
+    rankBadge.textContent =
+        Number.isFinite(rank) ? `#${rank}` : "—";
+
+    cell.appendChild(rankBadge);
+
+    return cell;
+}
+
+
+// Create Level Cell
+function createLevelCell(author) {
+    const cell = createCell();
+
+    const levelBadge = document.createElement("span");
+    levelBadge.className = "level-pill";
+    levelBadge.textContent = author.level || "Beginner";
+
+    cell.appendChild(levelBadge);
+
+    return cell;
+}
+
+
+// Create Reputation Points Cell
+function createPointsCell(author) {
+    const cell = createCell("points");
+
+    cell.textContent = `${getPoints(author).toLocaleString()} pts`;
+
     return cell;
 }
 
@@ -41,76 +141,13 @@ function renderLeaderboard(authors) {
     authors.forEach((author) => {
         const row = document.createElement("tr");
 
-        // Rank
-        const rankCell = createCell("");
-
-        const rankBadge = document.createElement("span");
-        rankBadge.className = "rank-number";
-
-        if (Number(author.rank) <= 3) {
-            rankBadge.classList.add("top-rank");
-        }
-
-        rankBadge.textContent = `#${author.rank}`;
-
-        rankCell.appendChild(rankBadge);
-        row.appendChild(rankCell);
-
-
-        // Author Information
-        const authorCell = createCell("");
-
-        const authorInfo = document.createElement("div");
-        authorInfo.className = "author-cell";
-
-        const authorName = String(
-            author.name || "SmartBlog author"
-        ).trim();
-
-        const avatar = document.createElement("span");
-        avatar.className = "author-avatar";
-        avatar.textContent = authorName.charAt(0).toUpperCase() || "A";
-
-        const details = document.createElement("div");
-
-        const name = document.createElement("span");
-        name.className = "author-name";
-        name.textContent = authorName;
-
-        const id = document.createElement("span");
-        id.className = "author-id";
-        id.textContent = `Author ID: ${author.user_id}`;
-
-        details.append(name, id);
-        authorInfo.append(avatar, details);
-        authorCell.appendChild(authorInfo);
-
-        row.appendChild(authorCell);
-
-
-        // Author Level
-        const levelCell = createCell("");
-
-        const levelBadge = document.createElement("span");
-        levelBadge.className = "level-pill";
-        levelBadge.textContent = author.level || "Beginner";
-
-        levelCell.appendChild(levelBadge);
-        row.appendChild(levelCell);
-
-
-        // Reputation Points
-        const points = Number(author.reputation_points);
-
-        const pointsCell = createCell(
-            `${Number.isFinite(points) ? points : 0} pts`
+        row.append(
+            createRankCell(author),
+            createAuthorCell(author),
+            createLevelCell(author),
+            createPointsCell(author)
         );
 
-        pointsCell.className = "points";
-        row.appendChild(pointsCell);
-
-
-        // Add Row to Table
         leaderboardBody.appendChild(row);
     });
 
@@ -118,14 +155,11 @@ function renderLeaderboard(authors) {
     // Update Statistics
     authorCount.textContent = authors.length;
 
-    topAuthor.textContent =
-        authors[0].name || "SmartBlog author";
+    const firstAuthor = authors[0];
 
-    const highestPoints = Number(authors[0].reputation_points);
+    topAuthor.textContent = getAuthorName(firstAuthor);
 
-    topPoints.textContent = (
-        Number.isFinite(highestPoints) ? highestPoints : 0
-    ).toLocaleString();
+    topPoints.textContent = getPoints(firstAuthor).toLocaleString();
 
     updatedNote.textContent =
         `Last updated: ${new Date().toLocaleString()}`;
@@ -142,11 +176,8 @@ async function loadLeaderboard() {
             `${API_BASE_URL}/leaderboard`
         );
 
-        // Check HTTP Response
         if (!response.ok) {
-            throw new Error(
-                `Server error: ${response.status}`
-            );
+            throw new Error(`Server error: ${response.status}`);
         }
 
         const data = await response.json();
@@ -163,7 +194,6 @@ async function loadLeaderboard() {
 
         const authors = data.leaderboard;
 
-
         // Handle Empty Leaderboard
         if (authors.length === 0) {
             authorCount.textContent = "0";
@@ -172,10 +202,11 @@ async function loadLeaderboard() {
 
             leaderboardBody.replaceChildren();
 
+            updatedNote.textContent = "";
+
             showState("empty");
             return;
         }
-
 
         // Display Leaderboard
         renderLeaderboard(authors);
@@ -190,22 +221,15 @@ async function loadLeaderboard() {
 
 // Refresh Leaderboard
 if (refreshButton) {
-    refreshButton.addEventListener(
-        "click",
-        loadLeaderboard
-    );
+    refreshButton.addEventListener("click", loadLeaderboard);
 }
 
 
 // Retry After Error
 if (retryButton) {
-    retryButton.addEventListener(
-        "click",
-        loadLeaderboard
-    );
+    retryButton.addEventListener("click", loadLeaderboard);
 }
 
 
 // Initial Load
 loadLeaderboard();
-

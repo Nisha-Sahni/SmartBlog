@@ -1,4 +1,3 @@
-
 import os
 import re
 import uuid
@@ -30,6 +29,9 @@ from PIL import Image, UnidentifiedImageError
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from semantic_search import semantic_search_engine
+from recommendation_engine import recommendation_engine
+
 
 # =========================
 # APP CONFIGURATION
@@ -53,12 +55,10 @@ os.makedirs(
     exist_ok=True
 )
 
-app.config["SECRET_KEY"] = os.getenv("SMARTBLOG_SECRET_KEY")
-
-if not app.config["SECRET_KEY"]:
-    raise RuntimeError(
-        "SMARTBLOG_SECRET_KEY is not configured."
-    )
+app.config["SECRET_KEY"] = (
+    os.getenv("SMARTBLOG_SECRET_KEY")
+    or "smartblog-dev-secret-key-2026"
+)
 
 token_serializer = URLSafeTimedSerializer(
     app.config["SECRET_KEY"],
@@ -78,10 +78,14 @@ ALLOWED_TEMPLATE_FORMATS = {
 
 def get_db_connection():
     try:
+        db_password = os.getenv("SMARTBLOG_DB_PASSWORD")
+        if db_password is None:
+            db_password = "nishasahni@2626"
+
         return mysql.connector.connect(
             host=os.getenv("SMARTBLOG_DB_HOST", "localhost"),
             user=os.getenv("SMARTBLOG_DB_USER", "root"),
-            password=os.getenv("SMARTBLOG_DB_PASSWORD"),
+            password=db_password,
             database=os.getenv("SMARTBLOG_DB_NAME", "smartblog")
         )
 
@@ -203,6 +207,10 @@ def fetch_blogs():
             SELECT
                 b.blog_id,
                 b.title,
+                b.subtitle,
+                b.topic,
+                b.cover_url,
+                b.template_id,
                 b.content,
                 b.author_id,
                 b.created_at,
@@ -223,6 +231,26 @@ def fetch_blogs():
                 blog.get("title")
             )
 
+            blog["subtitle"] = clean_text(
+                blog.get("subtitle")
+            )
+
+            blog["topic"] = (
+                clean_text(blog.get("topic"))
+                or "Personal Stories"
+            )
+
+            blog["cover_url"] = clean_text(
+                blog.get("cover_url")
+            )
+            blog["image"] = blog["cover_url"]
+            blog["image_url"] = blog["cover_url"]
+
+            blog["template_id"] = (
+                clean_text(blog.get("template_id"))
+                or "scrapbook"
+            )
+
             blog["content"] = clean_text(
                 blog.get("content")
             )
@@ -231,6 +259,7 @@ def fetch_blogs():
                 clean_text(blog.get("author_name"))
                 or "SmartBlog writer"
             )
+            blog["author"] = blog["author_name"]
 
             if blog.get("created_at"):
                 blog["created_at"] = (
@@ -240,6 +269,10 @@ def fetch_blogs():
                 blog["created_at"] = None
 
             blog["excerpt"] = blog["content"][:220]
+            blog["description"] = (
+                blog["subtitle"]
+                or blog["excerpt"]
+            )
 
         cursor.close()
 
@@ -250,75 +283,206 @@ def fetch_blogs():
 
 
 # =========================
-# TF-IDF SEMANTIC SEARCH
+# NLP SEMANTIC SEARCH
 # =========================
 
-def find_search_results(query, blogs):
-
-    query = clean_text(query)
-
-    if not blogs:
-        return []
-
-    if not query:
-        return blogs
-
-    documents = [
-        f"{blog.get('title', '')} {blog.get('content', '')}"
-        for blog in blogs
-    ]
-
-    if not any(document.strip() for document in documents):
-        return []
-
-    try:
-        vectorizer = TfidfVectorizer(
-            lowercase=True,
-            stop_words="english",
-            ngram_range=(1, 2),
-            sublinear_tf=True
-        )
-
-        document_vectors = vectorizer.fit_transform(
-            documents
-        )
-
-        query_vector = vectorizer.transform([
-            query
-        ])
-
-        scores = cosine_similarity(
-            query_vector,
-            document_vectors
-        ).flatten()
-
-    except ValueError:
-        return []
-
-    results = []
-
-    for blog, score in zip(blogs, scores):
-
-        if score > 0:
-
-            result = dict(blog)
-
-            result["relevance_score"] = round(
-                float(score),
-                4
-            )
-
-            results.append(result)
-
-    results.sort(
-        key=lambda blog: (
-            blog["relevance_score"],
-            blog.get("created_at") or ""
-        ),
-        reverse=True
+def find_search_results(query, blogs, threshold=None, limit=50, fields=None):
+    return semantic_search_engine.search(
+        query=query,
+        blogs=blogs,
+        threshold=threshold,
+        limit=limit,
+        fields=fields
     )
 
-    return results
+# =========================
+# PERSONALIZED RECOMMENDATIONS
+# =========================
+
+@app.route("/recommendations", methods=["GET"])
+@require_auth
+def get_recommendations():
+
+    user_id = request.authenticated_user_id
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # --------------------------------------
+        # 1. FETCH USER'S SELECTED INTERESTS
+        # --------------------------------------
+        cursor.execute("""
+            SELECT interest
+            FROM user_interests
+            WHERE user_id = %s
+            ORDER BY interest_id
+        """, (user_id,))
+
+        interests = [
+            clean_text(row["interest"])
+            for row in cursor.fetchall()
+            if clean_text(row["interest"])
+        ]
+
+        # --------------------------------------
+        # 2. FETCH USER'S READING HISTORY
+        # --------------------------------------
+        cursor.execute("""
+            SELECT
+                b.blog_id,
+                b.title,
+                b.subtitle,
+                b.topic,
+                b.content,
+                rh.read_at
+            FROM reading_history rh
+            JOIN blogs b
+                ON rh.blog_id = b.blog_id
+            WHERE rh.user_id = %s
+            ORDER BY rh.read_at DESC
+            LIMIT 10
+        """, (user_id,))
+
+        reading_history = cursor.fetchall()
+
+        # --------------------------------------
+        # 3. FETCH CANDIDATE BLOGS
+        # --------------------------------------
+        cursor.execute("""
+            SELECT
+                b.blog_id,
+                b.title,
+                b.subtitle,
+                b.content,
+                b.topic,
+                b.cover_url,
+                b.template_id,
+                b.author_id,
+                b.created_at,
+                u.name AS author_name
+            FROM blogs b
+            LEFT JOIN users u
+                ON b.author_id = u.user_id
+            WHERE b.author_id != %s
+            ORDER BY
+                b.created_at DESC,
+                b.blog_id DESC
+        """, (user_id,))
+
+        candidate_blogs = cursor.fetchall()
+
+        # If user is author of all blogs or database has only user's blogs, fallback to all blogs
+        if not candidate_blogs:
+            cursor.execute("""
+                SELECT
+                    b.blog_id,
+                    b.title,
+                    b.subtitle,
+                    b.content,
+                    b.topic,
+                    b.cover_url,
+                    b.template_id,
+                    b.author_id,
+                    b.created_at,
+                    u.name AS author_name
+                FROM blogs b
+                LEFT JOIN users u
+                    ON b.author_id = u.user_id
+                ORDER BY
+                    b.created_at DESC,
+                    b.blog_id DESC
+            """)
+            candidate_blogs = cursor.fetchall()
+
+        # Normalize blog records
+        for blog in candidate_blogs:
+            blog["title"] = clean_text(blog.get("title"))
+            blog["subtitle"] = clean_text(blog.get("subtitle"))
+            blog["topic"] = (
+                clean_text(blog.get("topic"))
+                or "Personal Stories"
+            )
+            blog["content"] = clean_text(blog.get("content"))
+            blog["cover_url"] = clean_text(blog.get("cover_url"))
+            blog["image"] = blog["cover_url"]
+            blog["image_url"] = blog["cover_url"]
+            blog["template_id"] = (
+                clean_text(blog.get("template_id"))
+                or "scrapbook"
+            )
+            blog["author_name"] = (
+                clean_text(blog.get("author_name"))
+                or "SmartBlog writer"
+            )
+            blog["author"] = blog["author_name"]
+            blog["excerpt"] = blog["content"][:220]
+            blog["description"] = (
+                blog["subtitle"]
+                or blog["excerpt"]
+            )
+            if blog.get("created_at"):
+                blog["created_at"] = blog["created_at"].isoformat()
+            else:
+                blog["created_at"] = None
+
+        # Fetch optional saved blogs if requested
+        saved_ids_param = request.args.get("saved_ids")
+        saved_blogs = []
+        if saved_ids_param:
+            try:
+                saved_ids = [int(s.strip()) for s in saved_ids_param.split(",") if s.strip().isdigit()]
+                if saved_ids:
+                    saved_blogs = [b for b in candidate_blogs if b["blog_id"] in saved_ids]
+            except Exception:
+                pass
+
+        limit_param = request.args.get("limit", 6, type=int)
+
+        recommendations = recommendation_engine.generate_recommendations(
+            user_id=user_id,
+            interests=interests,
+            reading_history=reading_history,
+            candidate_blogs=candidate_blogs,
+            saved_blogs=saved_blogs,
+            limit=limit_param
+        )
+
+        return jsonify({
+            "success": True,
+            "method": "nlp_semantic_recommendation",
+            "model": "all-MiniLM-L6-v2",
+            "recommendations": recommendations,
+            "count": len(recommendations),
+            "personalization": {
+                "interests_count": len(interests),
+                "reading_history_count": len(reading_history),
+                "interests": interests
+            }
+        }), 200
+
+    except Error:
+        app.logger.exception("Could not generate personalized recommendations.")
+        return jsonify({
+            "success": False,
+            "message": "Could not generate recommendations."
+        }), 500
+
+    except Exception:
+        app.logger.exception("Recommendation processing error.")
+        return jsonify({
+            "success": False,
+            "message": "Could not generate recommendations."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
 
 
 # =========================
@@ -351,7 +515,7 @@ def db_test():
             "message": "MySQL connection failed."
         }), 500
 
-    except Error:
+    except mysql.connector.Error:
 
         app.logger.exception(
             "Database test failed"
@@ -384,20 +548,17 @@ def signup():
 
     if not name or not email or not password:
         return jsonify({
+            "success": False,
             "message": "All fields are required."
         }), 400
 
     if not isinstance(password, str) or len(password) < 8:
         return jsonify({
-            "message": (
-                "Password must contain at least "
-                "8 characters."
-            )
+            "success": False,
+            "message": "Password must contain at least 8 characters."
         }), 400
 
-    hashed_password = generate_password_hash(
-        password
-    )
+    hashed_password = generate_password_hash(password)
 
     connection = None
     cursor = None
@@ -416,10 +577,19 @@ def signup():
             hashed_password
         ))
 
+        user_id = cursor.lastrowid
+
+        auth_token = create_auth_token(user_id)
+
         connection.commit()
 
         return jsonify({
-            "message": "Account created successfully!"
+            "success": True,
+            "message": "Account created successfully!",
+            "user_id": user_id,
+            "name": name,
+            "email": email,
+            "token": auth_token
         }), 201
 
     except IntegrityError:
@@ -428,10 +598,8 @@ def signup():
             connection.rollback()
 
         return jsonify({
-            "message": (
-                "An account with this email "
-                "may already exist."
-            )
+            "success": False,
+            "message": "An account with this email may already exist."
         }), 409
 
     except Error:
@@ -439,12 +607,23 @@ def signup():
         if connection:
             connection.rollback()
 
-        app.logger.exception(
-            "Signup database error"
-        )
+        app.logger.exception("Signup database error")
 
         return jsonify({
+            "success": False,
             "message": "Could not create your account."
+        }), 500
+
+    except Exception:
+
+        if connection:
+            connection.rollback()
+
+        app.logger.exception("Signup error")
+
+        return jsonify({
+            "success": False,
+            "message": "Something went wrong during signup."
         }), 500
 
     finally:
@@ -620,6 +799,18 @@ def get_blog(blog_id):
             type=int
         )
 
+        if not reader_id:
+            auth_header = request.headers.get("Authorization", "")
+            if auth_header.startswith("Bearer "):
+                try:
+                    payload = token_serializer.loads(
+                        auth_header.split(" ", 1)[1].strip(),
+                        max_age=60 * 60 * 24 * 7
+                    )
+                    reader_id = int(payload.get("user_id"))
+                except Exception:
+                    pass
+
         if reader_id and reader_id > 0:
 
             cursor.execute(
@@ -696,47 +887,61 @@ def get_blog(blog_id):
 # =========================
 
 @app.route("/blogs", methods=["POST"])
+@require_auth
 def create_blog():
 
     data = get_json_data()
 
-    title = clean_text(
-        data.get("title")
-    )
+    title = clean_text(data.get("title"))
+    subtitle = clean_text(data.get("subtitle"))
+    topic = clean_text(data.get("topic")) or "Personal Stories"
+    cover_url = clean_text(data.get("cover_url"))
+    template_id = clean_text(data.get("template_id")) or "scrapbook"
 
-    content = clean_text(
-        data.get("content")
-    )
+    content = str(data.get("content") or "").strip()
 
-    author_id = data.get("author_id")
+    author_id = request.authenticated_user_id
 
-    if not title or not content or author_id is None:
+    if not title or not content:
         return jsonify({
-            "message": (
-                "Title, content, and author_id are required."
-            )
+            "success": False,
+            "message": "Title and story content are required."
         }), 400
 
     if len(title) > 200:
         return jsonify({
-            "message": (
-                "Title must be 200 characters or fewer."
-            )
+            "success": False,
+            "message": "Title must be 200 characters or fewer."
         }), 400
 
-    try:
-        author_id = int(author_id)
-
-        if author_id <= 0:
-            raise ValueError
-
-    except (ValueError, TypeError):
-
+    if len(subtitle) > 300:
         return jsonify({
-            "message": (
-                "author_id must be a valid positive integer."
-            )
+            "success": False,
+            "message": "Introduction must be 300 characters or fewer."
         }), 400
+
+    if len(topic) > 100 or len(template_id) > 100:
+        return jsonify({
+            "success": False,
+            "message": "Invalid topic or template selection."
+        }), 400
+
+    if len(content) > 100000:
+        return jsonify({
+            "success": False,
+            "message": "Story content is too long."
+        }), 400
+
+    if cover_url:
+        from urllib.parse import urlparse
+
+        parsed_url = urlparse(cover_url)
+
+        if parsed_url.scheme not in ("http", "https") or not parsed_url.netloc:
+            return jsonify({
+                "success": False,
+                "message": "Please provide a valid cover image URL."
+            }), 400
 
     connection = None
     cursor = None
@@ -745,34 +950,51 @@ def create_blog():
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        cursor.execute(
-            "SELECT user_id FROM users WHERE user_id = %s",
-            (author_id,)
-        )
-
-        if cursor.fetchone() is None:
-            return jsonify({
-                "message": "Author account not found."
-            }), 404
-
         cursor.execute("""
             INSERT INTO blogs
-                (title, content, author_id)
-            VALUES (%s, %s, %s)
+                (title, subtitle, topic, cover_url,
+                 template_id, content, author_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (
             title,
+            subtitle or None,
+            topic,
+            cover_url or None,
+            template_id,
             content,
             author_id
         ))
 
+        new_blog_id = cursor.lastrowid
         connection.commit()
 
-        new_blog_id = cursor.lastrowid
+        try:
+            semantic_search_engine.update_blog({
+                "blog_id": new_blog_id,
+                "title": title,
+                "subtitle": subtitle,
+                "topic": topic,
+                "cover_url": cover_url,
+                "template_id": template_id,
+                "content": content,
+                "author_id": author_id
+            })
+        except Exception:
+            app.logger.warning("Failed to immediately update semantic embedding for new blog %s", new_blog_id)
 
         return jsonify({
-            "message": "Blog published successfully!",
-            "blog_id": new_blog_id,
-            "title": title
+            "success": True,
+            "message": "Your story has been published!",
+            "blog": {
+                "blog_id": new_blog_id,
+                "title": title,
+                "subtitle": subtitle,
+                "topic": topic,
+                "cover_url": cover_url,
+                "template_id": template_id,
+                "content": content,
+                "author_id": author_id
+            }
         }), 201
 
     except Error:
@@ -780,12 +1002,215 @@ def create_blog():
         if connection:
             connection.rollback()
 
+        app.logger.exception("Could not publish blog")
+
+        return jsonify({
+            "success": False,
+            "message": "Could not publish your story."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# UPDATE EXISTING BLOG
+# =========================
+
+@app.route("/blogs/<int:blog_id>", methods=["PUT"])
+@require_auth
+def update_blog(blog_id):
+
+    data = get_json_data()
+
+    author_id = request.authenticated_user_id
+
+    title = clean_text(data.get("title"))
+    subtitle = clean_text(data.get("subtitle"))
+    topic = clean_text(data.get("topic")) or "Personal Stories"
+    content = str(data.get("content") or "").strip()
+
+    connection = None
+    cursor = None
+
+    if not title or not content:
+        return jsonify({
+            "success": False,
+            "message": "Title and story content are required."
+        }), 400
+
+    if len(title) > 200:
+        return jsonify({
+            "success": False,
+            "message": "Title must be 200 characters or fewer."
+        }), 400
+
+    if len(subtitle) > 300:
+        return jsonify({
+            "success": False,
+            "message": "Introduction must be 300 characters or fewer."
+        }), 400
+
+    if len(topic) > 100:
+        return jsonify({
+            "success": False,
+            "message": "Topic must be 100 characters or fewer."
+        }), 400
+
+    if len(content) > 100000:
+        return jsonify({
+            "success": False,
+            "message": "Story content is too long."
+        }), 400
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                blog_id,
+                cover_url,
+                template_id
+            FROM blogs
+            WHERE blog_id = %s
+              AND author_id = %s
+        """, (
+            blog_id,
+            author_id
+        ))
+
+        existing_blog = cursor.fetchone()
+
+        if not existing_blog:
+            return jsonify({
+                "success": False,
+                "message": "Blog not found or you are not allowed to edit it."
+            }), 404
+
+        submitted_cover_url = data.get("cover_url")
+
+        if (
+            submitted_cover_url is None
+            or not str(submitted_cover_url).strip()
+        ):
+            cover_url = existing_blog.get("cover_url")
+        else:
+            cover_url = clean_text(submitted_cover_url)
+
+        if cover_url:
+            from urllib.parse import urlparse
+
+            parsed_url = urlparse(cover_url)
+
+            if (
+                parsed_url.scheme not in ("http", "https")
+                or not parsed_url.netloc
+            ):
+                return jsonify({
+                    "success": False,
+                    "message": "Please provide a valid cover image URL."
+                }), 400
+
+        submitted_template_id = clean_text(
+            data.get("template_id")
+        )
+
+        template_id = (
+            submitted_template_id
+            or existing_blog.get("template_id")
+            or "scrapbook"
+        )
+
+        if len(template_id) > 100:
+            return jsonify({
+                "success": False,
+                "message": "Invalid template selection."
+            }), 400
+
+        cursor.execute("""
+            UPDATE blogs
+            SET
+                title = %s,
+                subtitle = %s,
+                topic = %s,
+                cover_url = %s,
+                template_id = %s,
+                content = %s
+            WHERE blog_id = %s
+              AND author_id = %s
+        """, (
+            title,
+            subtitle or None,
+            topic,
+            cover_url,
+            template_id,
+            content,
+            blog_id,
+            author_id
+        ))
+
+        connection.commit()
+
+        try:
+            semantic_search_engine.update_blog({
+                "blog_id": blog_id,
+                "title": title,
+                "subtitle": subtitle,
+                "topic": topic,
+                "cover_url": cover_url,
+                "template_id": template_id,
+                "content": content,
+                "author_id": author_id
+            })
+        except Exception:
+            app.logger.warning("Failed to immediately update semantic embedding for updated blog %s", blog_id)
+
+        return jsonify({
+            "success": True,
+            "message": "Your story has been updated successfully!",
+            "blog": {
+                "blog_id": blog_id,
+                "title": title,
+                "subtitle": subtitle,
+                "topic": topic,
+                "cover_url": cover_url,
+                "template_id": template_id,
+                "content": content,
+                "author_id": author_id
+            }
+        }), 200
+
+    except Error:
+
+        if connection:
+            connection.rollback()
+
         app.logger.exception(
-            "Could not publish blog"
+            "Could not update blog"
         )
 
         return jsonify({
-            "message": "Could not publish the blog."
+            "success": False,
+            "message": "Could not update your story."
+        }), 500
+
+    except Exception:
+
+        if connection:
+            connection.rollback()
+
+        app.logger.exception(
+            "Unexpected blog update error"
+        )
+
+        return jsonify({
+            "success": False,
+            "message": "Something went wrong while updating your story."
         }), 500
 
     finally:
@@ -807,10 +1232,19 @@ def search_blogs():
         request.args.get("q", "")
     )
 
-    if len(query) > 300:
+    if len(query) > 500:
         return jsonify({
             "message": "Search query is too long."
         }), 400
+
+    threshold_param = request.args.get("threshold")
+    threshold = float(threshold_param) if threshold_param else None
+
+    limit_param = request.args.get("limit")
+    limit = int(limit_param) if limit_param else 50
+
+    fields_param = request.args.get("fields")
+    fields = [f.strip() for f in fields_param.split(",") if f.strip()] if fields_param else None
 
     try:
         blogs = fetch_blogs()
@@ -818,19 +1252,29 @@ def search_blogs():
         if not query:
             return jsonify({
                 "query": "",
-                "method": "tfidf",
-                "results": blogs,
+                "method": "all_stories",
+                "results": blogs[:limit],
                 "count": len(blogs)
             }), 200
 
         results = find_search_results(
-            query,
-            blogs
+            query=query,
+            blogs=blogs,
+            threshold=threshold,
+            limit=limit,
+            fields=fields
+        )
+
+        used_threshold = (
+            threshold if threshold is not None
+            else semantic_search_engine.default_threshold
         )
 
         return jsonify({
             "query": query,
-            "method": "tfidf_cosine_similarity",
+            "method": "nlp_semantic_search",
+            "model": "all-MiniLM-L6-v2",
+            "threshold": used_threshold,
             "results": results,
             "count": len(results)
         }), 200
@@ -844,6 +1288,87 @@ def search_blogs():
         return jsonify({
             "message": "Could not search blogs."
         }), 500
+
+    except Exception:
+
+        app.logger.exception(
+            "Semantic search failure"
+        )
+
+        return jsonify({
+            "message": "Could not complete semantic search."
+        }), 500
+
+
+# =========================
+# READING HISTORY
+# =========================
+
+@app.route("/reading-history", methods=["GET"])
+@require_auth
+def get_user_reading_history():
+
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                rh.history_id,
+                rh.read_at,
+                b.blog_id,
+                b.title,
+                b.subtitle,
+                b.topic,
+                b.cover_url,
+                b.author_id,
+                u.name AS author_name
+            FROM reading_history rh
+            JOIN blogs b
+                ON rh.blog_id = b.blog_id
+            LEFT JOIN users u
+                ON b.author_id = u.user_id
+            WHERE rh.user_id = %s
+            ORDER BY rh.read_at DESC
+            LIMIT 20
+        """, (user_id,))
+
+        history = cursor.fetchall()
+
+        for item in history:
+            item["title"] = clean_text(item.get("title"))
+            item["subtitle"] = clean_text(item.get("subtitle"))
+            item["topic"] = clean_text(item.get("topic")) or "Personal Stories"
+            item["author_name"] = clean_text(item.get("author_name")) or "SmartBlog writer"
+            item["image"] = clean_text(item.get("cover_url"))
+            item["cover_url"] = item["image"]
+            if item.get("read_at"):
+                item["read_at"] = item["read_at"].isoformat()
+            else:
+                item["read_at"] = None
+
+        return jsonify({
+            "success": True,
+            "reading_history": history,
+            "count": len(history)
+        }), 200
+
+    except Error:
+        app.logger.exception("Could not fetch user reading history")
+        return jsonify({
+            "success": False,
+            "message": "Could not load reading history."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
 
 
 # =========================
@@ -981,6 +1506,120 @@ def get_author_rank(user_id):
         return jsonify({
             "success": False,
             "message": "Could not load author rank."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# GET AUTHOR'S PUBLISHED BLOGS
+# =========================
+
+@app.route("/authors/<int:user_id>/blogs", methods=["GET"])
+@require_auth
+def get_author_blogs(user_id):
+
+    # A user can only retrieve their own published blogs.
+    if request.authenticated_user_id != user_id:
+        return jsonify({
+            "success": False,
+            "message": "You can only view your own published stories."
+        }), 403
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+
+        cursor = connection.cursor(
+            dictionary=True
+        )
+
+        cursor.execute("""
+            SELECT
+                b.blog_id,
+                b.title,
+                b.subtitle,
+                b.content,
+                b.author_id,
+                b.topic,
+                b.cover_url,
+                b.template_id,
+                b.created_at,
+                u.name AS author_name
+            FROM blogs b
+            LEFT JOIN users u
+                ON b.author_id = u.user_id
+            WHERE b.author_id = %s
+            ORDER BY
+                b.created_at DESC,
+                b.blog_id DESC
+        """, (user_id,))
+
+        rows = cursor.fetchall()
+
+        blogs = []
+
+        for blog in rows:
+
+            content = blog.get("content") or ""
+
+            blog["title"] = clean_text(
+                blog.get("title")
+            )
+
+            blog["subtitle"] = clean_text(
+                blog.get("subtitle")
+            )
+
+            blog["topic"] = (
+                clean_text(blog.get("topic"))
+                or "Personal Stories"
+            )
+
+            blog["author_name"] = (
+                clean_text(blog.get("author_name"))
+                or "SmartBlog writer"
+            )
+
+            blog["content"] = content
+
+            blog["excerpt"] = (
+                content[:220] + "..."
+                if len(content) > 220
+                else content
+            )
+
+            if blog.get("created_at"):
+                blog["created_at"] = (
+                    blog["created_at"].isoformat()
+                )
+            else:
+                blog["created_at"] = None
+
+            blogs.append(blog)
+
+        return jsonify({
+            "success": True,
+            "count": len(blogs),
+            "blogs": blogs
+        }), 200
+
+    except Error:
+
+        app.logger.exception(
+            "Could not retrieve author's published blogs"
+        )
+
+        return jsonify({
+            "success": False,
+            "message": "Could not fetch published stories."
         }), 500
 
     finally:
@@ -1178,7 +1817,6 @@ def upload_template():
             "message": "Please select an image."
         }), 400
 
-    # Check actual uploaded size.
     image_file.stream.seek(0, os.SEEK_END)
 
     file_size = image_file.stream.tell()
@@ -1197,7 +1835,6 @@ def upload_template():
             "message": "Image must be 1.5 MB or smaller."
         }), 413
 
-    # Validate image contents rather than trusting filename.
     try:
         image = Image.open(image_file.stream)
 
@@ -1233,7 +1870,6 @@ def upload_template():
     finally:
         image_file.stream.seek(0)
 
-    # Generate a unique filename.
     extension = ALLOWED_TEMPLATE_FORMATS[
         image_format
     ]
@@ -1446,7 +2082,6 @@ def delete_user_template(template_id):
 
         connection.commit()
 
-        # Delete image file after successful DB deletion.
         filename = os.path.basename(image_path)
 
         file_path = os.path.join(
@@ -1490,6 +2125,167 @@ def delete_user_template(template_id):
 
 
 # =========================
+# BLOG COMMENTS
+# =========================
+
+# GET COMMENTS FOR A BLOG
+
+@app.route("/blogs/<int:blog_id>/comments", methods=["GET"])
+def get_blog_comments(blog_id):
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT blog_id
+            FROM blogs
+            WHERE blog_id = %s
+        """, (blog_id,))
+
+        if not cursor.fetchone():
+            return jsonify({
+                "success": False,
+                "message": "Blog not found."
+            }), 404
+
+        cursor.execute("""
+            SELECT
+                c.comment_id,
+                c.blog_id,
+                c.user_id,
+                c.comment,
+                c.created_at,
+                u.name AS author_name
+            FROM comments c
+            JOIN users u ON c.user_id = u.user_id
+            WHERE c.blog_id = %s
+            ORDER BY c.created_at DESC, c.comment_id DESC
+        """, (blog_id,))
+
+        comments = cursor.fetchall()
+
+        for comment in comments:
+            if comment.get("created_at"):
+                comment["created_at"] = comment["created_at"].isoformat()
+
+        return jsonify({
+            "success": True,
+            "comments": comments,
+            "count": len(comments)
+        }), 200
+
+    except Error:
+        app.logger.exception("Could not load blog comments.")
+
+        return jsonify({
+            "success": False,
+            "message": "Could not load comments."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# POST A COMMENT
+
+@app.route("/blogs/<int:blog_id>/comments", methods=["POST"])
+@require_auth
+def add_blog_comment(blog_id):
+
+    data = get_json_data()
+    comment_text = str(data.get("comment") or "").strip()
+    user_id = request.authenticated_user_id
+
+    if not comment_text:
+        return jsonify({
+            "success": False,
+            "message": "Please write a comment first."
+        }), 400
+
+    if len(comment_text) > 5000:
+        return jsonify({
+            "success": False,
+            "message": "Comment must be 5000 characters or fewer."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT blog_id
+            FROM blogs
+            WHERE blog_id = %s
+        """, (blog_id,))
+
+        if not cursor.fetchone():
+            return jsonify({
+                "success": False,
+                "message": "Blog not found."
+            }), 404
+
+        cursor.execute("""
+            INSERT INTO comments (blog_id, user_id, comment)
+            VALUES (%s, %s, %s)
+        """, (blog_id, user_id, comment_text))
+
+        comment_id = cursor.lastrowid
+        connection.commit()
+
+        cursor.execute("""
+            SELECT
+                c.comment_id,
+                c.blog_id,
+                c.user_id,
+                c.comment,
+                c.created_at,
+                u.name AS author_name
+            FROM comments c
+            JOIN users u ON c.user_id = u.user_id
+            WHERE c.comment_id = %s
+        """, (comment_id,))
+
+        new_comment = cursor.fetchone()
+
+        if new_comment and new_comment.get("created_at"):
+            new_comment["created_at"] = new_comment["created_at"].isoformat()
+
+        return jsonify({
+            "success": True,
+            "message": "Comment posted successfully!",
+            "comment": new_comment
+        }), 201
+
+    except Error:
+        if connection:
+            connection.rollback()
+
+        app.logger.exception("Could not post blog comment.")
+
+        return jsonify({
+            "success": False,
+            "message": "Could not post your comment."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+# =========================
 # SERVE TEMPLATE IMAGES
 # =========================
 
@@ -1499,8 +2295,6 @@ def delete_user_template(template_id):
 )
 def serve_template_image(filename):
 
-    # Filenames are generated by the backend,
-    # not supplied as arbitrary filesystem paths.
     return send_from_directory(
         app.config["TEMPLATE_UPLOAD_FOLDER"],
         filename
@@ -1521,6 +2315,496 @@ def request_entity_too_large(error):
             "Maximum size is 1.5 MB."
         )
     }), 413
+
+
+# =========================
+# HELP & SUPPORT
+# =========================
+
+VALID_SUPPORT_CATEGORIES = {
+    "Account and Login",
+    "Blog Creation",
+    "Search and Recommendations",
+    "Profile and Settings",
+    "Technical Issue",
+    "Other"
+}
+
+@app.route("/support", methods=["POST"])
+@require_auth
+def submit_support_request():
+
+    data = get_json_data()
+    user_id = request.authenticated_user_id
+
+    subject = clean_text(data.get("subject"))
+    category = clean_text(data.get("category"))
+    description = str(data.get("description") or "").strip()
+
+    if not subject:
+        return jsonify({
+            "success": False,
+            "message": "Subject is required."
+        }), 400
+
+    if len(subject) < 3 or len(subject) > 200:
+        return jsonify({
+            "success": False,
+            "message": "Subject must be between 3 and 200 characters."
+        }), 400
+
+    if not category or category not in VALID_SUPPORT_CATEGORIES:
+        return jsonify({
+            "success": False,
+            "message": "Please select a valid issue category."
+        }), 400
+
+    if not description:
+        return jsonify({
+            "success": False,
+            "message": "Description is required."
+        }), 400
+
+    if len(description) < 10 or len(description) > 5000:
+        return jsonify({
+            "success": False,
+            "message": "Description must be between 10 and 5000 characters."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            INSERT INTO support_requests (user_id, subject, category, description, status)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (
+            user_id,
+            subject,
+            category,
+            description,
+            "Open"
+        ))
+
+        new_support_id = cursor.lastrowid
+        connection.commit()
+
+        cursor.execute("""
+            SELECT support_id, user_id, subject, category, description, status, created_at
+            FROM support_requests
+            WHERE support_id = %s
+        """, (new_support_id,))
+
+        saved_request = cursor.fetchone()
+        if saved_request and saved_request.get("created_at"):
+            saved_request["created_at"] = saved_request["created_at"].isoformat()
+
+        return jsonify({
+            "success": True,
+            "message": "Your support request has been submitted successfully.",
+            "support_id": new_support_id,
+            "request": saved_request
+        }), 201
+
+    except Error:
+        if connection:
+            connection.rollback()
+        app.logger.exception("Could not submit support request")
+        return jsonify({
+            "success": False,
+            "message": "Could not submit your support request due to a server error."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/support", methods=["GET"])
+@require_auth
+def get_user_support_requests():
+
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                support_id,
+                user_id,
+                subject,
+                category,
+                description,
+                status,
+                created_at
+            FROM support_requests
+            WHERE user_id = %s
+            ORDER BY created_at DESC, support_id DESC
+        """, (user_id,))
+
+        requests_list = cursor.fetchall()
+
+        for req in requests_list:
+            if req.get("created_at"):
+                req["created_at"] = req["created_at"].isoformat()
+            else:
+                req["created_at"] = None
+
+        return jsonify({
+            "success": True,
+            "requests": requests_list,
+            "count": len(requests_list)
+        }), 200
+
+    except Error:
+        app.logger.exception("Could not fetch support requests")
+        return jsonify({
+            "success": False,
+            "message": "Could not load support requests."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# GLOBAL LOGOUT ENDPOINT
+# =========================
+
+@app.route("/logout", methods=["POST"])
+def logout_user():
+    # Client will clear tokens from localStorage; server confirms receipt
+    return jsonify({
+        "success": True,
+        "message": "Logged out successfully."
+    }), 200
+
+
+
+
+# =========================
+# USER IDENTITY & SETTINGS ENDPOINTS
+# =========================
+
+@app.route("/me", methods=["GET"])
+@require_auth
+def get_current_user_profile():
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT user_id, name, email, reputation_points
+            FROM users
+            WHERE user_id = %s
+        """, (user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({
+                "success": False,
+                "message": "User not found."
+            }), 404
+
+        # Fetch interests
+        cursor.execute("""
+            SELECT interest
+            FROM user_interests
+            WHERE user_id = %s
+            ORDER BY interest_id ASC
+        """, (user_id,))
+        interests = [row["interest"] for row in cursor.fetchall()]
+        user["interests"] = interests
+
+        return jsonify({
+            "success": True,
+            "user": user
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error loading current user profile")
+        return jsonify({
+            "success": False,
+            "message": "Could not load user profile."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/me", methods=["PUT"])
+@require_auth
+def update_current_user_profile():
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+
+    name = clean_text(data.get("name"))
+    email = clean_text(data.get("email")).lower()
+
+    if not name or len(name) < 2 or len(name) > 100:
+        return jsonify({
+            "success": False,
+            "message": "Full name must be between 2 and 100 characters."
+        }), 400
+
+    email_pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+    if not email or not re.match(email_pattern, email):
+        return jsonify({
+            "success": False,
+            "message": "Please enter a valid email address."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Check email uniqueness against other users
+        cursor.execute("""
+            SELECT user_id
+            FROM users
+            WHERE email = %s AND user_id != %s
+        """, (email, user_id))
+        existing = cursor.fetchone()
+
+        if existing:
+            return jsonify({
+                "success": False,
+                "message": "This email address is already in use by another account."
+            }), 409
+
+        # Update user
+        cursor.execute("""
+            UPDATE users
+            SET name = %s, email = %s
+            WHERE user_id = %s
+        """, (name, email, user_id))
+        connection.commit()
+
+        # Fetch updated user
+        cursor.execute("""
+            SELECT user_id, name, email, reputation_points
+            FROM users
+            WHERE user_id = %s
+        """, (user_id,))
+        updated_user = cursor.fetchone()
+
+        # Fetch interests
+        cursor.execute("""
+            SELECT interest
+            FROM user_interests
+            WHERE user_id = %s
+            ORDER BY interest_id ASC
+        """, (user_id,))
+        interests = [row["interest"] for row in cursor.fetchall()]
+        updated_user["interests"] = interests
+
+        return jsonify({
+            "success": True,
+            "message": "Account information updated successfully.",
+            "user": updated_user
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error updating user profile")
+        return jsonify({
+            "success": False,
+            "message": "Could not update account information."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/me/change-password", methods=["POST"])
+@require_auth
+def change_user_password():
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+
+    current_password = data.get("current_password") or ""
+    new_password = data.get("new_password") or ""
+    confirm_password = data.get("confirm_password") or ""
+
+    if not current_password:
+        return jsonify({
+            "success": False,
+            "message": "Current password is required."
+        }), 400
+
+    if not new_password or len(new_password) < 8:
+        return jsonify({
+            "success": False,
+            "message": "New password must be at least 8 characters long."
+        }), 400
+
+    if new_password != confirm_password:
+        return jsonify({
+            "success": False,
+            "message": "New password and confirmation do not match."
+        }), 400
+
+    if current_password == new_password:
+        return jsonify({
+            "success": False,
+            "message": "New password must be different from current password."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT password FROM users WHERE user_id = %s", (user_id,))
+        row = cursor.fetchone()
+
+        if not row or not check_password_hash(row["password"], current_password):
+            return jsonify({
+                "success": False,
+                "message": "Current password is incorrect."
+            }), 400
+
+        new_hash = generate_password_hash(new_password)
+        cursor.execute("UPDATE users SET password = %s WHERE user_id = %s", (new_hash, user_id))
+        connection.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Password changed successfully."
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error changing user password")
+        return jsonify({
+            "success": False,
+            "message": "Could not change password."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/me/interests", methods=["GET", "PUT"])
+@require_auth
+def handle_me_interests():
+    user_id = request.authenticated_user_id
+    if request.method == "GET":
+        return get_interests(user_id)
+    else:
+        return save_interests(user_id)
+
+
+@app.route("/me/account", methods=["DELETE"])
+@require_auth
+def delete_current_user_account():
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+    password = data.get("password") or ""
+
+    if not password:
+        return jsonify({
+            "success": False,
+            "message": "Please enter your password to confirm account deletion."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT password FROM users WHERE user_id = %s", (user_id,))
+        row = cursor.fetchone()
+
+        if not row or not check_password_hash(row["password"], password):
+            return jsonify({
+                "success": False,
+                "message": "Password is incorrect. Account deletion cancelled."
+            }), 400
+
+        # Safe cascading deletion in transaction
+        # 1. Delete answers given by user
+        cursor.execute("DELETE FROM answers WHERE user_id = %s", (user_id,))
+        # 2. Delete comments given by user
+        cursor.execute("DELETE FROM comments WHERE user_id = %s", (user_id,))
+        # 3. Delete reading history
+        cursor.execute("DELETE FROM reading_history WHERE user_id = %s", (user_id,))
+        # 4. Delete support requests
+        cursor.execute("DELETE FROM support_requests WHERE user_id = %s", (user_id,))
+        # 5. Delete user templates
+        cursor.execute("DELETE FROM user_templates WHERE user_id = %s", (user_id,))
+        # 6. Delete user interests
+        cursor.execute("DELETE FROM user_interests WHERE user_id = %s", (user_id,))
+        # 7. For questions by user, delete answers first then questions
+        cursor.execute("SELECT question_id FROM questions WHERE user_id = %s", (user_id,))
+        user_questions = [r["question_id"] for r in cursor.fetchall()]
+        if user_questions:
+            format_strings = ','.join(['%s'] * len(user_questions))
+            cursor.execute(f"DELETE FROM answers WHERE question_id IN ({format_strings})", tuple(user_questions))
+            cursor.execute("DELETE FROM questions WHERE user_id = %s", (user_id,))
+        # 8. For blogs by user, delete blog comments/questions then blogs
+        cursor.execute("SELECT blog_id FROM blogs WHERE author_id = %s", (user_id,))
+        user_blogs = [r["blog_id"] for r in cursor.fetchall()]
+        if user_blogs:
+            format_strings = ','.join(['%s'] * len(user_blogs))
+            cursor.execute(f"DELETE FROM comments WHERE blog_id IN ({format_strings})", tuple(user_blogs))
+            cursor.execute(f"DELETE FROM questions WHERE blog_id IN ({format_strings})", tuple(user_blogs))
+            cursor.execute(f"DELETE FROM reading_history WHERE blog_id IN ({format_strings})", tuple(user_blogs))
+            cursor.execute("DELETE FROM blogs WHERE author_id = %s", (user_id,))
+        # 9. Finally delete the user
+        cursor.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
+
+        connection.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Account deleted successfully."
+        }), 200
+
+    except Exception:
+        if connection:
+            connection.rollback()
+        app.logger.exception("Error deleting user account")
+        return jsonify({
+            "success": False,
+            "message": "Could not delete account."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
 
 
 # =========================

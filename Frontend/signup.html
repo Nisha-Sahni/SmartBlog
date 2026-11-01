@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&family=Playfair+Display:ital,wght@0,500..800;1,500..800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
@@ -46,7 +48,7 @@
             <div class="auth-quote">
                 <span>"</span>
                 Every great idea deserves a place to be shared.
-              <span>"</span>
+                <span>"</span>
             </div>
 
         </div>
@@ -175,14 +177,12 @@
 
 
                 <!-- DIVIDER -->
-
                 <div class="auth-divider">
                     <span>or</span>
                 </div>
 
 
                 <!-- LOGIN -->
-
                 <p class="auth-switch">
 
                     Already have an account?
@@ -195,7 +195,6 @@
 
 
                 <!-- BACK -->
-
                 <a href="home.html" class="back-home">
                     ← Back to SmartBlog
                 </a>
@@ -206,74 +205,8 @@
 
     </div>
 
-
-    <script>
-    document
-        .getElementById("signupForm")
-        .addEventListener("submit", async function(event) {
-
-            event.preventDefault();
-
-            const name =
-                document.getElementById("name").value;
-
-            const email =
-                document.getElementById("signupEmail").value;
-
-            const password =
-                document.getElementById("signupPassword").value;
-
-            const confirmPassword =
-                document.getElementById("confirmPassword").value;
-
-            // Check passwords
-            if (password !== confirmPassword) {
-                alert("Passwords do not match.");
-                return;
-            }
-
-            try {
-
-                const response = await fetch(
-                    "http://127.0.0.1:5000/signup",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            name: name,
-                            email: email,
-                            password: password
-                        })
-                    }
-                );
-
-                const result = await response.json();
-
-                if (response.ok) {
-
-                    alert(result.message);
-
-                    // Go to login page after successful signup
-                    window.location.href = "login.html";
-
-                } else {
-
-                    alert(result.message);
-                }
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert("Could not connect to SmartBlog server.");
-            }
-
-        });
-</script>
+    <!-- SINGLE SIGNUP HANDLER -->
+    <script src="signup.js"></script>
 
 </body>
 

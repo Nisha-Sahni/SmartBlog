@@ -1216,3 +1216,444 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Author Ranking */
+.author-rank-card {
+    width: 100%;
+    max-width: 805px;
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--white);
+    color: var(--ink);
+}
+
+.author-rank-card h3 {
+    margin: 0 0 10px;
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.author-rank-card p {
+    margin: 4px 0;
+    color: #454438;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   SMARTBLOG — PUBLISHED & SAVED BLOG CARDS
+   ========================================= */
+
+#blogsGrid,
+#savedGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 22px;
+    align-items: stretch;
+}
+
+#blogsGrid .blog-card,
+#savedGrid .blog-card,
+#blogsGrid .profile-story-card,
+#savedGrid .profile-story-card {
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--paper);
+    box-shadow: 0 3px 12px rgba(40, 38, 25, 0.025);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#blogsGrid .blog-card:hover,
+#savedGrid .blog-card:hover,
+#blogsGrid .profile-story-card:hover,
+#savedGrid .profile-story-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(40, 38, 25, 0.08);
+}
+
+/* Cover image */
+#blogsGrid .blog-card > img,
+#savedGrid .blog-card > img,
+#blogsGrid .profile-story-card > img,
+#savedGrid .profile-story-card > img {
+    display: block;
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    object-position: center;
+    background: #f0eee5;
+}
+
+/* Card details */
+#blogsGrid .blog-card .blog-card-content,
+#savedGrid .blog-card .blog-card-content,
+#blogsGrid .profile-story-card .story-content,
+#savedGrid .profile-story-card .story-content {
+    padding: 20px;
+}
+
+#blogsGrid .blog-topic,
+#savedGrid .blog-topic,
+#blogsGrid .story-topic,
+#savedGrid .story-topic {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 6px 10px;
+    border-radius: 30px;
+    background: var(--lime-soft);
+    color: #526d1e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+#blogsGrid .blog-card h3,
+#savedGrid .blog-card h3,
+#blogsGrid .profile-story-card h3,
+#savedGrid .profile-story-card h3 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 21px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+#blogsGrid .blog-card p,
+#savedGrid .blog-card p,
+#blogsGrid .profile-story-card p,
+#savedGrid .profile-story-card p {
+    margin: 0 0 15px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+#blogsGrid .blog-date,
+#savedGrid .blog-date {
+    display: block;
+    margin: 0 0 15px;
+    color: #99968c;
+    font-size: 11px;
+}
+
+/* Card actions */
+#blogsGrid .story-link,
+#blogsGrid .blog-card a,
+#savedGrid .story-link,
+#savedGrid .blog-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 12px 0 0;
+    color: #607b24;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+#blogsGrid .story-link:hover,
+#blogsGrid .blog-card a:hover,
+#savedGrid .story-link:hover,
+#savedGrid .blog-card a:hover {
+    text-decoration: underline;
+}
+
+/* Edit button — also supports common existing button class names */
+#blogsGrid .edit-blog-btn,
+#blogsGrid .edit-btn,
+#blogsGrid button[data-action="edit"],
+#blogsGrid button[data-edit-blog],
+#blogsGrid .edit-blog-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    margin: 0 0 0 4px;
+    padding: 8px 15px;
+    border: 1px solid #d5e99a;
+    border-radius: 8px;
+    background: var(--lime);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease;
+}
+
+#blogsGrid .edit-blog-btn:hover,
+#blogsGrid .edit-btn:hover,
+#blogsGrid button[data-action="edit"]:hover,
+#blogsGrid button[data-edit-blog]:hover,
+#blogsGrid .edit-blog-button:hover {
+    background: var(--lime-hover);
+    transform: translateY(-1px);
+}
+
+/* Remove saved button */
+#savedGrid .remove-saved-button,
+#savedGrid button {
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--lime-soft);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#savedGrid .remove-saved-button:hover,
+#savedGrid button:hover {
+    background: var(--lime);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    #blogsGrid,
+    #savedGrid {
+        grid-template-columns: 1fr;
+    }
+
+    #blogsGrid .blog-card > img,
+    #savedGrid .blog-card > img,
+    #blogsGrid .profile-story-card > img,
+    #savedGrid .profile-story-card > img {
+        height: 190px;
+    }
+}
+
+/* Blog card image fallback and action layout */
+.blog-image-fallback {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--lime-soft);
+    color: #718d2c;
+    font-family: var(--serif);
+    font-size: 38px;
+}
+
+.blog-image-fallback span {
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 11px;
+}
+
+.blog-card-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.blog-card-actions .story-link {
+    margin: 0;
+}
+
+.blog-card-actions .edit-blog-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 8px 15px;
+    border: 1px solid #d5e99a;
+    border-radius: 8px;
+    background: var(--lime);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.blog-card-actions .edit-blog-button:hover {
+    background: var(--lime-hover);
+}
+/* ==========================================
+   EDIT BLOG MODAL — SMARTBLOG THEME
+========================================== */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+#editBlogModal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(34, 34, 31, 0.58);
+    backdrop-filter: blur(5px);
+    overflow-y: auto;
+}
+
+#editBlogModal.hidden {
+    display: none !important;
+}
+
+#editBlogModal .modal-content,
+#editBlogModal .edit-blog-content {
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 36px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--paper);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+}
+
+#editBlogModal h2 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 600;
+}
+
+#editBlogModal .modal-subtitle {
+    margin-bottom: 27px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+#editBlogModal form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#editBlogModal label {
+    margin-top: 12px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+#editBlogModal input,
+#editBlogModal select,
+#editBlogModal textarea {
+    width: 100%;
+    padding: 14px 15px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+#editBlogModal input:focus,
+#editBlogModal select:focus,
+#editBlogModal textarea:focus {
+    border-color: #a7c65b;
+    box-shadow: 0 0 0 3px rgba(181, 211, 103, .18);
+}
+
+#editBlogModal textarea {
+    min-height: 220px;
+    resize: vertical;
+    line-height: 1.8;
+}
+
+#editBlogModal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+#editBlogModal button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 9px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+
+#editBlogModal #saveEditBlogBtn,
+#editBlogModal button[type="submit"] {
+    background: var(--ink);
+    color: white;
+}
+
+#editBlogModal #saveEditBlogBtn:hover,
+#editBlogModal button[type="submit"]:hover {
+    background: #526d1e;
+    transform: translateY(-2px);
+}
+
+#editBlogModal #cancelEditBlogBtn,
+#editBlogModal #closeEditBlogBtn {
+    background: #f0eee8;
+    color: var(--ink);
+}
+
+#editBlogModal #cancelEditBlogBtn:hover {
+    background: var(--lime);
+}
+
+#editBlogModal button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    #editBlogModal {
+        padding: 12px;
+        align-items: flex-start;
+    }
+
+    #editBlogModal .modal-content,
+    #editBlogModal .edit-blog-content {
+        margin: auto 0;
+        padding: 23px 18px;
+        max-height: 95vh;
+    }
+
+    #editBlogModal h2 {
+        font-size: 27px;
+    }
+
+    #editBlogModal .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    #editBlogModal .form-actions button {
+        width: 100%;
+    }
+}

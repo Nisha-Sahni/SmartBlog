@@ -9,7 +9,13 @@
 </head>
 <body>
     <main class="interests-container">
-        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+            <a href="dashboard.html" class="back-link" style="margin: 0;">← Back to Dashboard</a>
+            <div style="display: flex; gap: 14px; align-items: center;">
+                <a href="help.html" style="text-decoration: none; color: var(--muted); font-weight: 500; font-size: 13px;">Help &amp; Support</a>
+                <button type="button" class="logout-btn" data-action="logout" style="background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; color: #b91c1c;">Log out</button>
+            </div>
+        </div>
 
         <header class="page-header">
             <span class="eyebrow">PERSONALIZE YOUR EXPERIENCE</span>
@@ -54,6 +60,7 @@
         </div>
     </main>
 
+    <script src="auth.js"></script>
     <script src="interests.js"></script>
 </body>
 </html>

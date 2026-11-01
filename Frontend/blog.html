@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +8,10 @@
 
     <title>Blog | SmartBlog</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="blog.css">
@@ -14,404 +19,362 @@
 
 <body class="blog-page">
 
-    <!-- SIDEBAR -->
+    <!-- ANNOUNCEMENT BAR -->
+    <div class="announcement">
+        A little inspiration goes a long way.
+        <a href="explore.html">Find your next read ↗</a>
+    </div>
 
-    <aside class="dashboard-sidebar">
+    <!-- TOP HEADER -->
+    <header class="main-header">
 
-        <a href="dashboard.html" class="dashboard-brand">
-            <span class="brand-mark">S</span>
-            <span>Smart<span>Blog</span></span>
+        <a class="brand" href="dashboard.html">
+            <span class="brand-mark">S.</span>
+            smartblog.
         </a>
 
-        <nav class="dashboard-nav">
-
-            <p class="nav-heading">MENU</p>
-
-            <a href="dashboard.html" class="dashboard-nav-link">
-                <span>⌂</span>
-                Home
-            </a>
-
-            <a href="explore.html" class="dashboard-nav-link">
-                <span>⌕</span>
-                Explore
-            </a>
-
-            <a href="questions.html" class="dashboard-nav-link">
-                <span>?</span>
-                Questions
-            </a>
-
-            <p class="nav-heading nav-space">CREATE</p>
-
-            <a href="create-blog.html" class="dashboard-nav-link">
-                <span>＋</span>
-                Create Blog
-            </a>
-
-            <p class="nav-heading nav-space">ACCOUNT</p>
-
-            <a href="profile.html" class="dashboard-nav-link">
-                <span>◯</span>
-                Profile
-            </a>
-
+        <nav class="top-navigation">
+            <a href="dashboard.html" class="top-link">Home</a>
+            <a href="explore.html" class="top-link active">Explore</a>
+            <a href="search.html" class="top-link">Search</a>
+            <a href="questions.html" class="top-link">Community Q&A</a>
+            <a href="create-blog.html" class="top-link">Create a story</a>
+            <a href="leaderboard.html" class="top-link">Leaderboard</a>
+            <a href="help.html" class="top-link">Help</a>
         </nav>
 
-        <div class="sidebar-bottom">
-
-            <a href="settings.html" class="dashboard-nav-link">
-                <span>⚙</span>
-                Settings
-            </a>
-
-            <a href="home.html" class="dashboard-nav-link logout-link">
-                <span>↪</span>
-                Logout
-            </a>
-
+        <div class="profile-menu">
+            <button class="profile-button" id="profileButton" aria-expanded="false" title="Account Menu">
+                <span class="small-avatar">U</span>
+                <span>⌄</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown" hidden>
+                <a href="profile.html">My Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="help.html">Help &amp; Support</a>
+                <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+            </div>
         </div>
 
-    </aside>
+    </header>
 
 
-    <!-- BLOG CONTENT -->
+    <!-- DASHBOARD-STYLE PAGE LAYOUT -->
+    <div class="dashboard-layout blog-layout">
 
-    <main class="blog-main">
+        <!-- INTERESTS SIDEBAR -->
+        <aside class="interests-sidebar">
 
-        <a href="explore.html" class="back-to-explore">
-            ← Back to Explore
-        </a>
+            <div class="interest-title">
+                <div>
+                    <span class="eyebrow">PERSONALIZED FOR YOU</span>
+                    <h2>Your interests</h2>
+                </div>
 
+                <a href="interests.html" class="edit-interests-link">
+                    Edit ↗
+                </a>
+            </div>
 
-        <article class="blog-article">
-
-            <!-- CATEGORY -->
-
-            <span class="blog-page-category">
-                ARTIFICIAL INTELLIGENCE
-            </span>
-
-
-            <!-- TITLE -->
-
-            <h1>
-                The Future of Artificial Intelligence
-            </h1>
-
-
-            <!-- INTRO -->
-
-            <p class="blog-introduction">
-                Artificial intelligence is changing the way we learn,
-                work and create. But understanding where it is heading
-                requires looking beyond the latest trends.
+            <p class="interest-description">
+                Explore stories based on what you love.
             </p>
 
+            <div class="sidebar-topics">
 
-            <!-- AUTHOR INFO -->
-
-            <div class="blog-page-author">
-
-                <div class="blog-page-avatar">
-                    A
-                </div>
-
-                <div>
-
-                    <strong>
-                        Ananya Sharma
-                    </strong>
-
-                    <span>
-                        Published September 5, 2026 · 6 min read
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- ACTIONS -->
-
-            <div class="blog-actions">
-
-                <button>
-                    ♡ Like
+                <button type="button" data-topic="All" class="topic-active">
+                    <i class="lime-dot"></i> For you
                 </button>
 
-                <button>
-                    🔖 Save
+                <button type="button" data-topic="Technology">
+                    <i class="lavender-dot"></i> Technology
                 </button>
 
-                <button>
-                    ↗ Share
+                <button type="button" data-topic="Lifestyle">
+                    <i class="pink-dot"></i> Lifestyle
+                </button>
+
+                <button type="button" data-topic="Creativity">
+                    <i class="orange-dot"></i> Creativity
+                </button>
+
+                <button type="button" data-topic="Learning">
+                    <i class="blue-dot"></i> Learning
                 </button>
 
             </div>
 
-
-            <!-- COVER IMAGE -->
-
-            <div class="blog-cover">
-
-                <img
-                    src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1400&q=85"
-                    alt="Artificial intelligence"
-                >
-
+            <div class="interest-note">
+                <span>✳</span>
+                <p>Your interests help us discover stories you'll enjoy.</p>
             </div>
 
-
-            <!-- ARTICLE -->
-
-            <div class="blog-text">
-
-                <p>
-                    Artificial intelligence has moved from being a
-                    futuristic idea to becoming part of everyday life.
-                    From recommendation systems to intelligent
-                    assistants, AI is increasingly helping people
-                    make decisions and solve problems.
-                </p>
-
-
-                <h2>
-                    AI is becoming more accessible
-                </h2>
-
-                <p>
-                    One of the biggest changes in recent years is the
-                    accessibility of AI technologies. Tools that once
-                    required specialized knowledge can now be used by
-                    students, developers, researchers and businesses.
-                </p>
-
-
-                <h2>
-                    What does this mean for students?
-                </h2>
-
-                <p>
-                    Students can use AI to explore concepts, organize
-                    information and discover different perspectives.
-                    However, the goal should not be to replace learning
-                    with automation. Instead, AI can become a tool that
-                    supports deeper understanding.
-                </p>
-
-
-                <blockquote>
-                    Technology becomes powerful when it helps people
-                    think better, not simply when it does the thinking
-                    for them.
-                </blockquote>
-
-
-                <h2>
-                    The future is collaborative
-                </h2>
-
-                <p>
-                    The future of AI is unlikely to be simply humans
-                    versus machines. A more useful way to think about
-                    it is collaboration between people and intelligent
-                    systems.
-                </p>
-
-                <p>
-                    As these technologies continue to evolve, the most
-                    important skill may not be knowing every AI tool,
-                    but knowing how to use technology thoughtfully.
-                </p>
-
+            <div class="sidebar-write">
+                <h3>Have an idea?</h3>
+                <p>Your story might be exactly what someone needs to read.</p>
+                <a href="create-blog.html">＋ Share your ideas</a>
             </div>
 
+            <button type="button" class="sidebar-logout-btn logout-btn">🚪 Sign out</button>
 
-            <!-- TAGS -->
-
-            <div class="blog-tags">
-
-                <span>Artificial Intelligence</span>
-                <span>Technology</span>
-                <span>Education</span>
-                <span>Future</span>
-
-            </div>
+        </aside>
 
 
-            <!-- COMMENTS -->
+        <!-- MAIN BLOG CONTENT -->
+        <main class="main-content blog-main">
 
-            <section class="comments-section">
+            <div class="page-content">
 
-                <div class="comments-heading">
+                <!-- READING HEADER -->
+                <header class="blog-topbar">
 
-                    <div>
-                        <span class="blog-page-category">
-                            COMMUNITY
-                        </span>
-
-                        <h2>
-                            Comments
-                        </h2>
+                    <div class="blog-breadcrumb">
+                        <a href="dashboard.html">Home</a>
+                        <span>/</span>
+                        <a href="explore.html">Explore</a>
+                        <span>/</span>
+                        <span class="current-page">Reading</span>
                     </div>
 
-                    <span>
-                        12 comments
+                    <a href="explore.html" class="blog-back-button">
+                        <span>←</span>
+                        Back to Explore
+                    </a>
+
+                </header>
+
+
+                <!-- BLOG ARTICLE -->
+                <article class="blog-article">
+
+                    <span class="blog-page-category">
+                        ARTIFICIAL INTELLIGENCE
                     </span>
 
-                </div>
+                    <h1>
+                        The Future of Artificial Intelligence
+                    </h1>
+
+                    <p class="blog-introduction">
+                        Artificial intelligence is changing the way we learn,
+                        work and create. But understanding where it is heading
+                        requires looking beyond the latest trends.
+                    </p>
 
 
-                <div class="comment-box">
+                    <!-- AUTHOR INFO -->
+                    <div class="blog-page-author">
 
-                    <textarea
-                        placeholder="Share your thoughts..."
-                    ></textarea>
+                        <div class="blog-page-avatar">A</div>
 
-                    <button>
-                        Post Comment
-                    </button>
+                        <div>
+                            <strong>Ananya Sharma</strong>
 
-                </div>
+                            <span>
+                                Published September 5, 2026 · 6 min read
+                            </span>
+                        </div>
 
-
-                <div class="comment">
-
-                    <div class="comment-avatar">
-                        R
                     </div>
 
-                    <div>
 
-                        <strong>
-                            Rahul Mehta
-                        </strong>
+                    <!-- ACTIONS -->
+                    <div class="blog-actions">
 
-                        <small>
-                            2 hours ago
-                        </small>
+                        <button type="button">♡ Like</button>
+                        <button type="button">🔖 Save</button>
+                        <button type="button">↗ Share</button>
+
+                    </div>
+
+
+                    <!-- COVER IMAGE -->
+                    <div class="blog-cover">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1400&q=85"
+                            alt="Artificial intelligence"
+                        >
+
+                    </div>
+
+
+                    <!-- ARTICLE BODY -->
+                    <div class="blog-text">
 
                         <p>
-                            Really interesting perspective on how
-                            students can use AI without becoming
-                            dependent on it.
+                            Artificial intelligence has moved from being a
+                            futuristic idea to becoming part of everyday life.
+                            From recommendation systems to intelligent
+                            assistants, AI is increasingly helping people
+                            make decisions and solve problems.
+                        </p>
+
+                        <h2>AI is becoming more accessible</h2>
+
+                        <p>
+                            One of the biggest changes in recent years is the
+                            accessibility of AI technologies. Tools that once
+                            required specialized knowledge can now be used by
+                            students, developers, researchers and businesses.
+                        </p>
+
+                        <h2>What does this mean for students?</h2>
+
+                        <p>
+                            Students can use AI to explore concepts, organize
+                            information and discover different perspectives.
+                            However, the goal should not be to replace learning
+                            with automation. Instead, AI can become a tool that
+                            supports deeper understanding.
+                        </p>
+
+                        <blockquote>
+                            Technology becomes powerful when it helps people
+                            think better, not simply when it does the thinking
+                            for them.
+                        </blockquote>
+
+                        <h2>The future is collaborative</h2>
+
+                        <p>
+                            The future of AI is unlikely to be simply humans
+                            versus machines. A more useful way to think about
+                            it is collaboration between people and intelligent
+                            systems.
+                        </p>
+
+                        <p>
+                            As these technologies continue to evolve, the most
+                            important skill may not be knowing every AI tool,
+                            but knowing how to use technology thoughtfully.
                         </p>
 
                     </div>
 
-                </div>
 
-
-                <div class="comment">
-
-                    <div class="comment-avatar">
-                        P
+                    <!-- TAGS -->
+                    <div class="blog-tags">
+                        <span>Artificial Intelligence</span>
+                        <span>Technology</span>
+                        <span>Education</span>
+                        <span>Future</span>
                     </div>
 
-                    <div>
 
-                        <strong>
-                            Priya Kapoor
-                        </strong>
+                    <!-- DYNAMIC COMMENTS -->
+                    <section class="comments-section">
 
-                        <small>
-                            Yesterday
-                        </small>
+                        <div class="comments-heading">
 
-                        <p>
-                            The point about collaboration between
-                            humans and AI is especially interesting.
-                        </p>
+                            <div>
+                                <span class="blog-page-category">COMMUNITY</span>
+                                <h2>Comments</h2>
+                            </div>
+
+                            <span id="commentsCount">0 comments</span>
+
+                        </div>
+
+
+                        <!-- COMMENT INPUT -->
+                        <div class="comment-box">
+
+                            <textarea
+                                id="commentInput"
+                                placeholder="Share your thoughts..."
+                                maxlength="5000"
+                            ></textarea>
+
+                            <button
+                                type="button"
+                                id="postCommentBtn"
+                            >
+                                Post Comment
+                            </button>
+
+                            <p
+                                id="commentMessage"
+                                role="status"
+                                aria-live="polite"
+                            ></p>
+
+                        </div>
+
+
+                        <!-- COMMENTS WILL LOAD HERE FROM MYSQL -->
+                        <div id="commentsList"></div>
+
+                    </section>
+
+                </article>
+
+
+                <!-- RELATED BLOGS -->
+                <section class="related-blogs">
+
+                    <div class="related-heading">
+                        <span class="blog-page-category">KEEP READING</span>
+                        <h2>You might also like</h2>
+                    </div>
+
+
+                    <div class="related-grid">
+
+                        <a href="blog.html" class="related-card">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=700&q=85"
+                                alt="Machine learning"
+                            >
+
+                            <div>
+                                <span>MACHINE LEARNING</span>
+
+                                <h3>
+                                    Machine Learning Without the Jargon
+                                </h3>
+
+                                <small>5 min read</small>
+                            </div>
+
+                        </a>
+
+
+                        <a href="blog.html" class="related-card">
+
+                            <img
+                                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=700&q=85"
+                                alt="Programming"
+                            >
+
+                            <div>
+                                <span>PROGRAMMING</span>
+
+                                <h3>
+                                    What I Wish I Knew Before Learning to Code
+                                </h3>
+
+                                <small>7 min read</small>
+                            </div>
+
+                        </a>
 
                     </div>
 
-                </div>
-
-            </section>
-
-        </article>
-
-
-        <!-- RELATED BLOGS -->
-
-        <section class="related-blogs">
-
-            <div class="related-heading">
-
-                <span class="blog-page-category">
-                    KEEP READING
-                </span>
-
-                <h2>
-                    You might also like
-                </h2>
+                </section>
 
             </div>
 
+        </main>
 
-            <div class="related-grid">
-
-                <a href="blog.html" class="related-card">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=700&q=85"
-                        alt="Machine learning"
-                    >
-
-                    <div>
-
-                        <span>
-                            MACHINE LEARNING
-                        </span>
-
-                        <h3>
-                            Machine Learning Without the Jargon
-                        </h3>
-
-                        <small>
-                            5 min read
-                        </small>
-
-                    </div>
-
-                </a>
+    </div>
 
 
-                <a href="blog.html" class="related-card">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=700&q=85"
-                        alt="Programming"
-                    >
-
-                    <div>
-
-                        <span>
-                            PROGRAMMING
-                        </span>
-
-                        <h3>
-                            What I Wish I Knew Before Learning to Code
-                        </h3>
-
-                        <small>
-                            7 min read
-                        </small>
-
-                    </div>
-
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
+    <!-- JAVASCRIPT -->
     <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="blog.js"></script>
 
 </body>
-
 </html>
