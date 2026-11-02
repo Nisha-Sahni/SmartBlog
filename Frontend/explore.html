@@ -29,7 +29,11 @@
       <a class="nav-link" href="search.html"> Search</a>
       <a class="nav-link" href="questions.html"> Community Q&A</a>
       <a class="nav-link" href="create-blog.html"> Create a Story</a>
-      <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+                  <a class="nav-link" href="messages.html">
+                <span>✉</span> Messages
+            </a>
+
+            <a class="nav-link" href="leaderboard.html">Leaderboard</a>
       <a class="nav-link" href="help.html">Help</a>
     </nav>
 
@@ -40,11 +44,12 @@
       </button>
 
       <div class="profile-dropdown" id="profileDropdown" hidden>
-        <a href="profile.html">My Profile</a>
-        <a href="settings.html">Settings</a>
-        <a href="help.html">Help &amp; Support</a>
-        <button type="button" id="logoutButton" class="logout-btn">Log Out</button>
-      </div>
+                <a href="profile.html">My Profile</a>
+                <a href="messages.html">Messages</a>
+                <a href="settings.html">Settings</a>
+                <a href="help.html">Help &amp; Support</a>
+                <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+            </div>
     </div>
   </header>
 
@@ -140,115 +145,9 @@
         </div>
 
         <div class="story-grid" id="storyGrid">
-
-          <article class="story-card" data-topic="Technology"
-            data-search="technology artificial intelligence digital future">
-            <a href="#stories" class="story-image">
-              <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=85"
-                alt="Electronic circuit board">
-              <span class="category lime">TECHNOLOGY</span>
-            </a>
-            <div class="story-content">
-              <span class="meta">6 MIN READ · FEATURED</span>
-              <h3>The little things shaping our digital future</h3>
-              <p>Exploring the ideas and inventions changing how we see the world.</p>
-              <div class="story-footer">
-                <span>SmartBlog community</span>
-                <button class="save-button">♡ Save</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="story-card" data-topic="Creativity"
-            data-search="creativity writing ideas inspiration notebook">
-            <a href="#stories" class="story-image">
-              <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=85"
-                alt="Notebook and writing desk">
-              <span class="category lavender">CREATIVITY</span>
-            </a>
-            <div class="story-content">
-              <span class="meta">4 MIN READ</span>
-              <h3>Making room for your next big idea</h3>
-              <p>Sometimes the best ideas need a little breathing room.</p>
-              <div class="story-footer">
-                <span>Creative living</span>
-                <button class="save-button">♡ Save</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="story-card" data-topic="Lifestyle"
-            data-search="lifestyle habits everyday life peaceful">
-            <a href="#stories" class="story-image">
-              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=800&q=85"
-                alt="Sunlit workspace">
-              <span class="category pink">LIFESTYLE</span>
-            </a>
-            <div class="story-content">
-              <span class="meta">5 MIN READ</span>
-              <h3>A slower way to make every day count</h3>
-              <p>Little rituals that bring more intention to ordinary days.</p>
-              <div class="story-footer">
-                <span>Everyday living</span>
-                <button class="save-button">♡ Save</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="story-card" data-topic="Learning"
-            data-search="learning books curiosity knowledge reading">
-            <a href="#stories" class="story-image">
-              <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=85"
-                alt="Books ready to be read">
-              <span class="category blue">LEARNING</span>
-            </a>
-            <div class="story-content">
-              <span class="meta">7 MIN READ</span>
-              <h3>Why staying curious changes everything</h3>
-              <p>One question can open a door to an entirely new world.</p>
-              <div class="story-footer">
-                <span>Ideas worth keeping</span>
-                <button class="save-button">♡ Save</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="story-card" data-topic="Technology"
-            data-search="technology coding programming developers">
-            <a href="#stories" class="story-image">
-              <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=85"
-                alt="Laptop and digital workspace">
-              <span class="category lime">TECHNOLOGY</span>
-            </a>
-            <div class="story-content">
-              <span class="meta">8 MIN READ</span>
-              <h3>Learning to build in a digital world</h3>
-              <p>A beginner's perspective on learning, experimenting, and growing.</p>
-              <div class="story-footer">
-                <span>Tech notes</span>
-                <button class="save-button">♡ Save</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="story-card" data-topic="Creativity"
-            data-search="creativity art design inspiration imagination">
-            <a href="#stories" class="story-image">
-              <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=85"
-                alt="Colorful art supplies">
-              <span class="category lavender">CREATIVITY</span>
-            </a>
-            <div class="story-content">
-              <span class="meta">5 MIN READ</span>
-              <h3>Let curiosity lead the way</h3>
-              <p>Finding inspiration in unexpected places and ordinary moments.</p>
-              <div class="story-footer">
-                <span>Creative minds</span>
-                <button class="save-button">♡ Save</button>
-              </div>
-            </div>
-          </article>
-
+          <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--muted, #77766f);">
+            <p>Loading stories from SmartBlog community...</p>
+          </div>
         </div>
 
         <p class="empty-state" id="emptyState" hidden>

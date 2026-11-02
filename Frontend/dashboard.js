@@ -58,6 +58,12 @@ function hydrateUserSession() {
 
     document.querySelectorAll(".small-avatar, .avatar, #userAvatar").forEach(el => {
         el.textContent = initial;
+        el.style.cursor = "pointer";
+        el.title = "View profile";
+        el.onclick = (e) => {
+            e.stopPropagation();
+            window.location.href = "profile.html";
+        };
     });
 
     const welcomeHeading = document.querySelector(".dashboard-welcome h1");
@@ -167,9 +173,15 @@ function createStoryCard(blog, isLarge = false) {
     metaContainer.style.gap = "6px";
     metaContainer.style.marginBottom = "6px";
 
-    const meta = document.createElement("span");
+    const meta = document.createElement(blog.author_id ? "a" : "span");
     meta.className = "meta";
     meta.textContent = `BY ${(blog.author_name || "SmartBlog Writer").toUpperCase()}`;
+    if (blog.author_id) {
+        meta.href = `profile.html?user_id=${blog.author_id}`;
+        meta.title = `View ${(blog.author_name || "Author")}'s profile`;
+        meta.style.textDecoration = "none";
+        meta.style.color = "inherit";
+    }
     metaContainer.appendChild(meta);
 
     if (blog.recommendation_reason) {
@@ -239,10 +251,9 @@ function renderRecommendations(blogs) {
     if (emptyState) emptyState.hidden = true;
 
     const fragment = document.createDocumentFragment();
-    blogs.forEach((blog, index) => {
-        // First card is large if there are multiple cards
-        const isLarge = index === 0 && blogs.length > 1;
-        const card = createStoryCard(blog, isLarge);
+    blogs.forEach((blog) => {
+        // All recommendation cards are standardized uniformly
+        const card = createStoryCard(blog, false);
         fragment.appendChild(card);
     });
 

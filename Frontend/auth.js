@@ -136,6 +136,14 @@ const SmartBlogAuth = (() => {
         const email = user.email || "";
         const username = name.toLowerCase().replace(/[^a-z0-9_]/g, "") || "user";
 
+        // 0. Toggle home page navigation if authenticated
+        const guestNav = document.getElementById("guestNavActions");
+        const homeMenu = document.getElementById("homeProfileMenu");
+        if (guestNav && homeMenu) {
+            guestNav.hidden = true;
+            homeMenu.hidden = false;
+        }
+
         // 1. Update Avatar initial elements across all headers, menus, sidebars, and cards
         document.querySelectorAll(".small-avatar, .avatar, .profile-avatar, #userAvatar, #sidebarAvatar").forEach(el => {
             // If element contains an img, don't overwrite with initial
@@ -217,42 +225,92 @@ const SmartBlogAuth = (() => {
     }
 
     /**
-     * Appearance & Theme Controller (Light / Dark theme)
+     * Appearance & Theme Controller (Light / Dark theme & Accent Colors)
      */
-    function getTheme() {
+    const THEME_MODE_KEY = "smartblog_theme_mode";
+    const THEME_ACCENT_KEY = "smartblog_theme_accent";
+
+    function getThemeMode() {
         try {
-            return localStorage.getItem(THEME_KEY) || "light";
+            return localStorage.getItem(THEME_MODE_KEY) || localStorage.getItem(THEME_KEY) || "light";
         } catch {
             return "light";
         }
     }
 
-    function setTheme(theme) {
-        const selected = theme === "dark" ? "dark" : "light";
+    function getThemeAccent() {
         try {
-            localStorage.setItem(THEME_KEY, selected);
+            return localStorage.getItem(THEME_ACCENT_KEY) || "lime";
+        } catch {
+            return "lime";
+        }
+    }
+
+    function applyTheme(mode = null, accent = null, saveToServer = false) {
+        const selectedMode = (mode || getThemeMode()) === "dark" ? "dark" : "light";
+        const selectedAccent = accent || getThemeAccent() || "lime";
+
+        try {
+            localStorage.setItem(THEME_MODE_KEY, selectedMode);
+            localStorage.setItem(THEME_KEY, selectedMode);
+            localStorage.setItem(THEME_ACCENT_KEY, selectedAccent);
         } catch {}
 
-        document.documentElement.setAttribute("data-theme", selected);
-        if (selected === "dark") {
-            document.body.classList.add("dark-theme");
-        } else {
-            document.body.classList.remove("dark-theme");
+        document.documentElement.setAttribute("data-theme", selectedMode);
+        document.documentElement.setAttribute("data-accent", selectedAccent);
+        if (document.body) {
+            document.body.classList.toggle("dark-theme", selectedMode === "dark");
         }
 
-        // Dispatch a custom event so settings or other components can update toggles
-        window.dispatchEvent(new CustomEvent("smartblog:themechange", { detail: { theme: selected } }));
+        if (saveToServer && getToken()) {
+            fetch(`${API_BASE}/me/preferences`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getToken()}`
+                },
+                body: JSON.stringify({
+                    theme_mode: selectedMode,
+                    theme_accent: selectedAccent
+                })
+            }).catch(err => console.warn("Could not save preferences to server:", err));
+        }
+
+        window.dispatchEvent(new CustomEvent("smartblog:themechange", {
+            detail: { mode: selectedMode, accent: selectedAccent, theme: selectedMode }
+        }));
+    }
+
+    function getTheme() {
+        return getThemeMode();
+    }
+
+    function setTheme(theme, saveToServer = false) {
+        applyTheme(theme, getThemeAccent(), saveToServer);
+    }
+
+    function setAccent(accent, saveToServer = false) {
+        applyTheme(getThemeMode(), accent, saveToServer);
     }
 
     function initTheme() {
-        const theme = getTheme();
-        document.documentElement.setAttribute("data-theme", theme);
-        if (document.body) {
-            if (theme === "dark") {
-                document.body.classList.add("dark-theme");
-            } else {
-                document.body.classList.remove("dark-theme");
+        applyTheme();
+    }
+
+    async function syncThemeFromServer() {
+        const token = getToken();
+        if (!token) return;
+        try {
+            const res = await fetch(`${API_BASE}/me/preferences`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.success && data.preferences) {
+                applyTheme(data.preferences.theme_mode, data.preferences.theme_accent, false);
             }
+        } catch (e) {
+            console.warn("Theme sync failed:", e);
         }
     }
 
@@ -300,38 +358,55 @@ const SmartBlogAuth = (() => {
             const button = menu.querySelector(".profile-button");
             const dropdown = menu.querySelector(".profile-dropdown");
             if (!button || !dropdown) return;
+            if (button.dataset.dropdownBound === "true") return;
+            button.dataset.dropdownBound = "true";
 
             button.addEventListener("click", event => {
+                event.preventDefault();
                 event.stopPropagation();
-                const isHidden = dropdown.hidden;
-                dropdown.hidden = !isHidden;
-                button.setAttribute("aria-expanded", String(isHidden));
+                const willOpen = dropdown.hidden === true;
+
+                // Close any other open dropdowns first
+                document.querySelectorAll(".profile-dropdown").forEach(d => {
+                    d.hidden = true;
+                });
+                document.querySelectorAll(".profile-button").forEach(b => {
+                    b.setAttribute("aria-expanded", "false");
+                });
+
+                if (willOpen) {
+                    dropdown.hidden = false;
+                    button.setAttribute("aria-expanded", "true");
+                }
             });
         });
 
-        // Close dropdown when clicking outside
-        document.addEventListener("click", event => {
-            if (!event.target.closest(".profile-menu")) {
-                document.querySelectorAll(".profile-dropdown").forEach(dropdown => {
-                    dropdown.hidden = true;
-                });
-                document.querySelectorAll(".profile-button").forEach(btn => {
-                    btn.setAttribute("aria-expanded", "false");
-                });
-            }
-        });
+        // Bind document-level outside-click & Escape handlers only once
+        if (!document.body.dataset.dropdownDocBound) {
+            document.body.dataset.dropdownDocBound = "true";
 
-        // Close dropdown with Escape key
-        document.addEventListener("keydown", event => {
-            if (event.key === "Escape") {
-                document.querySelectorAll(".profile-dropdown").forEach(dropdown => {
-                    dropdown.hidden = true;
-                });
-                document.querySelectorAll(".profile-button").forEach(btn => {
-                    btn.setAttribute("aria-expanded", "false");
-                });
-            }
-        });
+            document.addEventListener("click", event => {
+                if (!event.target.closest(".profile-menu")) {
+                    document.querySelectorAll(".profile-dropdown").forEach(dropdown => {
+                        dropdown.hidden = true;
+                    });
+                    document.querySelectorAll(".profile-button").forEach(btn => {
+                        btn.setAttribute("aria-expanded", "false");
+                    });
+                }
+            });
+
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") {
+                    document.querySelectorAll(".profile-dropdown").forEach(dropdown => {
+                        dropdown.hidden = true;
+                    });
+                    document.querySelectorAll(".profile-button").forEach(btn => {
+                        btn.setAttribute("aria-expanded", "false");
+                    });
+                }
+            });
+        }
     }
 
     function bindLogoutButtons() {
@@ -359,6 +434,7 @@ const SmartBlogAuth = (() => {
         // Perform background synchronization with MySQL database if token is present
         if (getToken()) {
             fetchCurrentUser().catch(() => {});
+            syncThemeFromServer().catch(() => {});
         }
     }
 
@@ -378,7 +454,12 @@ const SmartBlogAuth = (() => {
         fetchCurrentUser,
         hydrateUI,
         getTheme,
+        getThemeMode,
+        getThemeAccent,
         setTheme,
+        setAccent,
+        applyTheme,
+        syncThemeFromServer,
         initTheme,
         logout,
         setupProfileDropdowns,

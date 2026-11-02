@@ -802,4 +802,111 @@ body.search-page {
         flex-direction: column;
     }
 }
+/* Search page navbar alignment */
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.main-header > .brand {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.top-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    gap: clamp(10px, 1.5vw, 22px);
+}
+
+.profile-menu {
+    position: relative;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.profile-button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+@media (max-width: 1100px) {
+    .main-header {
+        flex-wrap: wrap;
+    }
+
+    .top-navigation {
+        order: 3;
+        flex-basis: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+}
+
+/* ===== PERFECTLY CENTERED NAVBAR ===== */
+
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    min-height: 76px;
+    padding: 0 4%;
+    background: var(--paper);
+}
+
+/* Logo stays on the left */
+.main-header > .brand {
+    flex: 0 0 auto;
+    margin-right: auto;
+}
+
+/* Navigation stays at the exact center */
+.main-header .top-navigation {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: max-content;
+    gap: clamp(12px, 1.5vw, 22px);
+}
+
+/* Profile stays on the right */
+.main-header .profile-menu {
+    position: relative;
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+/* Responsive fallback */
+@media (max-width: 1150px) {
+    .main-header {
+        flex-wrap: wrap;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .main-header .top-navigation {
+        position: static;
+        transform: none;
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 10px 0;
+    }
+}
 

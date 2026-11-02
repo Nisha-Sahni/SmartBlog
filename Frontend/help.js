@@ -167,14 +167,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     <span class="ticket-status ${statusClass}">${ticket.status || "Open"}</span>
                 </div>
                 <span class="ticket-category-tag">${ticket.category || "General"}</span>
-                <h4>${ticket.subject || "Untitled Request"}</h4>
+                <h4>${escapeHTML(ticket.subject || "Untitled Request")}</h4>
             </div>
-            <p class="ticket-description">${ticket.description || ""}</p>
-            <div class="ticket-footer">
+            <p class="ticket-description">${escapeHTML(ticket.description || "")}</p>
+            <div class="ticket-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
                 <span>Submitted on ${formattedDate}</span>
-                <span>SmartBlog Support</span>
+                <button type="button" class="open-ticket-details-btn" data-id="${ticket.support_id}">Open Details ↗</button>
             </div>
         `;
+
+        card.style.cursor = "pointer";
+        card.addEventListener("click", () => openTicketModal(ticket));
+
+        const openBtn = card.querySelector(".open-ticket-details-btn");
+        if (openBtn) {
+            openBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                openTicketModal(ticket);
+            });
+        }
 
         return card;
     }
@@ -219,6 +230,47 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
             if (ticketsLoading) ticketsLoading.hidden = true;
         }
+    }
+
+    
+    // TICKET DETAILS VIEWER MODAL
+    const ticketModal = document.getElementById("ticketModal");
+    const closeTicketModal = document.getElementById("closeTicketModal");
+    const modalDoneBtn = document.getElementById("modalDoneBtn");
+    const modalTicketId = document.getElementById("modalTicketId");
+    const modalTicketStatus = document.getElementById("modalTicketStatus");
+    const modalTicketCategory = document.getElementById("modalTicketCategory");
+    const modalTicketSubject = document.getElementById("modalTicketSubject");
+    const modalTicketMeta = document.getElementById("modalTicketMeta");
+    const modalTicketDescription = document.getElementById("modalTicketDescription");
+
+    function openTicketModal(ticket) {
+        if (!ticketModal) return;
+        const formattedDate = ticket.created_at
+            ? new Date(ticket.created_at).toLocaleDateString("en-US", {
+                month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit"
+            })
+            : "Recently";
+
+        if (modalTicketId) modalTicketId.textContent = `#SR-${ticket.support_id}`;
+        if (modalTicketStatus) {
+            modalTicketStatus.textContent = ticket.status || "Open";
+            modalTicketStatus.className = `ticket-status ${getStatusClass(ticket.status)}`;
+        }
+        if (modalTicketCategory) modalTicketCategory.textContent = ticket.category || "General";
+        if (modalTicketSubject) modalTicketSubject.textContent = ticket.subject || "Untitled Request";
+        if (modalTicketMeta) modalTicketMeta.textContent = `Submitted on ${formattedDate} • Ticket Ref: #SR-${ticket.support_id}`;
+        if (modalTicketDescription) modalTicketDescription.textContent = ticket.description || "No description provided.";
+
+        ticketModal.hidden = false;
+    }
+
+    if (closeTicketModal) closeTicketModal.addEventListener("click", () => { ticketModal.hidden = true; });
+    if (modalDoneBtn) modalDoneBtn.addEventListener("click", () => { ticketModal.hidden = true; });
+    if (ticketModal) {
+        ticketModal.addEventListener("click", (e) => {
+            if (e.target === ticketModal) ticketModal.hidden = true;
+        });
     }
 
     if (refreshTicketsBtn) {

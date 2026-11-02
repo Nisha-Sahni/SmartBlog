@@ -1,905 +1,1220 @@
 
+/**
+ * SmartBlog — Profile & Public Author Page
+ * Supports:
+ * - Own profile and public author profiles
+ * - Profile editing and picture upload
+ * - Published and saved stories
+ * - Story editing
+ * - Dynamic interests sidebar
+ * - Story cover image fallbacks
+ */
+
 const API_BASE_URL = "http://127.0.0.1:5000";
 
-// ==========================================
-// CURRENT USER
-// ==========================================
+document.addEventListener("DOMContentLoaded", async () => {
+    const auth = window.SmartBlogAuth;
 
-let currentUser = null;
+    if (auth && !auth.requireAuth("login.html")) {
+        return;
+    }
 
-try {
-    currentUser = JSON.parse(localStorage.getItem("user") || "null");
-} catch (error) {
-    console.error("Could not read user:", error);
-}
+    const token = auth
+        ? auth.getToken()
+        : localStorage.getItem("token");
 
-if (!currentUser?.user_id) {
-    window.location.href = "login.html";
-    throw new Error("No authenticated user found.");
-}
+    let currentUser = {};
 
-const userKey = String(currentUser.user_id);
-
-const PROFILE_KEY = `smartblog_profile_${userKey}`;
-const PROFILE_PIC_KEY = `smartblog_profile_pic_${userKey}`;
-const BLOGS_KEY = `smartblog_blogs_${userKey}`;
-const SAVED_KEY = `smartblog_saved_blogs_${userKey}`;
-const HISTORY_KEY = `smartblog_reading_history_${userKey}`;
-
-// ==========================================
-// STORAGE
-// ==========================================
-
-const defaultProfile = {
-    name: currentUser.name || "User",
-    username: (currentUser.name || "user")
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, ""),
-    bio: "Student, curious learner, and aspiring developer. I love exploring ideas and sharing what I learn.",
-    interests: ["Technology", "Programming", "Writing"]
-};
-
-function readStorage(key, fallback) {
     try {
-        const value = localStorage.getItem(key);
-        return value === null ? fallback : JSON.parse(value);
-    } catch (error) {
-        console.error("Storage read error:", error);
-        return fallback;
-    }
-}
-
-function writeStorage(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-}
-
-// ==========================================
-// IMAGE URL HANDLING
-// ==========================================
-
-function resolveImageUrl(url) {
-    if (!url) return "";
-
-    const value = String(url).trim();
-
-    if (!value) return "";
-
-    if (/^(https?:\/\/|data:|blob:)/i.test(value)) {
-        return value;
+        currentUser = auth
+            ? auth.getCurrentUser() || {}
+            : JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+        currentUser = {};
     }
 
-    if (value.startsWith("//")) {
-        return window.location.protocol + value;
+    const currentUserId = currentUser?.user_id || currentUser?.id;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramUserId = urlParams.get("user_id") || urlParams.get("id");
+
+    const targetUserId = paramUserId
+        ? Number.parseInt(paramUserId, 10)
+        : currentUserId;
+
+    const isOwnProfile =
+        !paramUserId ||
+        String(targetUserId) === String(currentUserId);
+
+    // ==========================================
+    // ELEMENT REFERENCES
+    // ==========================================
+
+    const get = id => document.getElementById(id);
+
+    const displayName = get("displayName");
+    const displayUsername = get("displayUsername");
+    const displayBio = get("displayBio");
+    const displayInterests = get("displayInterests");
+
+    const profileAvatar = get("profileAvatar");
+    const profilePicPreview = get("profilePicPreview");
+    const cameraIcon = get("cameraIcon");
+    const avatarUploadLabel = get("avatarUploadLabel");
+    const profilePicInput = get("profilePicInput");
+    const reputationBadge = get("reputationBadge");
+
+    const editProfileBtn = get("editProfileBtn");
+    const messageUserBtn = get("messageUserBtn");
+    const editProfileSection = get("editProfileSection");
+    const closeEditSectionBtn = get("closeEditSectionBtn");
+    const cancelEditBtn = get("cancelEditBtn");
+    const profileForm = get("profileForm");
+
+    const nameInput = get("nameInput");
+    const usernameInput = get("usernameInput");
+    const bioInput = get("bioInput");
+    const interestsInput = get("interestsInput");
+
+    const publishedCount = get("publishedCount");
+    const savedCount = get("savedCount");
+    const statReputation = get("statReputation");
+    const savedStatCard = get("savedStatCard");
+
+    const authoredHeading = get("authoredHeading");
+    const blogsGrid = get("blogsGrid");
+    const blogsEmpty = get("blogsEmpty");
+    const blogsEmptyDesc = get("blogsEmptyDesc");
+    const createStoryLink = get("createStoryLink");
+    const emptyWriteBtn = get("emptyWriteBtn");
+
+    const savedSection = get("savedSection");
+    const savedGrid = get("savedGrid");
+    const savedEmpty = get("savedEmpty");
+
+    const editBlogModal = get("editBlogModal");
+    const editBlogForm = get("editBlogForm");
+    const closeEditBlogBtn = get("closeEditBlogBtn");
+    const cancelEditBlogBtn = get("cancelEditBlogBtn");
+
+    const profileSidebarTopics = document.querySelector(
+        ".profile-page .sidebar-topics"
+    );
+
+    const profileButton = get("profileButton");
+    const profileDropdown = get("profileDropdown");
+    const logoutButton = get("logoutButton");
+
+    const SAVED_KEY = "smartblog_saved_blogs_v1";
+
+    let activeProfileData = null;
+    let publishedBlogs = [];
+    let savedBlogs = [];
+    let currentlyEditingBlog = null;
+
+    const fallbackPublishedCover =
+        "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=85";
+
+    const fallbackSavedCover =
+        "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=85";
+
+
+    // ==========================================
+    // GENERAL HELPERS
+    // ==========================================
+
+    function escapeHTML(value) {
+        if (value === null || value === undefined) return "";
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
-    // Root-relative URL belonging to Flask.
-    if (value.startsWith("/")) {
-        return `${API_BASE_URL}${value}`;
+    function calculateReadTime(content) {
+        if (!content) return 3;
+
+        const words = String(content).trim().split(/\s+/).length;
+
+        return Math.max(1, Math.ceil(words / 180));
     }
 
-    // Common Flask upload paths.
-    if (
-        value.startsWith("uploads/") ||
-        value.startsWith("static/uploads/")
-    ) {
-        return `${API_BASE_URL}/${value}`;
+    function formatDate(dateValue) {
+        if (!dateValue) return "Recently";
+
+        const date = new Date(dateValue);
+
+        if (Number.isNaN(date.getTime())) return "Recently";
+
+        return date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
     }
 
-    return value;
-}
+    function getBlogId(blog) {
+        return blog?.blog_id ?? blog?.id ?? "";
+    }
 
-// ==========================================
-// BLOG NORMALIZATION
-// ==========================================
+    function getBlogCover(blog) {
+        const possibleFields = [
+            blog?.cover_url,
+            blog?.image,
+            blog?.imageUrl,
+            blog?.coverImage,
+            blog?.image_url,
+            blog?.thumbnail,
+            blog?.thumbnail_url,
+            blog?.cover,
+            blog?.featured_image
+        ];
 
-function normalizeBlogs(items) {
-    if (!Array.isArray(items)) return [];
+        return possibleFields.find(value =>
+            typeof value === "string" && value.trim()
+        ) || "";
+    }
 
-    return items.map((blog, index) => {
-        if (!blog || typeof blog !== "object") return null;
+    function getBlogLink(blog) {
+        if (blog?.link) return blog.link;
 
-        const blogId =
-            blog.blog_id ??
-            blog.id ??
-            blog.blogId ??
-            blog.blogID ??
-            null;
+        const id = getBlogId(blog);
 
-        const originalCover =
-            blog.cover_url ??
-            blog.coverImage ??
-            blog.imageUrl ??
-            blog.image ??
-            "";
+        return id
+            ? `blog.html?id=${encodeURIComponent(id)}`
+            : "explore.html";
+    }
 
-        const fullContent = String(
-            blog.content || blog.description || blog.excerpt || ""
-        );
+    function addImageFallback(img, fallbackUrl) {
+        img.addEventListener("error", () => {
+            if (img.dataset.fallbackApplied === "true") return;
 
-        const description = String(
-            blog.subtitle || blog.excerpt || fullContent
+            img.dataset.fallbackApplied = "true";
+            img.src = fallbackUrl;
+        });
+    }
+
+    async function readResponse(response) {
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch {
+            data = {};
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                `Request failed (${response.status})`
+            );
+        }
+
+        return data;
+    }
+
+
+    // ==========================================
+    // 1. OWN PROFILE / PUBLIC PROFILE MODE
+    // ==========================================
+
+    function setupProfileViewMode() {
+        if (isOwnProfile) {
+            if (editProfileBtn) editProfileBtn.hidden = false;
+            if (messageUserBtn) messageUserBtn.hidden = true;
+
+            if (cameraIcon) cameraIcon.hidden = false;
+
+            if (avatarUploadLabel) {
+                avatarUploadLabel.style.cursor = "pointer";
+            }
+
+            if (profilePicInput) profilePicInput.disabled = false;
+
+            if (savedStatCard) savedStatCard.hidden = false;
+            if (savedSection) savedSection.hidden = false;
+
+            if (createStoryLink) createStoryLink.hidden = false;
+            if (emptyWriteBtn) emptyWriteBtn.hidden = false;
+
+            const pageTitle = get("profilePageTitle");
+
+            if (pageTitle) {
+                pageTitle.innerHTML = "My profile<span>.</span>";
+            }
+
+            const eyebrow = get("profilePageEyebrow");
+
+            if (eyebrow) eyebrow.textContent = "CREATOR SPACE";
+
+        } else {
+            if (editProfileBtn) editProfileBtn.hidden = true;
+
+            if (messageUserBtn) {
+                messageUserBtn.hidden = false;
+                messageUserBtn.href =
+                    `messages.html?user_id=${encodeURIComponent(targetUserId)}`;
+            }
+
+            if (cameraIcon) cameraIcon.hidden = true;
+
+            if (avatarUploadLabel) {
+                avatarUploadLabel.style.cursor = "default";
+            }
+
+            if (profilePicInput) profilePicInput.disabled = true;
+
+            if (savedStatCard) savedStatCard.hidden = true;
+            if (savedSection) savedSection.hidden = true;
+
+            if (createStoryLink) createStoryLink.hidden = true;
+            if (emptyWriteBtn) emptyWriteBtn.hidden = true;
+
+            const pageTitle = get("profilePageTitle");
+
+            if (pageTitle) {
+                pageTitle.innerHTML = "Author profile<span>.</span>";
+            }
+
+            const eyebrow = get("profilePageEyebrow");
+
+            if (eyebrow) eyebrow.textContent = "MEET THE WRITER";
+        }
+    }
+
+
+    // ==========================================
+    // 2. LOAD PROFILE
+    // ==========================================
+
+    async function loadProfile() {
+        if (!targetUserId && token) {
+            try {
+                const meRes = await fetch(`${API_BASE_URL}/me`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (meRes.ok) {
+                    const meData = await meRes.json();
+                    if (meData.user) {
+                        currentUser = meData.user;
+                        targetUserId = meData.user.user_id;
+                        isOwnProfile = true;
+                        if (auth?.setCurrentUser) auth.setCurrentUser(currentUser);
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not fetch authenticated profile /me:", err);
+            }
+        }
+
+        if (!targetUserId) {
+            if (displayName) {
+                displayName.textContent = "Profile unavailable";
+            }
+            return;
+        }
+
+        if (isOwnProfile) {
+            try {
+                if (auth?.fetchCurrentUser) {
+                    const freshUser = await auth.fetchCurrentUser(true);
+
+                    if (freshUser) {
+                        activeProfileData = freshUser;
+                        currentUser = freshUser;
+                    } else {
+                        activeProfileData = currentUser;
+                    }
+                } else {
+                    activeProfileData = currentUser;
+                }
+            } catch (error) {
+                console.error("Could not refresh user:", error);
+                activeProfileData = currentUser;
+            }
+
+        } else {
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/users/${encodeURIComponent(targetUserId)}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                const data = await readResponse(response);
+
+                activeProfileData = data.user || data;
+
+            } catch (error) {
+                console.error("Could not load public profile:", error);
+
+                if (displayName) {
+                    displayName.textContent = "Author profile unavailable";
+                }
+
+                if (blogsEmpty) blogsEmpty.hidden = false;
+
+                return;
+            }
+        }
+
+        renderProfileHero();
+
+        await loadAuthoredBlogs();
+
+        if (isOwnProfile) {
+            loadSavedBlogs();
+        }
+    }
+
+
+    // ==========================================
+    // 3. PROFILE HERO
+    // ==========================================
+
+    function renderProfileHero() {
+        if (!activeProfileData) return;
+
+        const name = String(
+            activeProfileData.name || "Writer"
         ).trim();
 
-        const hasDatabaseId =
-            blogId !== null && blogId !== "";
+        const username =
+            activeProfileData.username ||
+            name.toLowerCase().replace(/[^a-z0-9_]/g, "") ||
+            "writer";
 
-        return {
-            ...blog,
+        const initial = name.charAt(0).toUpperCase() || "U";
 
-            id: hasDatabaseId ? String(blogId) : String(index),
-            blog_id: hasDatabaseId ? blogId : null,
+        const reputation =
+            activeProfileData.reputation_points || 0;
 
-            title: String(blog.title || blog.name || "Untitled blog"),
-            subtitle: String(blog.subtitle || ""),
-            content: fullContent,
+        if (displayName) {
+            displayName.textContent = name;
+        }
 
-            topic: String(
-                blog.topic || blog.category || "General"
-            ),
+        if (displayUsername) {
+            displayUsername.textContent = `@${username}`;
+        }
 
-            // Original database value. Never replace this with
-            // the resolved display URL.
-            cover_url: originalCover,
+        if (profileAvatar) {
+            profileAvatar.textContent = initial;
+        }
 
-            // Used only by the image element.
-            image: resolveImageUrl(originalCover),
+        if (reputationBadge) {
+            reputationBadge.textContent = `★ ${reputation} points`;
+        }
 
-            description: description.length > 220
-                ? description.slice(0, 220).trim() + "..."
-                : description,
+        if (statReputation) {
+            statReputation.textContent = reputation;
+        }
 
-            link: hasDatabaseId
-                ? `blog.html?id=${encodeURIComponent(String(blogId))}`
-                : (
-                    blog.link ||
-                    blog.url ||
-                    blog.href ||
-                    blog.blogUrl ||
-                    ""
-                )
-        };
-    }).filter(Boolean);
-}
+        // Bio
+        const bioKey = `smartblog_bio_${targetUserId}`;
 
-// ==========================================
-// INITIAL DATA
-// ==========================================
+        let savedBio = "";
 
-let profile = readStorage(PROFILE_KEY, { ...defaultProfile });
-let blogs = normalizeBlogs(readStorage(BLOGS_KEY, []));
-let savedBlogs = normalizeBlogs(readStorage(SAVED_KEY, []));
-let history = normalizeBlogs(readStorage(HISTORY_KEY, []));
+        try {
+            savedBio = localStorage.getItem(bioKey) || "";
+        } catch {}
 
-if (!profile || typeof profile !== "object") {
-    profile = { ...defaultProfile };
-}
+        if (displayBio) {
+            displayBio.textContent = savedBio ||
+                activeProfileData.bio ||
+                (isOwnProfile
+                    ? "Curious learner and writer on SmartBlog. Exploring ideas and sharing stories."
+                    : "Writer and creator sharing stories on SmartBlog.");
+        }
 
-// ==========================================
-// PROFILE ELEMENTS
-// ==========================================
+        // Interests
+        const interests = Array.isArray(activeProfileData.interests)
+            ? activeProfileData.interests
+            : ["Technology", "Writing"];
 
-const profileForm = document.getElementById("profileForm");
-const profilePicInput = document.getElementById("profilePicInput");
-const profilePicPreview = document.getElementById("profilePicPreview");
-const profileAvatar = document.getElementById("profileAvatar");
+        if (displayInterests) {
+            displayInterests.innerHTML = "";
 
-// ==========================================
-// DISPLAY PROFILE
-// ==========================================
+            interests.forEach(topic => {
+                const span = document.createElement("span");
 
-function displayProfile() {
-    const name = profile.name || currentUser.name || "User";
+                span.textContent = topic;
 
-    const displayName = document.getElementById("displayName");
-    const displayUsername = document.getElementById("displayUsername");
-    const displayBio = document.getElementById("displayBio");
-
-    if (displayName) displayName.textContent = name;
-
-    if (displayUsername) {
-        displayUsername.textContent =
-            "@" + (profile.username || defaultProfile.username);
-    }
-
-    if (displayBio) displayBio.textContent = profile.bio || "";
-
-    const initial = name.trim().charAt(0).toUpperCase() || "?";
-
-    if (profileAvatar) profileAvatar.textContent = initial;
-
-    const sidebarAvatar = document.getElementById("sidebarAvatar");
-    const sidebarName = document.getElementById("sidebarName");
-
-    if (sidebarAvatar) sidebarAvatar.textContent = initial;
-    if (sidebarName) sidebarName.textContent = name;
-
-    const interestsContainer =
-        document.getElementById("displayInterests");
-
-    if (interestsContainer) {
-        interestsContainer.replaceChildren();
-
-        (Array.isArray(profile.interests) ? profile.interests : [])
-            .forEach(interest => {
-                const tag = document.createElement("span");
-                tag.textContent = interest;
-                interestsContainer.appendChild(tag);
+                displayInterests.appendChild(span);
             });
+        }
+
+        // Update the left Interests panel using the same visual structure.
+        renderSidebarInterests(interests);
+
+        // Profile picture
+        const pictureKey =
+            `smartblog_profile_pic_${targetUserId}`;
+
+        let savedPicture = null;
+
+        try {
+            savedPicture = localStorage.getItem(pictureKey);
+        } catch {}
+
+        if (savedPicture && profilePicPreview) {
+            profilePicPreview.src = savedPicture;
+            profilePicPreview.classList.remove("hidden");
+
+            if (profileAvatar) {
+                profileAvatar.classList.add("hidden");
+            }
+        } else {
+            if (profilePicPreview) {
+                profilePicPreview.classList.add("hidden");
+            }
+
+            if (profileAvatar) {
+                profileAvatar.classList.remove("hidden");
+            }
+        }
+
+        // Edit form values
+        if (isOwnProfile) {
+            if (nameInput) nameInput.value = name;
+
+            if (usernameInput) {
+                usernameInput.value = username;
+            }
+
+            if (bioInput) {
+                bioInput.value = savedBio ||
+                    activeProfileData.bio ||
+                    "";
+            }
+
+            if (interestsInput) {
+                interestsInput.value = interests.join(", ");
+            }
+        }
     }
-}
 
-// ==========================================
-// PROFILE PICTURE
-// ==========================================
 
-function displayProfilePicture() {
-    const picture = readStorage(PROFILE_PIC_KEY, "");
+    // ==========================================
+    // 4. DYNAMIC INTERESTS SIDEBAR
+    // ==========================================
 
-    if (picture && profilePicPreview && profileAvatar) {
-        profilePicPreview.src = picture;
-        profilePicPreview.classList.remove("hidden");
-        profileAvatar.classList.add("hidden");
-    } else {
-        profilePicPreview?.classList.add("hidden");
-        profileAvatar?.classList.remove("hidden");
+    function renderSidebarInterests(interests) {
+        if (!profileSidebarTopics) return;
+
+        const colors = [
+            "lime-dot",
+            "lavender-dot",
+            "pink-dot",
+            "orange-dot",
+            "blue-dot"
+        ];
+
+        profileSidebarTopics.innerHTML = "";
+
+        const topics = Array.isArray(interests)
+            ? interests.filter(Boolean)
+            : [];
+
+        const finalTopics = topics.length
+            ? topics.slice(0, 8)
+            : ["Technology", "Writing"];
+
+        const forYouButton = document.createElement("button");
+
+        forYouButton.type = "button";
+        forYouButton.className = "topic-active";
+        forYouButton.innerHTML = `<i class="lime-dot"></i> For you`;
+
+        forYouButton.addEventListener("click", () => {
+            profileSidebarTopics
+                .querySelectorAll("button")
+                .forEach(button => button.classList.remove("topic-active"));
+
+            forYouButton.classList.add("topic-active");
+        });
+
+        profileSidebarTopics.appendChild(forYouButton);
+
+        finalTopics.forEach((topic, index) => {
+            const button = document.createElement("button");
+
+            button.type = "button";
+
+            const dotClass = colors[index % colors.length];
+
+            const dot = document.createElement("i");
+            dot.className = dotClass;
+
+            button.appendChild(dot);
+            button.appendChild(document.createTextNode(` ${topic}`));
+
+            button.addEventListener("click", () => {
+                profileSidebarTopics
+                    .querySelectorAll("button")
+                    .forEach(item => item.classList.remove("topic-active"));
+
+                button.classList.add("topic-active");
+            });
+
+            profileSidebarTopics.appendChild(button);
+        });
     }
-}
 
-profilePicInput?.addEventListener("change", event => {
-    const file = event.target.files?.[0];
-    if (!file) return;
 
-    const allowedTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/webp"
-    ];
+    // ==========================================
+    // 5. LOAD AUTHORED BLOGS
+    // ==========================================
 
-    if (!allowedTypes.includes(file.type)) {
-        alert("Please select a PNG, JPG or WEBP image.");
-        profilePicInput.value = "";
-        return;
-    }
+    async function loadAuthoredBlogs() {
+        if (!blogsGrid) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-        alert("Please choose an image smaller than 5 MB.");
-        profilePicInput.value = "";
-        return;
-    }
+        blogsGrid.innerHTML = `
+            <div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--muted)">
+                Loading stories...
+            </div>
+        `;
 
-    const reader = new FileReader();
-
-    reader.onload = loadEvent => {
-        const image = new Image();
-
-        image.onload = () => {
-            const canvas = document.createElement("canvas");
-            const maxSize = 400;
-
-            const scale = Math.min(
-                1,
-                maxSize / Math.max(image.width, image.height)
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/authors/${encodeURIComponent(targetUserId)}/blogs`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
 
-            canvas.width = Math.round(image.width * scale);
-            canvas.height = Math.round(image.height * scale);
+            const data = await readResponse(response);
 
-            const context = canvas.getContext("2d");
+            publishedBlogs = Array.isArray(data.blogs)
+                ? data.blogs
+                : [];
 
-            if (!context) {
-                alert("Could not process this image.");
+            if (publishedCount) {
+                publishedCount.textContent = publishedBlogs.length;
+            }
+
+            if (authoredHeading) {
+                authoredHeading.innerHTML = isOwnProfile
+                    ? "Published stories<span>.</span>"
+                    : `Stories by ${escapeHTML(activeProfileData?.name || "Author")}<span>.</span>`;
+            }
+
+            renderAuthoredCards();
+
+        } catch (error) {
+            console.error("Error loading authored stories:", error);
+
+            blogsGrid.innerHTML = "";
+
+            if (blogsEmpty) {
+                blogsEmpty.hidden = false;
+            }
+
+            if (blogsEmptyDesc) {
+                blogsEmptyDesc.textContent =
+                    "We couldn't load these stories. Please refresh and try again.";
+            }
+        }
+    }
+
+
+    // ==========================================
+    // 6. RENDER AUTHORED STORY CARDS
+    // ==========================================
+
+    function renderAuthoredCards() {
+        if (!blogsGrid) return;
+
+        blogsGrid.innerHTML = "";
+
+        if (!publishedBlogs.length) {
+            if (blogsEmpty) blogsEmpty.hidden = false;
+            return;
+        }
+
+        if (blogsEmpty) blogsEmpty.hidden = true;
+
+        publishedBlogs.forEach(blog => {
+            const card = document.createElement("article");
+
+            const tpl = (blog.template_id || "scrapbook").toLowerCase();
+            card.className = `profile-story-card template-${tpl}`;
+            card.dataset.template = tpl;
+
+            const blogId = getBlogId(blog);
+            const readTime = calculateReadTime(blog.content);
+            const date = formatDate(blog.created_at);
+            const cover = getBlogCover(blog);
+
+            const excerpt = blog.subtitle ||
+                (blog.content
+                    ? String(blog.content).substring(0, 110) + "..."
+                    : "Read this story on SmartBlog.");
+
+            card.innerHTML = `
+                <img
+                    class="story-card-image"
+                    alt="${escapeHTML(blog.title || "Story cover")}"
+                    loading="lazy"
+                >
+
+                <div class="story-card-body">
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span class="story-card-topic">
+                            ${escapeHTML(blog.topic || "Story")}
+                        </span>
+                        <span class="story-card-template-tag">
+                            ${escapeHTML(blog.template_id || "scrapbook")}
+                        </span>
+                    </div>
+
+                    <h3>
+                        <a href="${getBlogLink(blog)}">
+                            ${escapeHTML(blog.title || "Untitled story")}
+                        </a>
+                    </h3>
+
+                    <p>${escapeHTML(excerpt)}</p>
+
+                    <div class="story-card-meta">
+                        <span>${escapeHTML(date)}</span>
+                        <span>${readTime} MIN READ</span>
+                    </div>
+
+                    <div class="story-card-actions">
+                        ${
+                            isOwnProfile
+                                ? `<button type="button" class="edit-blog-btn">✎ Edit story</button>`
+                                : `<a href="${getBlogLink(blog)}">Read story ↗</a>`
+                        }
+                    </div>
+
+                </div>
+            `;
+
+            const image = card.querySelector(".story-card-image");
+
+            image.src = cover || fallbackPublishedCover;
+
+            addImageFallback(image, fallbackPublishedCover);
+
+            if (isOwnProfile) {
+                const editButton = card.querySelector(".edit-blog-btn");
+
+                editButton?.addEventListener("click", () => {
+                    openBlogEditor(blog);
+                });
+            }
+
+            blogsGrid.appendChild(card);
+        });
+    }
+
+
+    // ==========================================
+    // 7. LOAD SAVED BLOGS
+    // ==========================================
+
+    function loadSavedBlogs() {
+        try {
+            const raw = localStorage.getItem(SAVED_KEY);
+
+            savedBlogs = raw ? JSON.parse(raw) : [];
+
+            if (!Array.isArray(savedBlogs)) {
+                savedBlogs = [];
+            }
+
+        } catch {
+            savedBlogs = [];
+        }
+
+        if (savedCount) {
+            savedCount.textContent = savedBlogs.length;
+        }
+
+        renderSavedCards();
+    }
+
+
+    // ==========================================
+    // 8. RENDER SAVED STORY CARDS
+    // ==========================================
+
+    function renderSavedCards() {
+        if (!savedGrid) return;
+
+        savedGrid.innerHTML = "";
+
+        if (!savedBlogs.length) {
+            if (savedEmpty) savedEmpty.hidden = false;
+            return;
+        }
+
+        if (savedEmpty) savedEmpty.hidden = true;
+
+        savedBlogs.forEach(blog => {
+            const card = document.createElement("article");
+
+            card.className = "profile-story-card";
+
+            const cover = getBlogCover(blog);
+            const excerpt =
+                blog.description ||
+                blog.subtitle ||
+                "Saved story on SmartBlog.";
+
+            card.innerHTML = `
+                <img
+                    class="story-card-image"
+                    alt="${escapeHTML(blog.title || "Saved story cover")}"
+                    loading="lazy"
+                >
+
+                <div class="story-card-body">
+
+                    <span class="story-card-topic">
+                        ${escapeHTML(blog.topic || "Story")}
+                    </span>
+
+                    <h3>
+                        <a href="${getBlogLink(blog)}">
+                            ${escapeHTML(blog.title || "Untitled story")}
+                        </a>
+                    </h3>
+
+                    <p>${escapeHTML(excerpt)}</p>
+
+                    <div class="story-card-meta">
+                        <span>By ${escapeHTML(blog.author || "SmartBlog writer")}</span>
+                        <span>Saved</span>
+                    </div>
+
+                    <div class="story-card-actions">
+                        <button type="button" class="remove-saved-btn">
+                            ✕ Remove
+                        </button>
+                    </div>
+
+                </div>
+            `;
+
+            const image = card.querySelector(".story-card-image");
+
+            image.src = cover || fallbackSavedCover;
+
+            addImageFallback(image, fallbackSavedCover);
+
+            const removeButton = card.querySelector(".remove-saved-btn");
+
+            removeButton?.addEventListener("click", () => {
+                const removedId = String(
+                    getBlogId(blog) || blog.title
+                );
+
+                savedBlogs = savedBlogs.filter(item => {
+                    const itemId = String(
+                        getBlogId(item) || item.title
+                    );
+
+                    return itemId !== removedId;
+                });
+
+                try {
+                    localStorage.setItem(
+                        SAVED_KEY,
+                        JSON.stringify(savedBlogs)
+                    );
+                } catch (error) {
+                    console.error("Could not update saved stories:", error);
+                }
+
+                if (savedCount) {
+                    savedCount.textContent = savedBlogs.length;
+                }
+
+                renderSavedCards();
+            });
+
+            savedGrid.appendChild(card);
+        });
+    }
+
+
+    // ==========================================
+    // 9. PROFILE PICTURE UPLOAD
+    // ==========================================
+
+    if (isOwnProfile && profilePicInput) {
+        profilePicInput.addEventListener("change", event => {
+            const file = event.target.files?.[0];
+
+            if (!file) return;
+
+            const allowedTypes = [
+                "image/png",
+                "image/jpeg",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                alert("Please select a PNG, JPG or WEBP image.");
+                profilePicInput.value = "";
                 return;
             }
 
-            context.drawImage(
-                image, 0, 0, canvas.width, canvas.height
-            );
-
-            try {
-                const resized = canvas.toDataURL("image/jpeg", 0.8);
-                writeStorage(PROFILE_PIC_KEY, resized);
-                displayProfilePicture();
-            } catch (error) {
-                console.error(error);
-                alert("Unable to save this picture.");
+            if (file.size > 4 * 1024 * 1024) {
+                alert("Please choose an image under 4 MB.");
+                profilePicInput.value = "";
+                return;
             }
-        };
 
-        image.onerror = () => alert("Could not load that image.");
-        image.src = loadEvent.target.result;
-    };
+            const reader = new FileReader();
 
-    reader.onerror = () => alert("Could not read the image.");
-    reader.readAsDataURL(file);
-});
+            reader.onload = event => {
+                const base64 = event.target.result;
 
-// ==========================================
-// PROFILE EDITOR
-// ==========================================
+                const pictureKey =
+                    `smartblog_profile_pic_${currentUserId}`;
 
-function openEditor() {
-    const section = document.getElementById("editProfileSection");
-    if (!section) return;
+                try {
+                    localStorage.setItem(pictureKey, base64);
+                } catch {
+                    alert("Could not save the image. Please choose a smaller image.");
+                    return;
+                }
 
-    section.classList.remove("hidden");
+                if (profilePicPreview) {
+                    profilePicPreview.src = base64;
+                    profilePicPreview.classList.remove("hidden");
+                }
 
-    document.getElementById("nameInput").value = profile.name || "";
-    document.getElementById("usernameInput").value =
-        profile.username || "";
-    document.getElementById("bioInput").value = profile.bio || "";
+                if (profileAvatar) {
+                    profileAvatar.classList.add("hidden");
+                }
 
-    document.getElementById("interestsInput").value =
-        Array.isArray(profile.interests)
-            ? profile.interests.join(", ")
-            : "";
+                alert("Profile picture updated!");
+            };
 
-    section.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
-    });
-}
+            reader.onerror = () => {
+                alert("Could not read this image. Please try another one.");
+            };
 
-function closeEditor() {
-    document.getElementById("editProfileSection")
-        ?.classList.add("hidden");
-}
-
-document.getElementById("editProfileBtn")
-    ?.addEventListener("click", openEditor);
-
-document.getElementById("cancelEditBtn")
-    ?.addEventListener("click", closeEditor);
-
-profileForm?.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    const updatedName =
-        document.getElementById("nameInput").value.trim() || "User";
-
-    const updatedUsername =
-        document.getElementById("usernameInput").value.trim();
-
-    if (!/^[A-Za-z0-9_]+$/.test(updatedUsername)) {
-        alert("Username can only contain letters, numbers and underscores.");
-        return;
+            reader.readAsDataURL(file);
+        });
     }
 
-    profile = {
-        name: updatedName,
-        username: updatedUsername,
-        bio: document.getElementById("bioInput").value.trim(),
-        interests: document.getElementById("interestsInput").value
-            .split(",")
-            .map(item => item.trim())
-            .filter(Boolean)
-    };
 
-    try {
-        // Save to backend MySQL database
-        const token = localStorage.getItem("token");
-        if (token && currentUser?.email) {
+    // ==========================================
+    // 10. EDIT PROFILE
+    // ==========================================
+
+    if (isOwnProfile) {
+        editProfileBtn?.addEventListener("click", () => {
+            editProfileSection?.classList.toggle("hidden");
+
+            nameInput?.focus();
+        });
+
+        closeEditSectionBtn?.addEventListener("click", () => {
+            editProfileSection?.classList.add("hidden");
+        });
+
+        cancelEditBtn?.addEventListener("click", () => {
+            editProfileSection?.classList.add("hidden");
+        });
+
+        profileForm?.addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const newName = nameInput?.value.trim() || "";
+            const newBio = bioInput?.value.trim() || "";
+            const interestsText = interestsInput?.value.trim() || "";
+
+            const newInterests = interestsText
+                ? [...new Set(
+                    interestsText
+                        .split(",")
+                        .map(item => item.trim())
+                        .filter(Boolean)
+                )]
+                : [];
+
+            if (newName.length < 2) {
+                alert("Name must be at least 2 characters.");
+                return;
+            }
+
+            const submitButton = profileForm.querySelector(
+                'button[type="submit"]'
+            );
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = "Saving...";
+            }
+
             try {
-                const res = await fetch(`${API_BASE_URL}/me`, {
+                const response = await fetch(`${API_BASE_URL}/me`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
+                        Authorization: `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        name: updatedName,
-                        email: currentUser.email
+                        name: newName,
+                        email: currentUser?.email
                     })
                 });
-                const resData = await res.json();
-                if (!res.ok || !resData.success) {
-                    throw new Error(resData.message || "Failed to update profile on server.");
+
+                const data = await readResponse(response);
+
+                if (data.success === false) {
+                    throw new Error(
+                        data.message || "Failed to update profile."
+                    );
                 }
-            } catch (err) {
-                console.warn("Backend update failed, updating local state:", err);
-            }
-        }
 
-        writeStorage(PROFILE_KEY, profile);
+                // Update interests on the backend.
+                // An empty array is also sent so users can clear interests.
+                const interestsResponse = await fetch(
+                    `${API_BASE_URL}/me/interests`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            interests: newInterests
+                        })
+                    }
+                );
+
+                const interestsData =
+                    await readResponse(interestsResponse);
+
+                if (interestsData.success === false) {
+                    throw new Error(
+                        interestsData.message ||
+                        "Name was updated, but interests could not be saved."
+                    );
+                }
+
+                // Save bio locally, matching the existing implementation.
+                const bioKey =
+                    `smartblog_bio_${currentUserId}`;
+
+                localStorage.setItem(bioKey, newBio);
+
+                // Update in-memory profile.
+                activeProfileData = {
+                    ...activeProfileData,
+                    name: newName,
+                    interests: newInterests,
+                    bio: newBio
+                };
+
+                currentUser = {
+                    ...currentUser,
+                    ...activeProfileData
+                };
+
+                if (auth?.setCurrentUser) {
+                    auth.setCurrentUser(currentUser);
+                }
+
+                renderProfileHero();
+
+                editProfileSection?.classList.add("hidden");
+
+                alert("Profile updated successfully!");
 
-        currentUser.name = updatedName;
-        if (window.SmartBlogAuth) {
-            window.SmartBlogAuth.setCurrentUser(currentUser);
-        } else {
-            localStorage.setItem("user", JSON.stringify(currentUser));
-        }
-
-        displayProfile();
-        closeEditor();
-    } catch (error) {
-        console.error(error);
-        alert("Unable to save your profile.");
-    }
-});
-
-// ==========================================
-// EDIT BLOG MODAL
-// ==========================================
-
-const editBlogModal = document.getElementById("editBlogModal");
-const editBlogForm = document.getElementById("editBlogForm");
-
-let currentlyEditingBlog = null;
-
-function openBlogEditor(blog) {
-    if (!editBlogModal || !editBlogForm) {
-        alert("Edit Blog form is missing from profile.html.");
-        return;
-    }
-
-    if (blog.blog_id === null || blog.blog_id === undefined) {
-        alert("This blog has no database ID and cannot be edited.");
-        return;
-    }
-
-    currentlyEditingBlog = blog;
-
-    document.getElementById("editBlogId").value = blog.blog_id;
-    document.getElementById("editBlogTitle").value = blog.title || "";
-    document.getElementById("editBlogSubtitle").value =
-        blog.subtitle || "";
-    document.getElementById("editBlogTopic").value =
-        blog.topic || "";
-
-    document.getElementById("editBlogCover").value =
-        blog.cover_url || "";
-
-    document.getElementById("editBlogContent").value =
-        blog.content || "";
-
-    editBlogModal.classList.remove("hidden");
-    document.body.classList.add("modal-open");
-
-    document.getElementById("editBlogTitle").focus();
-}
-
-function closeBlogEditor() {
-    editBlogModal?.classList.add("hidden");
-    document.body.classList.remove("modal-open");
-
-    currentlyEditingBlog = null;
-    editBlogForm?.reset();
-}
-
-document.getElementById("closeEditBlogBtn")
-    ?.addEventListener("click", closeBlogEditor);
-
-document.getElementById("cancelEditBlogBtn")
-    ?.addEventListener("click", closeBlogEditor);
-
-editBlogModal?.addEventListener("click", event => {
-    if (event.target === editBlogModal) {
-        closeBlogEditor();
-    }
-});
-
-document.addEventListener("keydown", event => {
-    if (
-        event.key === "Escape" &&
-        editBlogModal &&
-        !editBlogModal.classList.contains("hidden")
-    ) {
-        closeBlogEditor();
-    }
-});
-
-// ==========================================
-// SAVE EDITED BLOG
-// ==========================================
-
-editBlogForm?.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    if (!currentlyEditingBlog) return;
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-        alert("Your session has expired. Please log in again.");
-        return;
-    }
-
-    const blog = currentlyEditingBlog;
-    const blogId = blog.blog_id;
-
-    const enteredCover =
-        document.getElementById("editBlogCover").value.trim();
-
-    const updatedBlog = {
-        title: document.getElementById("editBlogTitle").value.trim(),
-        subtitle: document.getElementById("editBlogSubtitle").value.trim(),
-        topic: document.getElementById("editBlogTopic").value.trim(),
-        content: document.getElementById("editBlogContent").value,
-        cover_url: enteredCover || blog.cover_url || ""
-    };
-
-    if (!updatedBlog.title || !updatedBlog.content.trim()) {
-        alert("Blog title and content are required.");
-        return;
-    }
-
-    const saveButton =
-        editBlogForm.querySelector('button[type="submit"]');
-
-    const originalText = saveButton?.textContent || "Save changes";
-
-    if (saveButton) {
-        saveButton.disabled = true;
-        saveButton.textContent = "Saving...";
-    }
-
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/blogs/${encodeURIComponent(blogId)}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify(updatedBlog)
-            }
-        );
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok || !data.success) {
-            throw new Error(
-                data.message || `Update failed: ${response.status}`
-            );
-        }
-
-        closeBlogEditor();
-
-        await loadPublishedBlogs();
-
-        alert("Your blog has been updated successfully!");
-
-    } catch (error) {
-        console.error("Blog update error:", error);
-        alert(error.message || "Could not update your blog.");
-    } finally {
-        if (saveButton) {
-            saveButton.disabled = false;
-            saveButton.textContent = originalText;
-        }
-    }
-});
-
-// ==========================================
-// CREATE BLOG CARD
-// ==========================================
-
-function createBlogCard(blog, type) {
-    const card = document.createElement("article");
-
-    // Match the CSS class used by the published/saved card styles.
-    card.className = "blog-card profile-story-card";
-
-    if (blog.image) {
-        const image = document.createElement("img");
-
-        image.className = "story-image";
-        image.src = blog.image;
-        image.alt = `${blog.title} cover`;
-        image.loading = "lazy";
-
-        image.addEventListener("error", () => {
-            console.error(
-                "Blog cover could not be loaded. Original URL:",
-                blog.cover_url,
-                "Resolved URL:",
-                image.src
-            );
-
-            image.remove();
-
-            const fallback = document.createElement("div");
-            fallback.className = "blog-image-fallback";
-            fallback.textContent = "✳";
-
-            const label = document.createElement("span");
-            label.textContent = "A story by you";
-
-            fallback.appendChild(label);
-            card.insertBefore(fallback, card.firstChild);
-        });
-
-        card.appendChild(image);
-    } else {
-        const fallback = document.createElement("div");
-        fallback.className = "blog-image-fallback";
-        fallback.textContent = "✳";
-
-        const label = document.createElement("span");
-        label.textContent = "A story by you";
-
-        fallback.appendChild(label);
-        card.appendChild(fallback);
-    }
-
-    const content = document.createElement("div");
-    content.className = "blog-card-content story-content";
-
-    const topic = document.createElement("span");
-    topic.className = "blog-topic story-topic";
-    topic.textContent = blog.topic || "General";
-    content.appendChild(topic);
-
-    const title = document.createElement("h3");
-    title.textContent = blog.title || "Untitled blog";
-    content.appendChild(title);
-
-    if (blog.description) {
-        const description = document.createElement("p");
-        description.textContent = blog.description;
-        content.appendChild(description);
-    }
-
-    if (blog.created_at) {
-        const date = document.createElement("span");
-        date.className = "blog-date";
-
-        const parsedDate = new Date(blog.created_at);
-
-        date.textContent = Number.isNaN(parsedDate.getTime())
-            ? ""
-            : parsedDate.toLocaleDateString(undefined, {
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            });
-
-        content.appendChild(date);
-    }
-
-    const actions = document.createElement("div");
-    actions.className = "blog-card-actions";
-
-    const destination = document.createElement("a");
-    destination.className = "story-link";
-
-    if (blog.link) {
-        destination.href = blog.link;
-        destination.textContent = "Read blog →";
-    } else {
-        destination.href = "#";
-        destination.textContent = "Preview unavailable";
-        destination.setAttribute("aria-disabled", "true");
-        destination.addEventListener("click", event => {
-            event.preventDefault();
-        });
-    }
-
-    actions.appendChild(destination);
-
-    if (type === "published") {
-        const editButton = document.createElement("button");
-
-        editButton.type = "button";
-        editButton.className = "edit-blog-button";
-        editButton.textContent = "✎ Edit";
-
-        editButton.addEventListener("click", () => {
-            openBlogEditor(blog);
-        });
-
-        actions.appendChild(editButton);
-    }
-
-    if (type === "saved") {
-        const removeButton = document.createElement("button");
-
-        removeButton.type = "button";
-        removeButton.className = "remove-saved-button";
-        removeButton.textContent = "♥ Remove saved";
-
-        removeButton.addEventListener("click", () => {
-            savedBlogs = savedBlogs.filter(
-                item => String(item.id) !== String(blog.id)
-            );
-
-            try {
-                writeStorage(SAVED_KEY, savedBlogs);
-                renderAllBlogSections();
             } catch (error) {
-                console.error(error);
-                alert("Could not update your reading list.");
-            }
-        });
+                console.error("Profile update failed:", error);
 
-        actions.appendChild(removeButton);
-    }
+                alert(
+                    error.message ||
+                    "Failed to update profile. Please try again."
+                );
 
-    content.appendChild(actions);
-    card.appendChild(content);
-
-    return card;
-}
-
-// ==========================================
-// RENDER BLOGS
-// ==========================================
-
-function renderBlogCards(containerId, emptyId, items, type) {
-    const container = document.getElementById(containerId);
-    const emptyMessage = document.getElementById(emptyId);
-
-    if (!container) return;
-
-    container.replaceChildren();
-
-    const hasBlogs = Array.isArray(items) && items.length > 0;
-
-    if (emptyMessage) {
-        emptyMessage.hidden = hasBlogs;
-        emptyMessage.style.display = hasBlogs ? "none" : "";
-    }
-
-    if (!hasBlogs) return;
-
-    items.forEach(blog => {
-        container.appendChild(createBlogCard(blog, type));
-    });
-}
-
-function renderStats() {
-    const published = document.getElementById("publishedCount");
-    const saved = document.getElementById("savedCount");
-    const read = document.getElementById("historyCount");
-
-    if (published) published.textContent = blogs.length;
-    if (saved) saved.textContent = savedBlogs.length;
-    if (read) read.textContent = history.length;
-}
-
-function renderAllBlogSections() {
-    renderBlogCards("blogsGrid", "blogsEmpty", blogs, "published");
-    renderBlogCards("savedGrid", "savedEmpty", savedBlogs, "saved");
-    renderStats();
-}
-
-// ==========================================
-// LOAD PUBLISHED BLOGS FROM MYSQL
-// ==========================================
-
-async function loadPublishedBlogs() {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-        console.error("Login token not found.");
-        renderAllBlogSections();
-        return;
-    }
-
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/authors/${encodeURIComponent(userKey)}/blogs`,
-            {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Accept": "application/json"
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = "Save changes ↗";
                 }
             }
+        });
+    }
+
+
+    // ==========================================
+    // 11. EDIT BLOG MODAL
+    // ==========================================
+
+    function openBlogEditor(blog) {
+        if (!editBlogModal || !editBlogForm) return;
+
+        currentlyEditingBlog = blog;
+
+        const blogId = getBlogId(blog);
+
+        if (get("editBlogId")) {
+            get("editBlogId").value = blogId;
+        }
+
+        if (get("editBlogTitle")) {
+            get("editBlogTitle").value = blog.title || "";
+        }
+
+        if (get("editBlogSubtitle")) {
+            get("editBlogSubtitle").value = blog.subtitle || "";
+        }
+
+        if (get("editBlogTopic")) {
+            get("editBlogTopic").value = blog.topic || "";
+        }
+
+        if (get("editBlogCover")) {
+            get("editBlogCover").value = getBlogCover(blog);
+        }
+
+        if (get("editBlogContent")) {
+            get("editBlogContent").value = blog.content || "";
+        }
+
+        editBlogModal.classList.remove("hidden");
+    }
+
+    function closeBlogEditor() {
+        editBlogModal?.classList.add("hidden");
+
+        currentlyEditingBlog = null;
+    }
+
+    closeEditBlogBtn?.addEventListener("click", closeBlogEditor);
+
+    cancelEditBlogBtn?.addEventListener("click", closeBlogEditor);
+
+    editBlogModal?.addEventListener("click", event => {
+        if (event.target === editBlogModal) {
+            closeBlogEditor();
+        }
+    });
+
+    editBlogForm?.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        if (!currentlyEditingBlog) return;
+
+        const blogId = getBlogId(currentlyEditingBlog);
+
+        const updatedData = {
+            title: get("editBlogTitle")?.value.trim() || "",
+            subtitle: get("editBlogSubtitle")?.value.trim() || "",
+            topic: get("editBlogTopic")?.value.trim() || "",
+            cover_url: get("editBlogCover")?.value.trim() || "",
+            content: get("editBlogContent")?.value || ""
+        };
+
+        if (!updatedData.title || !updatedData.content.trim()) {
+            alert("Title and content are required.");
+            return;
+        }
+
+        const submitButton = editBlogForm.querySelector(
+            'button[type="submit"]'
         );
 
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || "Could not load blogs.");
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Saving...";
         }
-
-        if (!Array.isArray(data.blogs)) {
-            throw new Error("Backend did not return a blogs array.");
-        }
-
-        blogs = normalizeBlogs(data.blogs);
-
-        renderAllBlogSections();
 
         try {
-            writeStorage(BLOGS_KEY, blogs);
-        } catch (error) {
-            console.warn("Could not cache blogs:", error);
-        }
-
-        console.log("Published blogs loaded:", blogs);
-
-    } catch (error) {
-        console.error("Published blogs loading error:", error);
-        renderAllBlogSections();
-    }
-}
-
-// ==========================================
-// INITIALIZE PROFILE
-// ==========================================
-
-function initializeProfile() {
-    profile = {
-        ...defaultProfile,
-        ...profile,
-        interests: Array.isArray(profile.interests)
-            ? profile.interests
-            : defaultProfile.interests
-    };
-
-    displayProfile();
-    displayProfilePicture();
-    renderAllBlogSections();
-}
-
-initializeProfile();
-loadPublishedBlogs();
-
-// ==========================================
-// AUTHOR RANKING
-// ==========================================
-
-async function loadAuthorRank() {
-    const profileBio = document.getElementById("displayBio");
-    if (!profileBio) return;
-
-    let rankCard = document.getElementById("authorRankCard");
-
-    if (!rankCard) {
-        rankCard = document.createElement("section");
-        rankCard.id = "authorRankCard";
-        rankCard.className = "author-rank-card";
-        profileBio.insertAdjacentElement("afterend", rankCard);
-    }
-
-    rankCard.textContent = "Loading author ranking...";
-
-    try {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-            `${API_BASE_URL}/authors/${encodeURIComponent(userKey)}/rank`,
-            {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token || ""}`,
-                    "Accept": "application/json"
+            const response = await fetch(
+                `${API_BASE_URL}/blogs/${encodeURIComponent(blogId)}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updatedData)
                 }
+            );
+
+            const data = await readResponse(response);
+
+            if (data.success === false) {
+                throw new Error(
+                    data.message || "Failed to update story."
+                );
             }
-        );
 
-        const data = await response.json().catch(() => ({}));
+            closeBlogEditor();
 
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || "Could not load ranking.");
+            await loadAuthoredBlogs();
+
+            alert("Your story has been updated successfully!");
+
+        } catch (error) {
+            console.error("Story update failed:", error);
+
+            alert(
+                error.message ||
+                "Could not update story. Please try again."
+            );
+
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Save changes ↗";
+            }
         }
+    });
 
-        rankCard.replaceChildren();
 
-        const heading = document.createElement("h3");
-        heading.textContent = "🏆 Author Ranking";
-
-        const rank = document.createElement("p");
-        rank.textContent = `Global Rank: #${data.rank ?? "—"}`;
-
-        const points = document.createElement("p");
-        points.textContent =
-            `Reputation Points: ${data.points ?? "—"}`;
-
-        const level = document.createElement("p");
-        level.textContent = `Author Level: ${data.level ?? "—"}`;
-
-        rankCard.append(heading, rank, points, level);
-
-    } catch (error) {
-        console.error("Author ranking error:", error);
-        rankCard.textContent =
-            "Unable to load ranking. Please check that the backend is running.";
+    // ==========================================
+    // 12. PROFILE DROPDOWN — Handled globally by auth.js
+    // ==========================================
+    if (window.SmartBlogAuth && typeof window.SmartBlogAuth.setupProfileDropdowns === "function") {
+        window.SmartBlogAuth.setupProfileDropdowns();
     }
-}
 
-loadAuthorRank();
+
+    // ==========================================
+    // 13. LOGOUT
+    // ==========================================
+
+    document.querySelectorAll(".logout-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            if (auth?.logout) {
+                auth.logout();
+            } else {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+
+                window.location.href = "login.html";
+            }
+        });
+    });
+
+
+    // ==========================================
+    // 14. INITIALIZE PAGE
+    // ==========================================
+
+    setupProfileViewMode();
+
+    await loadProfile();
+});

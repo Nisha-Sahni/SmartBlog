@@ -33,6 +33,7 @@
             <a href="search.html" class="top-link">Search</a>
             <a href="questions.html" class="top-link">Community Q&amp;A</a>
             <a href="create-blog.html" class="top-link">Create a story</a>
+            <a href="messages.html" class="top-link">Messages</a>
             <a href="leaderboard.html" class="top-link">Leaderboard</a>
             <a href="help.html" class="top-link active">Help</a>
         </nav>
@@ -44,6 +45,7 @@
             </button>
             <div class="profile-dropdown" id="profileDropdown" hidden>
                 <a href="profile.html">My Profile</a>
+                <a href="messages.html">Messages</a>
                 <a href="settings.html">Settings</a>
                 <a href="help.html">Help &amp; Support</a>
                 <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
@@ -392,6 +394,32 @@
 
             </div>
         </main>
+    </div>
+
+        <!-- SUPPORT TICKET DETAILS VIEWER MODAL -->
+    <div id="ticketModal" class="ticket-modal-overlay" hidden>
+        <div class="ticket-modal-card">
+            <div class="ticket-modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="ticket-id" id="modalTicketId" style="font-weight: 700; font-size: 13px;">#SR-1</span>
+                    <span class="ticket-status status-open" id="modalTicketStatus">Open</span>
+                </div>
+                <button type="button" class="close-modal-btn" id="closeTicketModal" aria-label="Close modal" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--muted); line-height:1;">&times;</button>
+            </div>
+            <div class="ticket-category-tag" id="modalTicketCategory" style="margin-bottom: 8px; display: inline-block;">General</div>
+            <h3 id="modalTicketSubject" style="margin: 6px 0 8px; font-family: var(--serif); font-size: 20px; line-height: 1.3;"></h3>
+            <div id="modalTicketMeta" style="font-size: 11px; color: var(--muted); margin-bottom: 16px;"></div>
+            <div style="margin-bottom: 14px;">
+                <h5 style="margin: 0 0 6px; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted);">Request Description</h5>
+                <div id="modalTicketDescription" style="padding: 14px; background: #faf8f2; border: 1px solid var(--line); border-radius: 8px; white-space: pre-wrap; font-size: 13px; line-height: 1.6; max-height: 250px; overflow-y: auto;"></div>
+            </div>
+            <div style="padding: 12px; background: #eef6ec; border-left: 3px solid var(--lime); font-size: 12px; color: #2e5927; border-radius: 4px;">
+                ✳ This request is active in our support queue. A representative will review and address your inquiry shortly.
+            </div>
+            <div style="text-align: right; margin-top: 18px;">
+                <button type="button" class="button secondary" id="modalDoneBtn" style="padding: 8px 20px; cursor: pointer;">Close</button>
+            </div>
+        </div>
     </div>
 
     <script src="auth.js"></script>

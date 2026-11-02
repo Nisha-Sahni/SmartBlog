@@ -638,7 +638,7 @@ img {
     );
 }
 
-.story-grid {
+.story-slider .story-grid {
     display: flex;
     flex-wrap: nowrap;
     align-items: stretch;
@@ -646,6 +646,33 @@ img {
     width: max-content;
     animation: storyMarquee 38s linear infinite;
     will-change: transform;
+}
+
+/* Explore Page Story Grid (Stable, non-moving, responsive 3-column layout) */
+.explore-page .story-grid,
+.stories-section .story-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+}
+
+@media (max-width: 1024px) {
+    .explore-page .story-grid,
+    .stories-section .story-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .explore-page .story-grid,
+    .stories-section .story-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 .story-card {
@@ -1884,11 +1911,15 @@ img {
     font-size: 13px;
 }
 
+.profile-dropdown[hidden] {
+    display: none !important;
+}
+
 .profile-dropdown {
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    z-index: 1000;
+    z-index: 99999 !important;
     width: 175px;
     padding: 7px;
     background: #ffffff;
@@ -1960,6 +1991,49 @@ img {
     background: #f5f2e9;
     border-color: #dcd7ca;
     color: #1f1e1a;
+}
+
+
+/* ================= ACCENT COLOR TOKENS ================= */
+
+[data-accent="lime"] {
+    --lime: #dafa69;
+    --lime-hover: #cce85c;
+    --lime-dot: #9cbf35;
+    --accent: #dafa69;
+    --accent-glow: rgba(218, 250, 105, 0.35);
+}
+
+[data-accent="lavender"] {
+    --lime: #c4b5fd;
+    --lime-hover: #a78bfa;
+    --lime-dot: #8b5cf6;
+    --accent: #8b5cf6;
+    --accent-glow: rgba(139, 92, 246, 0.35);
+}
+
+[data-accent="peach"] {
+    --lime: #fdba74;
+    --lime-hover: #fb923c;
+    --lime-dot: #ea580c;
+    --accent: #ea580c;
+    --accent-glow: rgba(234, 88, 12, 0.35);
+}
+
+[data-accent="blue"] {
+    --lime: #7dd3fc;
+    --lime-hover: #38bdf8;
+    --lime-dot: #0284c7;
+    --accent: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.35);
+}
+
+[data-accent="emerald"] {
+    --lime: #86efac;
+    --lime-hover: #4ade80;
+    --lime-dot: #16a34a;
+    --accent: #16a34a;
+    --accent-glow: rgba(22, 163, 74, 0.35);
 }
 
 /* ================= DARK THEME SUPPORT ================= */

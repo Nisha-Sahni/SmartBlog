@@ -428,3 +428,42 @@
     }
 }
 
+
+/* TICKET DETAILS MODAL */
+.ticket-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+    padding: 16px;
+}
+.ticket-modal-overlay[hidden] {
+    display: none !important;
+}
+.ticket-modal-card {
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2ded4);
+    border-radius: 12px;
+    max-width: 540px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.12);
+}
+.open-ticket-details-btn {
+    padding: 5px 12px;
+    background: var(--lime, #dafa69);
+    border: 1px solid #c7eb46;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s;
+    color: var(--ink, #1f1e1a);
+}
+.open-ticket-details-btn:hover {
+    background: #c7eb46;
+}

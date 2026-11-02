@@ -39,7 +39,8 @@
       <a href="search.html" class="top-link">Search</a>
       <a href="questions.html" class="top-link">Community Q&amp;A</a>
       <a href="create-blog.html" class="top-link active" aria-current="page">Create a story</a>
-      <a href="leaderboard.html" class="top-link">Leaderboard</a>
+      <a href="messages.html" class="top-link">Messages</a>
+            <a href="leaderboard.html" class="top-link">Leaderboard</a>
       <a href="help.html" class="top-link">Help</a>
     </nav>
 
@@ -49,11 +50,12 @@
         <span>⌄</span>
       </button>
       <div class="profile-dropdown" id="profileDropdown" hidden>
-        <a href="profile.html">My Profile</a>
-        <a href="settings.html">Settings</a>
-        <a href="help.html">Help &amp; Support</a>
-        <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
-      </div>
+                <a href="profile.html">My Profile</a>
+                <a href="messages.html">Messages</a>
+                <a href="settings.html">Settings</a>
+                <a href="help.html">Help &amp; Support</a>
+                <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+            </div>
     </div>
 
   </header>
@@ -420,6 +422,13 @@
                     type="url"
                     placeholder="Optional image link"
                   >
+                  <div id="cover-preview-wrapper" style="margin-top: 6px; display: none; align-items: center; gap: 8px;">
+                    <img id="cover-url-thumbnail" src="" alt="Cover thumbnail" style="width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line);">
+                    <div style="font-size: 11px; line-height: 1.3;">
+                      <span id="cover-url-status" style="font-weight: 600; color: #2e5927;">✓ Image loaded</span>
+                      <div style="color: var(--muted);">Live cover preview active</div>
+                    </div>
+                  </div>
                 </div>
 
               </div>
@@ -448,19 +457,69 @@
                 </button>
               </div>
 
+              <!-- AI CONTENT CREATION ASSISTANT -->
+              <div class="ai-assistant-card" id="aiAssistantCard">
+                <div class="ai-assistant-header">
+                  <div class="ai-assistant-badge">
+                    <span class="ai-sparkle-dot">✳</span>
+                    <strong>Smart Writing Partner</strong>
+                  </div>
+                  <span class="ai-status-label" id="aiStatusLabel">Light AI writing tools</span>
+                </div>
 
-              <div class="form-actions">
+                <div class="ai-assistant-buttons">
+                  <button type="button" class="ai-btn" id="aiImproveBtn" title="Improve grammar, clarity and flow">
+                    <span>✨</span> Improve writing
+                  </button>
+                  <button type="button" class="ai-btn" id="aiContinueBtn" title="Suggest a natural continuation">
+                    <span>✍️</span> Continue writing
+                  </button>
+                  <button type="button" class="ai-btn" id="aiSubtitleBtn" title="Generate a subtitle from title and content">
+                    <span>🏷️</span> Generate subtitle
+                  </button>
+                  <button type="button" class="ai-btn" id="aiIdeasBtn" title="Suggest key angles and ideas to explore">
+                    <span>💡</span> Suggest ideas
+                  </button>
+                </div>
+
+                <!-- Suggestion Area (Appears separately, keeping author in full control) -->
+                <div class="ai-suggestion-box" id="aiSuggestionBox" hidden>
+                  <div class="ai-suggestion-top">
+                    <span class="ai-suggestion-title" id="aiSuggestionTitle">AI Suggestion</span>
+                    <button type="button" class="ai-close-btn" id="aiCloseBtn" aria-label="Dismiss suggestion">&times;</button>
+                  </div>
+                  <div class="ai-suggestion-body" id="aiSuggestionBody"></div>
+                  <div class="ai-suggestion-actions" id="aiSuggestionActions">
+                    <button type="button" class="ai-action-btn secondary" id="aiCopyBtn">📋 Copy</button>
+                    <button type="button" class="ai-action-btn secondary" id="aiInsertBtn">➕ Insert at cursor</button>
+                    <button type="button" class="ai-action-btn primary" id="aiApplyBtn">✓ Apply to selection</button>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="form-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
 
                 <button
                   class="button secondary"
                   id="save-draft"
                   type="button"
+                  title="Save current progress to your account"
                 >
-                  Save draft
+                  💾 Save draft
                 </button>
 
-                <button class="button primary" type="submit">
-                  Save &amp; continue →
+                <button
+                  class="button secondary"
+                  id="my-drafts-btn"
+                  type="button"
+                  title="Open and manage your saved drafts"
+                >
+                  📂 My Drafts (<span id="draft-count">0</span>)
+                </button>
+
+                <button class="button primary" type="submit" style="margin-left: auto;">
+                  Publish story →
                 </button>
 
               </div>
@@ -553,6 +612,32 @@
   <!-- EDITOR SCRIPT -->
   <script src="auth.js"></script>
   <script src="create-blog.js" defer></script>
+
+
+    <!-- DRAFTS MODAL -->
+    <div id="draftsModal" class="drafts-modal-overlay" hidden>
+      <div class="drafts-modal-card">
+        <div class="drafts-modal-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">📂</span>
+            <h3 style="margin: 0; font-family: var(--serif); font-size: 20px;">Saved Drafts</h3>
+          </div>
+          <button type="button" class="close-drafts-btn" id="closeDraftsModal" aria-label="Close drafts modal">&times;</button>
+        </div>
+        <p style="margin: 8px 0 16px; font-size: 12px; color: var(--muted);">
+          Drafts are saved securely in your SmartBlog account. Click a draft to load and edit it.
+        </p>
+        <div id="draftsListContainer" class="drafts-list" style="max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+          <!-- Loaded dynamically -->
+        </div>
+        <div id="draftsEmptyState" style="text-align: center; padding: 24px 0; color: var(--muted); display: none;">
+          No saved drafts yet. Click "Save draft" while writing to store your progress.
+        </div>
+        <div style="margin-top: 16px; text-align: right;">
+          <button type="button" class="button secondary" id="closeDraftsBtn">Close</button>
+        </div>
+      </div>
+    </div>
 
 </body>
 </html>

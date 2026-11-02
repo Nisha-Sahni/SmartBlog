@@ -683,3 +683,60 @@
     }
 
 }
+
+/* BLOG VIEW TEMPLATES */
+.blog-template-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--lime, #dafa69);
+    color: var(--ink, #1f1e1a);
+}
+
+.blog-article.template-vintage {
+    background: #fbf7ee;
+    padding: 30px;
+    border: 1px dashed #d5cdb8;
+    border-radius: 8px;
+}
+.blog-article.template-vintage h1 {
+    font-family: Georgia, serif;
+    font-style: italic;
+}
+.blog-article.template-vintage .blog-cover img {
+    filter: sepia(0.2) contrast(0.95);
+}
+
+.blog-article.template-developer {
+    background: #18191d;
+    color: #e5e7eb;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #2a2d34;
+}
+.blog-article.template-developer h1 {
+    color: #67e8f9;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+.blog-article.template-developer .blog-introduction,
+.blog-article.template-developer .blog-text p {
+    color: #cbd5e1;
+    font-family: 'Consolas', monospace;
+}
+
+.blog-article.template-minimal {
+    border-top: 3px solid #1f1e1a;
+    padding-top: 20px;
+}
+.blog-article.template-minimal h1 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.blog-article.template-luxury {
+    border-left: 3px solid #c9b06b;
+    padding-left: 24px;
+}

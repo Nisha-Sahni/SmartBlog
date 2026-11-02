@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBlog Admin — Platform Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <!-- ADMIN AUTHENTICATION GATE (Visible if not authenticated as admin) -->
+    <div id="adminAuthGate" class="admin-auth-overlay">
+        <div class="admin-auth-card">
+            <div class="admin-auth-logo">
+                <span class="logo-text">smartblog<span class="dot">.</span></span>
+                <span class="admin-badge">ADMIN</span>
+            </div>
+            <h2>Administrator Portal</h2>
+            <p class="auth-subtitle">Sign in with authorized administrator credentials to manage users, stories, and platform safety.</p>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmail">Admin Email</label>
+                    <input type="email" id="adminEmail" required placeholder="admin@smartblog.com" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <div id="adminAuthError" class="auth-error-msg" hidden></div>
+                <button type="submit" class="admin-btn primary full-width" id="adminLoginBtn">Authenticate &amp; Enter Portal →</button>
+            </form>
+            <div class="auth-card-footer">
+                <a href="dashboard.html">← Return to SmartBlog</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN INTERFACE -->
+    <div class="admin-layout" id="adminLayout">
+
+        <!-- ADMIN SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <a href="admin.html" class="brand-link">
+                    <span class="logo-text">smartblog<span class="dot">.</span></span>
+                    <span class="admin-badge">ADMIN</span>
+                </a>
+            </div>
+
+            <nav class="admin-nav">
+                <div class="nav-section-title">NAVIGATION</div>
+                <button type="button" class="nav-item active" data-tab="dashboard">
+                    <span class="nav-icon">📊</span> Dashboard
+                </button>
+                <button type="button" class="nav-item" data-tab="blogs">
+                    <span class="nav-icon">📝</span> Blog Management
+                </button>
+                <button type="button" class="nav-item" data-tab="users">
+                    <span class="nav-icon">👥</span> User Management
+                </button>
+                <button type="button" class="nav-item" data-tab="moderation">
+                    <span class="nav-icon">🛡️</span> Moderation
+                </button>
+                <button type="button" class="nav-item" data-tab="support">
+                    <span class="nav-icon">🎫</span> Support Tickets
+                    <span class="nav-counter" id="sidebarTicketCount" hidden>0</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="admin-user-info">
+                    <div class="admin-avatar" id="adminAvatarInitial">A</div>
+                    <div class="admin-meta">
+                        <strong id="adminUserName">Admin</strong>
+                        <span id="adminUserEmail">admin@smartblog.com</span>
+                    </div>
+                </div>
+                <div class="sidebar-actions">
+                    <a href="dashboard.html" class="sidebar-secondary-btn" title="View standard reader dashboard">User App ↗</a>
+                    <button type="button" id="adminLogoutBtn" class="sidebar-secondary-btn danger" title="Log out from admin panel">Log Out</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT WRAPPER -->
+        <main class="admin-main">
+
+            <!-- TOP NAVBAR -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <span class="topbar-crumb">ADMINISTRATION</span>
+                    <h1 id="topbarTitle">System Dashboard</h1>
+                </div>
+                <div class="topbar-right">
+                    <div class="system-status-pill">
+                        <span class="status-indicator-dot"></span> System Live &bull; MySQL Connected
+                    </div>
+                    <button type="button" class="refresh-pill" id="globalRefreshBtn" title="Refresh platform data">
+                        ↻ Refresh
+                    </button>
+                </div>
+            </header>
+
+            <div class="admin-container">
+
+                <!-- 1. DASHBOARD OVERVIEW SECTION -->
+                <section id="tab-dashboard" class="admin-tab-content active">
+                    
+                    <!-- KEY METRICS ROW -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-top">
+                                <span class="stat-label">TOTAL USERS</span>
+                                <span class="stat-icon-wrap">👥</span>
+                            </div>
+                            <div class="stat-number" id="statUsers">--</div>
+                            <div class="stat-footer">Active platform writers &amp; readers</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-top">
+                                <span class="stat-label">PUBLISHED STORIES</span>
+                                <span class="stat-icon-wrap">📰</span>
+                            </div>
+                            <div class="stat-number" id="statBlogs">--</div>
+                            <div class="stat-footer">Live in Explore &amp; community feed</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-top">
+                                <span class="stat-label">SAVED DRAFTS</span>
+                                <span class="stat-icon-wrap">💾</span>
+                            </div>
+                            <div class="stat-number" id="statDrafts">--</div>
+                            <div class="stat-footer">In-progress author stories</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-top">
+                                <span class="stat-label">COMMUNITY COMMENTS</span>
+                                <span class="stat-icon-wrap">💬</span>
+                            </div>
+                            <div class="stat-number" id="statComments">--</div>
+                            <div class="stat-footer">Reader discussions &amp; feedback</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-top">
+                                <span class="stat-label">SUPPORT TICKETS</span>
+                                <span class="stat-icon-wrap">🎫</span>
+                            </div>
+                            <div class="stat-number" id="statSupport">--</div>
+                            <div class="stat-footer"><span id="openSupportBadge" class="alert-pill">0 Open</span></div>
+                        </div>
+                    </div>
+
+                    <!-- RECENT ACTIVITY AND QUICK SUMMARY -->
+                    <div class="dashboard-split-grid">
+                        <div class="admin-card">
+                            <div class="card-header">
+                                <div>
+                                    <span class="eyebrow">AUDIT STREAM</span>
+                                    <h3>Recent Platform Activity</h3>
+                                </div>
+                                <span class="header-badge">Live feed</span>
+                            </div>
+                            <div class="activity-list" id="dashboardActivityList">
+                                <div class="loading-state">Loading activity feed...</div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="card-header">
+                                <div>
+                                    <span class="eyebrow">QUICK CONTROLS</span>
+                                    <h3>Platform Management</h3>
+                                </div>
+                            </div>
+                            <div class="quick-links-grid">
+                                <button type="button" class="quick-action-card" data-goto="blogs">
+                                    <span class="quick-icon">📝</span>
+                                    <strong>Moderate Stories</strong>
+                                    <p>Edit or remove published blogs</p>
+                                </button>
+                                <button type="button" class="quick-action-card" data-goto="users">
+                                    <span class="quick-icon">👥</span>
+                                    <strong>User Directory</strong>
+                                    <p>Manage accounts and roles</p>
+                                </button>
+                                <button type="button" class="quick-action-card" data-goto="moderation">
+                                    <span class="quick-icon">🛡️</span>
+                                    <strong>Content Moderation</strong>
+                                    <p>Inspect community comments</p>
+                                </button>
+                                <button type="button" class="quick-action-card" data-goto="support">
+                                    <span class="quick-icon">🎫</span>
+                                    <strong>Support Queue</strong>
+                                    <p>Resolve member inquiries</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- 2. BLOG MANAGEMENT SECTION -->
+                <section id="tab-blogs" class="admin-tab-content">
+                    <div class="section-toolbar">
+                        <div class="toolbar-search">
+                            <input type="text" id="blogSearchInput" placeholder="Search by story title, subtitle or author...">
+                        </div>
+                        <div class="toolbar-filters">
+                            <select id="blogTopicFilter">
+                                <option value="All">All Topics</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Lifestyle">Lifestyle</option>
+                                <option value="Creativity">Creativity</option>
+                                <option value="Personal Stories">Personal Stories</option>
+                                <option value="Learning">Learning</option>
+                                <option value="Business">Business</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-card table-card">
+                        <div class="table-responsive">
+                            <table class="admin-table" id="blogsTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">Cover</th>
+                                        <th>Title &amp; Topic</th>
+                                        <th>Author</th>
+                                        <th>Template</th>
+                                        <th>Comments</th>
+                                        <th>Published</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blogsTableBody">
+                                    <tr><td colspan="7" class="loading-state">Loading stories...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. USER MANAGEMENT SECTION -->
+                <section id="tab-users" class="admin-tab-content">
+                    <div class="section-toolbar">
+                        <div class="toolbar-search">
+                            <input type="text" id="userSearchInput" placeholder="Search users by name or email...">
+                        </div>
+                        <div class="toolbar-filters">
+                            <select id="userStatusFilter">
+                                <option value="All">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="suspended">Suspended</option>
+                                <option value="banned">Banned</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-card table-card">
+                        <div class="table-responsive">
+                            <table class="admin-table" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 44px;">User</th>
+                                        <th>Name &amp; Email</th>
+                                        <th>Role</th>
+                                        <th>Reputation Points</th>
+                                        <th>Stories</th>
+                                        <th>Status</th>
+                                        <th>Joined</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <tr><td colspan="8" class="loading-state">Loading users...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. COMMUNITY MODERATION SECTION -->
+                <section id="tab-moderation" class="admin-tab-content">
+                    <div class="subnav-tabs">
+                        <button type="button" class="subnav-btn active" data-subtab="comments">Comments Moderation</button>
+                        <button type="button" class="subnav-btn" data-subtab="questions">Community Questions</button>
+                    </div>
+
+                    <!-- COMMENTS MODERATION -->
+                    <div id="subtab-comments" class="subtab-panel active">
+                        <div class="admin-card table-card">
+                            <div class="table-responsive">
+                                <table class="admin-table" id="commentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Comment</th>
+                                            <th>Story Title</th>
+                                            <th>Author</th>
+                                            <th>Posted Date</th>
+                                            <th style="text-align: right;">Moderation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="commentsTableBody">
+                                        <tr><td colspan="5" class="loading-state">Loading comments...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QUESTIONS MODERATION -->
+                    <div id="subtab-questions" class="subtab-panel">
+                        <div class="admin-card table-card">
+                            <div class="table-responsive">
+                                <table class="admin-table" id="questionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Question</th>
+                                            <th>Story Title</th>
+                                            <th>Asked By</th>
+                                            <th>Date</th>
+                                            <th style="text-align: right;">Moderation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="questionsTableBody">
+                                        <tr><td colspan="5" class="loading-state">Loading questions...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. SUPPORT REQUESTS SECTION -->
+                <section id="tab-support" class="admin-tab-content">
+                    <div class="section-toolbar">
+                        <div class="toolbar-filters">
+                            <select id="supportStatusFilter">
+                                <option value="All">All Ticket Statuses</option>
+                                <option value="Open">Open</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Resolved">Resolved</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="admin-card table-card">
+                        <div class="table-responsive">
+                            <table class="admin-table" id="supportTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 80px;">Ref</th>
+                                        <th>Subject</th>
+                                        <th>Category</th>
+                                        <th>Submitted By</th>
+                                        <th>Status</th>
+                                        <th>Submitted</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="supportTableBody">
+                                    <tr><td colspan="7" class="loading-state">Loading support tickets...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- EDIT STORY MODAL -->
+    <div id="editBlogModal" class="admin-modal-overlay" hidden>
+        <div class="admin-modal-card large">
+            <div class="modal-header">
+                <h3>Edit Story (Admin)</h3>
+                <button type="button" class="modal-close" id="closeEditBlogModal">&times;</button>
+            </div>
+            <form id="editBlogForm">
+                <input type="hidden" id="editBlogId">
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label for="editBlogTitle">Title</label>
+                        <input type="text" id="editBlogTitle" required>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="editBlogTopic">Topic</label>
+                        <select id="editBlogTopic">
+                            <option value="Personal Stories">Personal Stories</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Lifestyle">Lifestyle</option>
+                            <option value="Creativity">Creativity</option>
+                            <option value="Learning">Learning</option>
+                            <option value="Business">Business</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label for="editBlogSubtitle">Subtitle / Excerpt</label>
+                        <input type="text" id="editBlogSubtitle">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="editBlogTemplate">Template</label>
+                        <input type="text" id="editBlogTemplate" placeholder="scrapbook, polaroid, etc.">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editBlogCover">Cover Image URL</label>
+                    <input type="url" id="editBlogCover" placeholder="https://images.unsplash.com/...">
+                </div>
+
+                <div class="form-group">
+                    <label for="editBlogContent">Content</label>
+                    <textarea id="editBlogContent" rows="10" required></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="admin-btn secondary" id="cancelEditBlogBtn">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SUPPORT TICKET DETAILS & STATUS MODAL -->
+    <div id="adminTicketModal" class="admin-modal-overlay" hidden>
+        <div class="admin-modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="ticket-ref" id="ticketModalRef">#SR-1</span>
+                    <h3 id="ticketModalSubject" style="margin-top: 4px;">Ticket Subject</h3>
+                </div>
+                <button type="button" class="modal-close" id="closeTicketModal">&times;</button>
+            </div>
+            
+            <div class="ticket-meta-box">
+                <div><strong>Requester:</strong> <span id="ticketModalUser">User</span></div>
+                <div><strong>Category:</strong> <span id="ticketModalCategory" class="badge">Technical</span></div>
+                <div><strong>Submitted:</strong> <span id="ticketModalDate">Date</span></div>
+            </div>
+
+            <div class="form-group" style="margin-top: 14px;">
+                <label>Description:</label>
+                <div class="ticket-description-viewer" id="ticketModalDesc"></div>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+                <label for="ticketStatusSelect">Update Ticket Status:</label>
+                <select id="ticketStatusSelect" class="status-select">
+                    <option value="Open">Open</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="admin-btn secondary" id="closeTicketBtn">Close</button>
+                <button type="button" class="admin-btn primary" id="saveTicketStatusBtn">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="adminToast" class="admin-toast" hidden></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
+

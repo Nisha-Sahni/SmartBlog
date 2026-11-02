@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | SmartBlog</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        .admin-auth-tag {
+            background: var(--lime, #dafa69);
+            color: var(--ink, #1f1e1a);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .admin-alert {
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .admin-alert.error {
+            display: block;
+            background: #fde8e6;
+            color: #d93829;
+            border: 1px solid #f9c0bb;
+        }
+        .admin-alert.success {
+            display: block;
+            background: #eafaf1;
+            color: #27ae60;
+            border: 1px solid #c2eed5;
+        }
+        .setup-toggle-link {
+            font-size: 12px;
+            color: var(--muted, #858174);
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+        .setup-toggle-link:hover {
+            color: var(--ink, #1f1e1a);
+        }
+        .setup-panel {
+            margin-top: 18px;
+            padding: 16px;
+            background: #fbf9f4;
+            border: 1px solid var(--line, #e2ded4);
+            border-radius: 8px;
+            display: none;
+        }
+        .setup-panel.open {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="auth-page">
+
+    <main class="auth-container">
+
+        <!-- Left Intro Panel (Matching SmartBlog Editorial Design) -->
+        <section class="auth-intro">
+
+            <a href="home.html" class="auth-brand">
+                <span class="brand-mark">S</span>
+                <span>smartblog<span class="logo-dot">.</span></span>
+                <span class="admin-auth-tag">ADMIN</span>
+            </a>
+
+            <div class="auth-message">
+                <span class="auth-label">MANAGEMENT PORTAL</span>
+
+                <h1>
+                    Platform governance
+                    <span>&amp; safety.</span>
+                </h1>
+
+                <p>
+                    Sign in with verified administrator credentials to oversee published stories,
+                    moderate community interactions, manage users, and resolve support requests.
+                </p>
+            </div>
+
+            <div class="auth-quote">
+                <span>“</span>
+                Integrity in curation, vigilance in moderation. Keep administrator access secure.
+            </div>
+
+        </section>
+
+        <!-- Right Admin Login Form -->
+        <section class="auth-form-area">
+
+            <div class="auth-form-card">
+
+                <div class="auth-form-heading">
+                    <h2>Administrator Sign-In</h2>
+                    <p>Enter your administrator credentials to access the console.</p>
+                </div>
+
+                <div id="adminAlertBox" class="admin-alert"></div>
+
+                <form id="adminLoginForm">
+
+                    <div class="form-group">
+                        <label for="adminEmail">Administrator Email</label>
+                        <input
+                            type="email"
+                            id="adminEmail"
+                            name="email"
+                            placeholder="admin@smartblog.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <div class="password-label">
+                            <label for="adminPassword">Password</label>
+                        </div>
+
+                        <input
+                            type="password"
+                            id="adminPassword"
+                            name="password"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="auth-submit" id="adminSubmitBtn">
+                        Sign In to Console <span>→</span>
+                    </button>
+
+                </form>
+
+                <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line, #e2ded4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <a href="home.html" style="font-size: 12px; color: var(--muted, #858174); text-decoration: none; font-weight: 600;">
+                        ← Back to SmartBlog
+                    </a>
+
+                    <button type="button" class="setup-toggle-link" id="toggleSetupBtn">
+                        Initial Setup? Create First Admin
+                    </button>
+                </div>
+
+                <!-- FIRST ADMIN BOOTSTRAP DRAWER -->
+                <div id="setupFirstAdminPanel" class="setup-panel">
+                    <h4 style="margin: 0 0 4px; font-family: var(--serif, Georgia); font-size: 16px;">Bootstrap Initial Administrator</h4>
+                    <p style="margin: 0 0 12px; font-size: 11px; color: var(--muted, #858174);">
+                        This bootstrap utility only functions if no administrator account exists in MySQL. Once an administrator exists, this is permanently locked.
+                    </p>
+
+                    <form id="setupFirstAdminForm">
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label for="setupName" style="font-size: 11px;">Admin Name</label>
+                            <input type="text" id="setupName" placeholder="Primary Administrator" required style="padding: 8px 12px; font-size: 13px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label for="setupEmail" style="font-size: 11px;">Admin Email</label>
+                            <input type="email" id="setupEmail" placeholder="admin@smartblog.com" required style="padding: 8px 12px; font-size: 13px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="setupPassword" style="font-size: 11px;">Admin Password (min. 8 chars)</label>
+                            <input type="password" id="setupPassword" placeholder="••••••••" minlength="8" required style="padding: 8px 12px; font-size: 13px;">
+                        </div>
+                        <button type="submit" class="auth-submit" id="setupSubmitBtn" style="padding: 10px; font-size: 13px;">
+                            Initialize Administrator Account
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="admin-login.js"></script>
+</body>
+</html>
+

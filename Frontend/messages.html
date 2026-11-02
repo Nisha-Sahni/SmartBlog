@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Messages | SmartBlog</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="messages.css">
+</head>
+
+<body class="messages-page">
+
+    <!-- ================= MAIN HEADER ================= -->
+
+    <header class="main-header">
+        <a class="brand" href="dashboard.html">
+            <span class="brand-mark">S.</span>
+            smartblog.
+        </a>
+
+        <nav class="top-navigation">
+            <a href="dashboard.html" class="top-link">Home</a>
+            <a href="explore.html" class="top-link">Explore</a>
+            <a href="search.html" class="top-link">Search</a>
+            <a href="questions.html" class="top-link">Community Q&amp;A</a>
+            <a href="create-blog.html" class="top-link">Create a story</a>
+            <a href="messages.html" class="top-link active">Messages</a>
+            <a href="leaderboard.html" class="top-link">Leaderboard</a>
+            <a href="help.html" class="top-link">Help</a>
+        </nav>
+
+        <div class="profile-menu">
+            <button class="profile-button" id="profileButton" aria-expanded="false" title="Account Menu">
+                <span class="small-avatar">U</span>
+                <span>⌄</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown" hidden>
+                <a href="profile.html">My Profile</a>
+                <a href="messages.html">Messages</a>
+                <a href="settings.html">Settings</a>
+                <a href="help.html">Help &amp; Support</a>
+                <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ================= MESSAGES LAYOUT ================= -->
+
+    <div class="messages-app-container">
+
+        <!-- CONVERSATIONS LIST (LEFT PANEL) -->
+        <aside class="conversations-sidebar" id="conversationsSidebar">
+            <div class="conversations-header">
+                <div class="conversations-title-row">
+                    <h2>Direct Messages</h2>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span id="unreadTotalBadge" class="unread-pill" hidden>0 unread</span>
+                        <button type="button" class="new-conversation-btn" id="newConversationBtn" title="Start a new message">
+                            ＋ New
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Conversation User Picker Dropdown -->
+                <div class="new-conversation-modal" id="newConversationModal" hidden>
+                    <div class="new-conv-header">
+                        <h4>New Message</h4>
+                        <button type="button" id="closeNewConvBtn" class="new-conv-close" title="Close">&times;</button>
+                    </div>
+                    <div class="new-conv-search">
+                        <input type="text" id="userSearchInput" placeholder="Search writer by name or email...">
+                    </div>
+                    <div class="user-search-results" id="userSearchResults">
+                        <p class="user-search-loading">Type to find registered writers...</p>
+                    </div>
+                </div>
+                <div class="conversations-search-wrap">
+                    <span>⌕</span>
+                    <input
+                        type="text"
+                        id="conversationSearchInput"
+                        placeholder="Search conversations..."
+                        aria-label="Search conversations"
+                    >
+                </div>
+            </div>
+
+            <!-- Conversations Scrollable Container -->
+            <div class="conversations-list" id="conversationsList">
+                <div class="conversations-loading">
+                    <p>Loading your conversations...</p>
+                </div>
+            </div>
+
+            <!-- Empty state when no conversations exist -->
+            <div class="conversations-empty" id="conversationsEmpty" hidden>
+                <div class="empty-bubble-icon">💬</div>
+                <h3>No messages yet</h3>
+                <p>Connect with other writers on SmartBlog by viewing their profile and clicking <strong>Message</strong>.</p>
+                <a href="explore.html" class="btn-secondary" style="margin-top: 10px; font-size: 12px;">
+                    Explore writers ↗
+                </a>
+            </div>
+        </aside>
+
+
+        <!-- ACTIVE CHAT VIEW (RIGHT PANEL) -->
+        <main class="chat-area" id="chatArea">
+
+            <!-- Welcome Placeholder (When no conversation is selected) -->
+            <div class="chat-welcome-state" id="chatWelcomeState">
+                <div class="welcome-chat-graphic">
+                    <span class="chat-icon-sparkle">✦</span>
+                    <span class="chat-icon-main">💬</span>
+                </div>
+                <h2>Your Conversations</h2>
+                <p>Select a writer from the left list to read or send messages, or message a creator from their public profile.</p>
+            </div>
+
+            <!-- Active Conversation Container (Revealed when a conversation is active) -->
+            <div class="active-chat-container" id="activeChatContainer" hidden>
+
+                <!-- Chat Header -->
+                <header class="chat-header" id="chatHeader">
+                    <button type="button" id="backToConversationsBtn" class="mobile-back-btn" title="Back to conversations">
+                        ←
+                    </button>
+                    <div class="chat-participant-info">
+                        <span class="participant-avatar" id="chatParticipantAvatar">U</span>
+                        <div>
+                            <h3 id="chatParticipantName">Writings</h3>
+                            <a href="#" id="chatParticipantProfileLink" class="participant-profile-link">View profile ↗</a>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Messages Thread -->
+                <div class="messages-thread" id="messagesThread" role="log" aria-live="polite">
+                    <div class="messages-loading">
+                        <p>Loading messages...</p>
+                    </div>
+                </div>
+
+                <!-- Message Composer Input Bar -->
+                <form class="chat-composer" id="chatComposer">
+                    <textarea
+                        id="messageTextInput"
+                        placeholder="Write a message..."
+                        rows="1"
+                        maxlength="5000"
+                        required
+                    ></textarea>
+                    <button type="submit" id="sendMessageBtn" class="send-message-btn" title="Send message">
+                        <span>Send</span>
+                        <span class="send-arrow">↗</span>
+                    </button>
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="auth.js"></script>
+    <script src="messages.js"></script>
+
+</body>
+
+</html>
+

@@ -40,6 +40,10 @@ from recommendation_engine import recommendation_engine
 app = Flask(__name__)
 CORS(app)
 
+# Register Admin Blueprint
+from admin_routes import admin_bp
+app.register_blueprint(admin_bp)
+
 MAX_TEMPLATE_SIZE = 1536 * 1024
 
 app.config["MAX_CONTENT_LENGTH"] = MAX_TEMPLATE_SIZE
@@ -492,6 +496,51 @@ def get_recommendations():
 @app.route("/", methods=["GET"])
 def home():
     return "SmartBlog Backend is running!"
+
+
+# =========================
+# ADMIN PORTAL ROUTES
+# =========================
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_root_login():
+    if request.method == "POST":
+        from admin_routes import admin_login
+        return admin_login()
+
+    frontend_dir = os.path.abspath(os.path.join(app.root_path, "..", "Frontend"))
+    return send_from_directory(frontend_dir, "admin-login.html")
+
+
+@app.route("/admin/setup-first-admin", methods=["POST"])
+def admin_root_setup_first_admin():
+    from admin_routes import setup_first_admin
+    return setup_first_admin()
+
+
+@app.route("/admin", methods=["GET"])
+@app.route("/admin/", methods=["GET"])
+@app.route("/admin/dashboard", methods=["GET"])
+def admin_root_dashboard():
+    frontend_dir = os.path.abspath(os.path.join(app.root_path, "..", "Frontend"))
+    return send_from_directory(frontend_dir, "admin.html")
+
+
+@app.route("/admin/<path:filename>", methods=["GET"])
+def admin_static_assets(filename):
+    frontend_dir = os.path.abspath(os.path.join(app.root_path, "..", "Frontend"))
+    return send_from_directory(frontend_dir, filename)
+
+
+@app.route("/admin.css", methods=["GET"])
+@app.route("/admin.js", methods=["GET"])
+@app.route("/dashboard.html", methods=["GET"])
+@app.route("/blog.html", methods=["GET"])
+def admin_direct_assets():
+    filename = request.path.lstrip("/")
+    frontend_dir = os.path.abspath(os.path.join(app.root_path, "..", "Frontend"))
+    return send_from_directory(frontend_dir, filename)
+
 
 
 # =========================
@@ -966,6 +1015,25 @@ def create_blog():
         ))
 
         new_blog_id = cursor.lastrowid
+
+        # Award 5 reputation points to author for publishing story
+        cursor.execute("""
+            UPDATE users
+            SET reputation_points = reputation_points + 5
+            WHERE user_id = %s
+        """, (author_id,))
+
+        # If publishing from a saved draft, remove the draft
+        draft_id = data.get("draft_id")
+        if draft_id:
+            try:
+                cursor.execute("""
+                    DELETE FROM drafts
+                    WHERE draft_id = %s AND user_id = %s
+                """, (int(draft_id), author_id))
+            except Exception:
+                pass
+
         connection.commit()
 
         try:
@@ -1217,6 +1285,187 @@ def update_blog(blog_id):
         if cursor:
             cursor.close()
 
+        if connection and connection.is_connected():
+            connection.close()
+
+
+
+# =========================
+# DRAFTS ENDPOINTS
+# =========================
+
+@app.route("/drafts", methods=["GET"])
+@require_auth
+def get_user_drafts():
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT draft_id, user_id, title, subtitle, content, topic,
+                   template_id, cover_url, created_at, updated_at
+            FROM drafts
+            WHERE user_id = %s
+            ORDER BY updated_at DESC, draft_id DESC
+        """, (user_id,))
+        drafts = cursor.fetchall()
+        for d in drafts:
+            if d.get("created_at"):
+                d["created_at"] = d["created_at"].isoformat()
+            if d.get("updated_at"):
+                d["updated_at"] = d["updated_at"].isoformat()
+        return jsonify({
+            "success": True,
+            "drafts": drafts,
+            "count": len(drafts)
+        }), 200
+    except Exception:
+        app.logger.exception("Could not fetch drafts")
+        return jsonify({"success": False, "message": "Could not fetch drafts."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/drafts", methods=["POST"])
+@require_auth
+def save_user_draft():
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+
+    draft_id = data.get("draft_id")
+    title = clean_text(data.get("title")) or "Untitled Draft"
+    subtitle = clean_text(data.get("subtitle"))
+    topic = clean_text(data.get("topic")) or "Personal Stories"
+    template_id = clean_text(data.get("template_id")) or "scrapbook"
+    cover_url = clean_text(data.get("cover_url"))
+    content = str(data.get("content") or "").strip()
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        existing_draft = None
+        if draft_id:
+            try:
+                cursor.execute("""
+                    SELECT draft_id FROM drafts WHERE draft_id = %s AND user_id = %s
+                """, (int(draft_id), user_id))
+                existing_draft = cursor.fetchone()
+            except Exception:
+                existing_draft = None
+
+        if existing_draft:
+            cursor.execute("""
+                UPDATE drafts
+                SET title = %s, subtitle = %s, topic = %s,
+                    template_id = %s, cover_url = %s, content = %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE draft_id = %s AND user_id = %s
+            """, (title, subtitle or None, topic, template_id, cover_url or None, content, existing_draft["draft_id"], user_id))
+            saved_id = existing_draft["draft_id"]
+        else:
+            cursor.execute("""
+                INSERT INTO drafts
+                    (user_id, title, subtitle, topic, template_id, cover_url, content)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (user_id, title, subtitle or None, topic, template_id, cover_url or None, content))
+            saved_id = cursor.lastrowid
+
+        connection.commit()
+
+        cursor.execute("""
+            SELECT draft_id, user_id, title, subtitle, topic, template_id, cover_url, content, created_at, updated_at
+            FROM drafts
+            WHERE draft_id = %s
+        """, (saved_id,))
+        saved_draft = cursor.fetchone()
+        if saved_draft and saved_draft.get("created_at"):
+            saved_draft["created_at"] = saved_draft["created_at"].isoformat()
+        if saved_draft and saved_draft.get("updated_at"):
+            saved_draft["updated_at"] = saved_draft["updated_at"].isoformat()
+
+        return jsonify({
+            "success": True,
+            "message": "Draft saved successfully!",
+            "draft_id": saved_id,
+            "draft": saved_draft
+        }), 200
+    except Exception:
+        if connection:
+            connection.rollback()
+        app.logger.exception("Could not save draft")
+        return jsonify({"success": False, "message": "Could not save draft."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/drafts/<int:draft_id>", methods=["GET"])
+@require_auth
+def get_single_draft(draft_id):
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT draft_id, user_id, title, subtitle, topic, template_id, cover_url, content, created_at, updated_at
+            FROM drafts
+            WHERE draft_id = %s AND user_id = %s
+        """, (draft_id, user_id))
+        draft = cursor.fetchone()
+        if not draft:
+            return jsonify({"success": False, "message": "Draft not found."}), 404
+        if draft.get("created_at"):
+            draft["created_at"] = draft["created_at"].isoformat()
+        if draft.get("updated_at"):
+            draft["updated_at"] = draft["updated_at"].isoformat()
+        return jsonify({"success": True, "draft": draft}), 200
+    except Exception:
+        app.logger.exception("Could not get draft")
+        return jsonify({"success": False, "message": "Could not get draft."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/drafts/<int:draft_id>", methods=["DELETE"])
+@require_auth
+def delete_user_draft(draft_id):
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("""
+            DELETE FROM drafts
+            WHERE draft_id = %s AND user_id = %s
+        """, (draft_id, user_id))
+        connection.commit()
+        if cursor.rowcount == 0:
+            return jsonify({"success": False, "message": "Draft not found or already deleted."}), 404
+        return jsonify({"success": True, "message": "Draft deleted successfully."}), 200
+    except Exception:
+        if connection:
+            connection.rollback()
+        app.logger.exception("Could not delete draft")
+        return jsonify({"success": False, "message": "Could not delete draft."}), 500
+    finally:
+        if cursor:
+            cursor.close()
         if connection and connection.is_connected():
             connection.close()
 
@@ -1523,13 +1772,7 @@ def get_author_rank(user_id):
 @app.route("/authors/<int:user_id>/blogs", methods=["GET"])
 @require_auth
 def get_author_blogs(user_id):
-
-    # A user can only retrieve their own published blogs.
-    if request.authenticated_user_id != user_id:
-        return jsonify({
-            "success": False,
-            "message": "You can only view your own published stories."
-        }), 403
+    # Any authenticated user can view published stories authored by user_id
 
     connection = None
     cursor = None
@@ -2241,6 +2484,14 @@ def add_blog_comment(blog_id):
         """, (blog_id, user_id, comment_text))
 
         comment_id = cursor.lastrowid
+
+        # Award 2 reputation points to commenter
+        cursor.execute("""
+            UPDATE users
+            SET reputation_points = reputation_points + 2
+            WHERE user_id = %s
+        """, (user_id,))
+
         connection.commit()
 
         cursor.execute("""
@@ -2472,6 +2723,37 @@ def get_user_support_requests():
             "message": "Could not load support requests."
         }), 500
 
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+
+@app.route("/support/<int:support_id>", methods=["GET"])
+@require_auth
+def get_single_support_request(support_id):
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT support_id, user_id, subject, category, description, status, created_at
+            FROM support_requests
+            WHERE support_id = %s AND user_id = %s
+        """, (support_id, user_id))
+        req = cursor.fetchone()
+        if not req:
+            return jsonify({"success": False, "message": "Support request not found."}), 404
+        if req.get("created_at"):
+            req["created_at"] = req["created_at"].isoformat()
+        return jsonify({"success": True, "request": req}), 200
+    except Exception:
+        app.logger.exception("Could not fetch support request")
+        return jsonify({"success": False, "message": "Could not fetch support request."}), 500
     finally:
         if cursor:
             cursor.close()
@@ -2805,6 +3087,612 @@ def delete_current_user_account():
             cursor.close()
         if connection and connection.is_connected():
             connection.close()
+
+
+
+
+# =========================
+# PUBLIC USER PROFILE
+# =========================
+
+@app.route("/users/<int:user_id>", methods=["GET"])
+@app.route("/authors/<int:user_id>", methods=["GET"])
+@require_auth
+def get_public_user_profile(user_id):
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT user_id, name, reputation_points
+            FROM users
+            WHERE user_id = %s
+        """, (user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({
+                "success": False,
+                "message": "User not found."
+            }), 404
+
+        # Fetch interests
+        cursor.execute("""
+            SELECT interest
+            FROM user_interests
+            WHERE user_id = %s
+            ORDER BY interest_id ASC
+        """, (user_id,))
+        user["interests"] = [row["interest"] for row in cursor.fetchall()]
+
+        # Fetch blog count
+        cursor.execute("SELECT COUNT(*) AS blog_count FROM blogs WHERE author_id = %s", (user_id,))
+        row = cursor.fetchone()
+        user["blog_count"] = row["blog_count"] if row else 0
+
+        return jsonify({
+            "success": True,
+            "user": user
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error loading public profile")
+        return jsonify({
+            "success": False,
+            "message": "Could not load user profile."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# DIRECT MESSAGING ENDPOINTS
+# =========================
+
+@app.route("/conversations", methods=["GET"])
+@require_auth
+def get_user_conversations():
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Retrieve all conversations where user is participant
+        cursor.execute("""
+            SELECT
+                c.conversation_id,
+                c.user1_id,
+                c.user2_id,
+                c.created_at,
+                c.updated_at,
+                u1.name AS u1_name,
+                u1.email AS u1_email,
+                u2.name AS u2_name,
+                u2.email AS u2_email
+            FROM conversations c
+            JOIN users u1 ON c.user1_id = u1.user_id
+            JOIN users u2 ON c.user2_id = u2.user_id
+            WHERE c.user1_id = %s OR c.user2_id = %s
+            ORDER BY c.updated_at DESC
+        """, (user_id, user_id))
+
+        conv_rows = cursor.fetchall()
+        result = []
+
+        for conv in conv_rows:
+            conv_id = conv["conversation_id"]
+            if conv["user1_id"] == user_id:
+                other_id = conv["user2_id"]
+                other_name = conv["u2_name"]
+                other_email = conv["u2_email"]
+            else:
+                other_id = conv["user1_id"]
+                other_name = conv["u1_name"]
+                other_email = conv["u1_email"]
+
+            # Get latest message
+            cursor.execute("""
+                SELECT message_id, sender_id, content, is_read, created_at
+                FROM messages
+                WHERE conversation_id = %s
+                ORDER BY created_at DESC, message_id DESC
+                LIMIT 1
+            """, (conv_id,))
+            last_msg = cursor.fetchone()
+
+            # Format timestamp
+            if last_msg and last_msg.get("created_at"):
+                last_msg["created_at"] = last_msg["created_at"].isoformat()
+
+            # Count unread messages
+            cursor.execute("""
+                SELECT COUNT(*) AS unread_count
+                FROM messages
+                WHERE conversation_id = %s AND sender_id != %s AND is_read = FALSE
+            """, (conv_id, user_id))
+            unread_row = cursor.fetchone()
+            unread_count = unread_row["unread_count"] if unread_row else 0
+
+            result.append({
+                "conversation_id": conv_id,
+                "other_user": {
+                    "user_id": other_id,
+                    "name": other_name,
+                    "email": other_email
+                },
+                "latest_message": last_msg,
+                "unread_count": unread_count,
+                "updated_at": conv["updated_at"].isoformat() if conv.get("updated_at") else None
+            })
+
+        return jsonify({
+            "success": True,
+            "conversations": result
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error loading conversations")
+        return jsonify({
+            "success": False,
+            "message": "Could not load conversations."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/conversations", methods=["POST"])
+@require_auth
+def get_or_create_conversation():
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+    recipient_id = data.get("recipient_id")
+
+    try:
+        recipient_id = int(recipient_id)
+    except (TypeError, ValueError):
+        return jsonify({
+            "success": False,
+            "message": "A valid recipient ID is required."
+        }), 400
+
+    if user_id == recipient_id:
+        return jsonify({
+            "success": False,
+            "message": "You cannot start a conversation with yourself."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Check if recipient exists
+        cursor.execute("SELECT user_id, name, email FROM users WHERE user_id = %s", (recipient_id,))
+        recipient = cursor.fetchone()
+        if not recipient:
+            return jsonify({
+                "success": False,
+                "message": "User not found."
+            }), 404
+
+        u1, u2 = min(user_id, recipient_id), max(user_id, recipient_id)
+
+        # Check if conversation already exists
+        cursor.execute("""
+            SELECT conversation_id, user1_id, user2_id, created_at, updated_at
+            FROM conversations
+            WHERE user1_id = %s AND user2_id = %s
+        """, (u1, u2))
+        existing = cursor.fetchone()
+
+        if existing:
+            return jsonify({
+                "success": True,
+                "conversation_id": existing["conversation_id"],
+                "other_user": recipient,
+                "is_new": False
+            }), 200
+
+        # Insert new conversation
+        cursor.execute("""
+            INSERT INTO conversations (user1_id, user2_id)
+            VALUES (%s, %s)
+        """, (u1, u2))
+        connection.commit()
+        conv_id = cursor.lastrowid
+
+        return jsonify({
+            "success": True,
+            "conversation_id": conv_id,
+            "other_user": recipient,
+            "is_new": True
+        }), 201
+
+    except Exception:
+        app.logger.exception("Error creating conversation")
+        return jsonify({
+            "success": False,
+            "message": "Could not create conversation."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/conversations/<int:conversation_id>/messages", methods=["GET"])
+@require_auth
+def get_conversation_messages(conversation_id):
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Verify participant
+        cursor.execute("""
+            SELECT c.conversation_id, c.user1_id, c.user2_id,
+                   u1.name AS u1_name, u1.email AS u1_email,
+                   u2.name AS u2_name, u2.email AS u2_email
+            FROM conversations c
+            JOIN users u1 ON c.user1_id = u1.user_id
+            JOIN users u2 ON c.user2_id = u2.user_id
+            WHERE c.conversation_id = %s
+        """, (conversation_id,))
+        conv = cursor.fetchone()
+
+        if not conv or (conv["user1_id"] != user_id and conv["user2_id"] != user_id):
+            return jsonify({
+                "success": False,
+                "message": "You are not authorized to view this conversation."
+            }), 403
+
+        if conv["user1_id"] == user_id:
+            other_user = {"user_id": conv["user2_id"], "name": conv["u2_name"], "email": conv["u2_email"]}
+        else:
+            other_user = {"user_id": conv["user1_id"], "name": conv["u1_name"], "email": conv["u1_email"]}
+
+        # Mark incoming unread messages as read
+        cursor.execute("""
+            UPDATE messages
+            SET is_read = TRUE
+            WHERE conversation_id = %s AND sender_id != %s AND is_read = FALSE
+        """, (conversation_id, user_id))
+        connection.commit()
+
+        # Fetch messages
+        cursor.execute("""
+            SELECT
+                m.message_id,
+                m.conversation_id,
+                m.sender_id,
+                m.content,
+                m.is_read,
+                m.created_at,
+                u.name AS sender_name
+            FROM messages m
+            JOIN users u ON m.sender_id = u.user_id
+            WHERE m.conversation_id = %s
+            ORDER BY m.created_at ASC, m.message_id ASC
+        """, (conversation_id,))
+        messages = cursor.fetchall()
+
+        for msg in messages:
+            if msg.get("created_at"):
+                msg["created_at"] = msg["created_at"].isoformat()
+
+        return jsonify({
+            "success": True,
+            "conversation_id": conversation_id,
+            "other_user": other_user,
+            "messages": messages
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error loading conversation messages")
+        return jsonify({
+            "success": False,
+            "message": "Could not load messages."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/conversations/<int:conversation_id>/messages", methods=["POST"])
+@require_auth
+def send_conversation_message(conversation_id):
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+    content = clean_text(data.get("content"))
+
+    if not content or len(content) < 1:
+        return jsonify({
+            "success": False,
+            "message": "Message content cannot be empty."
+        }), 400
+
+    if len(content) > 5000:
+        return jsonify({
+            "success": False,
+            "message": "Message is too long (maximum 5000 characters)."
+        }), 400
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Verify participant
+        cursor.execute("""
+            SELECT user1_id, user2_id
+            FROM conversations
+            WHERE conversation_id = %s
+        """, (conversation_id,))
+        conv = cursor.fetchone()
+
+        if not conv or (conv["user1_id"] != user_id and conv["user2_id"] != user_id):
+            return jsonify({
+                "success": False,
+                "message": "You are not authorized to send messages in this conversation."
+            }), 403
+
+        # Insert message
+        cursor.execute("""
+            INSERT INTO messages (conversation_id, sender_id, content)
+            VALUES (%s, %s, %s)
+        """, (conversation_id, user_id, content))
+        msg_id = cursor.lastrowid
+
+        # Update conversation updated_at
+        cursor.execute("""
+            UPDATE conversations
+            SET updated_at = CURRENT_TIMESTAMP
+            WHERE conversation_id = %s
+        """, (conversation_id,))
+        connection.commit()
+
+        # Fetch created message
+        cursor.execute("""
+            SELECT m.message_id, m.conversation_id, m.sender_id, m.content, m.is_read, m.created_at, u.name AS sender_name
+            FROM messages m
+            JOIN users u ON m.sender_id = u.user_id
+            WHERE m.message_id = %s
+        """, (msg_id,))
+        msg = cursor.fetchone()
+        if msg and msg.get("created_at"):
+            msg["created_at"] = msg["created_at"].isoformat()
+
+        return jsonify({
+            "success": True,
+            "message": msg
+        }), 201
+
+    except Exception:
+        app.logger.exception("Error sending message")
+        return jsonify({
+            "success": False,
+            "message": "Could not send message."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# APPEARANCE PREFERENCES ENDPOINTS
+# =========================
+
+@app.route("/me/preferences", methods=["GET"])
+@require_auth
+def get_user_preferences():
+    user_id = request.authenticated_user_id
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT theme_mode, theme_accent
+            FROM user_preferences
+            WHERE user_id = %s
+        """, (user_id,))
+        prefs = cursor.fetchone()
+
+        if not prefs:
+            prefs = {"theme_mode": "light", "theme_accent": "lime"}
+
+        return jsonify({
+            "success": True,
+            "preferences": prefs
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error loading preferences")
+        return jsonify({
+            "success": False,
+            "message": "Could not load appearance preferences."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+@app.route("/me/preferences", methods=["PUT"])
+@require_auth
+def update_user_preferences():
+    user_id = request.authenticated_user_id
+    data = get_json_data()
+
+    theme_mode = clean_text(data.get("theme_mode")).lower() or "light"
+    theme_accent = clean_text(data.get("theme_accent")).lower() or "lime"
+
+    valid_modes = {"light", "dark"}
+    valid_accents = {"lime", "lavender", "peach", "blue", "emerald"}
+
+    if theme_mode not in valid_modes:
+        theme_mode = "light"
+
+    if theme_accent not in valid_accents:
+        theme_accent = "lime"
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            INSERT INTO user_preferences (user_id, theme_mode, theme_accent)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                theme_mode = VALUES(theme_mode),
+                theme_accent = VALUES(theme_accent)
+        """, (user_id, theme_mode, theme_accent))
+        connection.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Appearance preferences updated successfully.",
+            "preferences": {
+                "theme_mode": theme_mode,
+                "theme_accent": theme_accent
+            }
+        }), 200
+
+    except Exception:
+        app.logger.exception("Error updating preferences")
+        return jsonify({
+            "success": False,
+            "message": "Could not save appearance preferences."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# USER SEARCH FOR DIRECT MESSAGING
+# =========================
+
+@app.route("/users/search", methods=["GET"])
+@require_auth
+def search_registered_users():
+    user_id = request.authenticated_user_id
+    query = clean_text(request.args.get("q", ""))
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        if query:
+            cursor.execute("""
+                SELECT user_id, name, email, reputation_points
+                FROM users
+                WHERE user_id != %s AND (name LIKE %s OR email LIKE %s)
+                ORDER BY name ASC
+                LIMIT 25
+            """, (user_id, f"%{query}%", f"%{query}%"))
+        else:
+            cursor.execute("""
+                SELECT user_id, name, email, reputation_points
+                FROM users
+                WHERE user_id != %s
+                ORDER BY name ASC
+                LIMIT 25
+            """, (user_id,))
+
+        users = cursor.fetchall()
+        return jsonify({
+            "success": True,
+            "users": users
+        }), 200
+    except Exception:
+        app.logger.exception("Error searching users")
+        return jsonify({
+            "success": False,
+            "message": "Could not search users."
+        }), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+
+# =========================
+# AI CONTENT CREATION ASSISTANCE
+# =========================
+
+from ai_writer import ai_writing_assistant
+
+@app.route("/ai/assist", methods=["POST"])
+@require_auth
+def ai_assist():
+    data = get_json_data()
+    action = data.get("action", "").strip().lower()
+    text = data.get("text", "")
+    title = data.get("title", "")
+    content = data.get("content", "")
+    topic = data.get("topic", "General")
+
+    if action == "improve":
+        target_text = text if text else content
+        res = ai_writing_assistant.improve_writing(target_text)
+        status_code = 200 if res.get("success") else 400
+        return jsonify(res), status_code
+
+    elif action == "continue":
+        res = ai_writing_assistant.continue_writing(title, content)
+        status_code = 200 if res.get("success") else 400
+        return jsonify(res), status_code
+
+    elif action == "subtitle":
+        res = ai_writing_assistant.generate_subtitle(title, content)
+        status_code = 200 if res.get("success") else 400
+        return jsonify(res), status_code
+
+    elif action == "ideas":
+        res = ai_writing_assistant.suggest_ideas(title, content, topic)
+        status_code = 200 if res.get("success") else 400
+        return jsonify(res), status_code
+
+    else:
+        return jsonify({
+            "success": False,
+            "message": f"Unsupported AI action '{action}'. Valid actions: improve, continue, subtitle, ideas."
+        }), 400
 
 
 # =========================

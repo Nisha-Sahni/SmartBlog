@@ -90,6 +90,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const blog = data.blog;
 
+            // DYNAMIC TEMPLATE RENDER
+            const templateKey = (blog.template_id || "scrapbook").toLowerCase();
+            const article = document.querySelector(".blog-article");
+            if (article) {
+                article.classList.add(`template-${templateKey}`);
+                article.dataset.template = templateKey;
+            }
+            if (tagsContainer) {
+                const templateTag = document.createElement("span");
+                templateTag.className = "blog-template-tag";
+                templateTag.textContent = `STYLE: ${(blog.template_id || "Scrapbook").toUpperCase()}`;
+                tagsContainer.prepend(templateTag);
+            }
+
             // BLOG TITLE
             if (titleElement) {
                 titleElement.textContent =
@@ -102,11 +116,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (authorElement) {
                 authorElement.textContent = authorName;
+                if (blog.author_id) {
+                    authorElement.style.cursor = "pointer";
+                    authorElement.title = `View ${authorName}'s profile`;
+                    authorElement.onclick = () => {
+                        window.location.href = `profile.html?user_id=${blog.author_id}`;
+                    };
+                }
             }
 
             if (authorAvatar) {
                 authorAvatar.textContent =
                     authorName.charAt(0).toUpperCase();
+                if (blog.author_id) {
+                    authorAvatar.style.cursor = "pointer";
+                    authorAvatar.title = `View ${authorName}'s profile`;
+                    authorAvatar.onclick = () => {
+                        window.location.href = `profile.html?user_id=${blog.author_id}`;
+                    };
+                }
             }
 
             // PUBLICATION DATE

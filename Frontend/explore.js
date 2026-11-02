@@ -1,18 +1,52 @@
+/**
+ * SmartBlog — Dynamic Explore Stories Page
+ * Loads published stories directly from MySQL via Flask API.
+ */
 
 const API_BASE = "http://127.0.0.1:5000";
+const SAVED_KEY = "smartblog_saved_blogs_v1";
 
 const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
-const filters = document.querySelectorAll(".filter");
-const cards = document.querySelectorAll(".story-card");
+const storyGrid = document.getElementById("storyGrid");
 const emptyState = document.getElementById("emptyState");
 const storyCount = document.getElementById("storyCount");
 const sidebarContainer = document.querySelector(".sidebar-topics");
+const filtersContainer = document.querySelector(".filters");
 
-const SAVED_KEY = "smartblog_saved_blogs_v1";
-
+let allBlogs = [];
 let selectedTopic = "All";
 let userInterests = [];
+
+const topicCategoryClasses = {
+  Technology: "lime",
+  Creativity: "lavender",
+  Lifestyle: "pink",
+  Learning: "blue",
+  "Personal Stories": "peach",
+  Science: "blue",
+  Business: "lime",
+  "Health & Fitness": "pink"
+};
+
+const topicFallbackImages = {
+  Technology: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=85",
+  Creativity: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=85",
+  Lifestyle: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=800&q=85",
+  Learning: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=85",
+  "Personal Stories": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=85",
+  Default: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=85"
+};
+
+function escapeHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 function getSavedBlogs() {
   try {
@@ -23,119 +57,248 @@ function getSavedBlogs() {
   }
 }
 
-function getBlogFromCard(card, index) {
-  const imageElement = card.querySelector(".story-image img");
-  const titleElement = card.querySelector("h3");
-  const descriptionElement = card.querySelector(".story-content p");
-  const categoryElement = card.querySelector(".category");
-  const metaElement = card.querySelector(".meta");
-
-  const title = titleElement?.textContent.trim() || "Untitled blog";
-
-  return {
-    id: card.dataset.id || `explore-story-${index}`,
-    title,
-    description: descriptionElement?.textContent.trim() || "",
-    topic: card.dataset.topic || "General",
-    image: imageElement?.getAttribute("src") || "",
-    imageAlt: imageElement?.getAttribute("alt") || title,
-    category: categoryElement?.textContent.trim() || "",
-    meta: metaElement?.textContent.trim() || "",
-    author: card.querySelector(".story-footer > span")?.textContent.trim() || "",
-    link: card.dataset.link || ""
-  };
-}
-
-function updateSaveButtons() {
-  const savedBlogs = getSavedBlogs();
-
-  cards.forEach((card, index) => {
-    const button = card.querySelector(".save-button");
-    if (!button) return;
-
-    const blog = getBlogFromCard(card, index);
-
-    const isSaved = savedBlogs.some(
-      saved => String(saved.id ?? saved.title) === String(blog.id)
-    );
-
-    button.classList.toggle("saved", isSaved);
-    button.textContent = isSaved ? "♥ Saved" : "♡ Save";
-    button.setAttribute("aria-pressed", String(isSaved));
-  });
-}
-
-function toggleSavedBlog(card, index) {
-  const blog = getBlogFromCard(card, index);
+function toggleSavedBlog(blog) {
   let savedBlogs = getSavedBlogs();
+  const blogIdStr = String(blog.blog_id);
 
   const alreadySaved = savedBlogs.some(
-    saved => String(saved.id ?? saved.title) === String(blog.id)
+    saved => String(saved.blog_id || saved.id || saved.title) === blogIdStr
   );
 
   if (alreadySaved) {
     savedBlogs = savedBlogs.filter(
-      saved => String(saved.id ?? saved.title) !== String(blog.id)
+      saved => String(saved.blog_id || saved.id || saved.title) !== blogIdStr
     );
   } else {
-    savedBlogs.push(blog);
+    savedBlogs.push({
+      id: blog.blog_id,
+      blog_id: blog.blog_id,
+      title: blog.title,
+      description: blog.subtitle || blog.excerpt || "",
+      topic: blog.topic || "General",
+      image: blog.cover_url || topicFallbackImages[blog.topic] || topicFallbackImages.Default,
+      author: blog.author_name || "SmartBlog writer",
+      link: `blog.html?id=${blog.blog_id}`
+    });
   }
 
   try {
     localStorage.setItem(SAVED_KEY, JSON.stringify(savedBlogs));
-    updateSaveButtons();
+    renderStories();
   } catch (error) {
-    alert("The blog could not be saved. Please check your browser storage.");
+    alert("Could not update saved stories.");
   }
 }
 
-function updateStories() {
-  const query = searchInput.value.trim().toLowerCase();
-  let visibleCount = 0;
+function calculateReadTime(text) {
+  if (!text) return 3;
+  const wordCount = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(wordCount / 180));
+}
 
-  cards.forEach(card => {
-    const topic = card.dataset.topic || "";
+function formatDate(dateStr) {
+  if (!dateStr) return "Recently";
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  } catch {
+    return "Recently";
+  }
+}
 
-    const text = (
-      card.innerText + " " + (card.dataset.search || "")
-    ).toLowerCase();
+function renderStories() {
+  if (!storyGrid) return;
 
+  const query = (searchInput?.value || "").trim().toLowerCase();
+  const savedBlogs = getSavedBlogs();
+
+  // If semantic search produced results, use them as source; otherwise use allBlogs
+  const sourceBlogs = searchResults !== null ? searchResults : allBlogs;
+
+  const filtered = sourceBlogs.filter(blog => {
+    const topic = (blog.topic || "").toLowerCase();
     const topicMatches =
       selectedTopic === "All" ||
-      topic.toLowerCase() === selectedTopic.toLowerCase();
+      topic === selectedTopic.toLowerCase();
 
-    const searchMatches = text.includes(query);
-    const visible = topicMatches && searchMatches;
+    if (searchResults !== null) {
+      // Backend NLP semantic model already matched and ranked results
+      return topicMatches;
+    }
 
-    card.hidden = !visible;
+    const titleText = (blog.title || "").toLowerCase();
+    const subtitleText = (blog.subtitle || "").toLowerCase();
+    const contentText = (blog.content || "").toLowerCase();
+    const authorText = (blog.author_name || "").toLowerCase();
 
-    if (visible) visibleCount++;
+    const searchMatches =
+      !query ||
+      titleText.includes(query) ||
+      subtitleText.includes(query) ||
+      contentText.includes(query) ||
+      topic.includes(query) ||
+      authorText.includes(query);
+
+    return topicMatches && searchMatches;
   });
 
-  emptyState.hidden = visibleCount !== 0;
+  if (storyCount) {
+    storyCount.textContent = `${filtered.length} ${filtered.length === 1 ? "story" : "stories"}`;
+  }
 
-  storyCount.textContent =
-    `${visibleCount} ${visibleCount === 1 ? "story" : "stories"}`;
+  if (emptyState) {
+    emptyState.hidden = filtered.length > 0;
+  }
+
+  storyGrid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    return;
+  }
+
+  filtered.forEach(blog => {
+    const card = document.createElement("article");
+    card.className = "story-card";
+    card.dataset.id = blog.blog_id;
+    card.dataset.topic = blog.topic || "General";
+
+    const coverUrl =
+      blog.cover_url && blog.cover_url.trim().length > 5
+        ? blog.cover_url
+        : (topicFallbackImages[blog.topic] || topicFallbackImages.Default);
+
+    const catClass = topicCategoryClasses[blog.topic] || "lime";
+    const readTime = calculateReadTime(blog.content);
+    const dateFormatted = formatDate(blog.created_at);
+    const excerpt = blog.subtitle || (blog.content ? blog.content.substring(0, 110) + "..." : "Read this story on SmartBlog.");
+
+    const isSaved = savedBlogs.some(
+      s => String(s.blog_id || s.id || s.title) === String(blog.blog_id)
+    );
+
+    const authorId = blog.author_id || blog.user_id;
+
+    card.innerHTML = `
+      <a href="blog.html?id=${blog.blog_id}" class="story-image" aria-label="${escapeHTML(blog.title)}">
+        <img src="${escapeHTML(coverUrl)}" alt="${escapeHTML(blog.title)}" loading="lazy">
+        <span class="category ${catClass}">${escapeHTML((blog.topic || "Story").toUpperCase())}</span>
+      </a>
+      <div class="story-content">
+        <span class="meta">${readTime} MIN READ · ${escapeHTML(dateFormatted.toUpperCase())}</span>
+        <h3><a href="blog.html?id=${blog.blog_id}" class="card-title-link" style="text-decoration:none; color:inherit;">${escapeHTML(blog.title)}</a></h3>
+        <p>${escapeHTML(excerpt)}</p>
+        <div class="story-footer">
+          ${authorId ? `<a href="profile.html?user_id=${authorId}" class="author-link" style="color:inherit; text-decoration:none; font-weight:600;" title="View author profile">By ${escapeHTML(blog.author_name || "SmartBlog writer")}</a>` : `<span>By ${escapeHTML(blog.author_name || "SmartBlog writer")}</span>`}
+          <div style="display:flex; align-items:center; gap:8px;">
+            <a href="blog.html?id=${blog.blog_id}" class="read-more-link" style="font-size:12px; font-weight:600; color:inherit; text-decoration:none;">Read ↗</a>
+            <button type="button" class="save-button ${isSaved ? "saved" : ""}" aria-pressed="${isSaved}">
+              ${isSaved ? "♥ Saved" : "♡ Save"}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Make entire card stably clickable to open the story
+    card.style.cursor = "pointer";
+    card.addEventListener("click", e => {
+      // Do not navigate if user clicked save button or author link
+      if (e.target.closest(".save-button") || e.target.closest("button") || e.target.closest(".author-link")) {
+        return;
+      }
+      window.location.href = `blog.html?id=${blog.blog_id}`;
+    });
+
+    const saveBtn = card.querySelector(".save-button");
+    if (saveBtn) {
+      saveBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        toggleSavedBlog(blog);
+      });
+    }
+
+    const authorLink = card.querySelector(".author-link");
+    if (authorLink) {
+      authorLink.addEventListener("click", e => {
+        e.stopPropagation();
+      });
+    }
+
+    storyGrid.appendChild(card);
+  });
 }
 
 function chooseTopic(topic) {
   selectedTopic = topic;
 
   document.querySelectorAll(".filter").forEach(filter => {
-    filter.classList.toggle(
-      "active",
-      filter.dataset.topic === topic
-    );
+    filter.classList.toggle("active", filter.dataset.topic === topic);
   });
 
   document.querySelectorAll(".sidebar-topics button").forEach(button => {
-    button.classList.toggle(
-      "topic-active",
-      button.dataset.topic === topic
-    );
+    button.classList.toggle("topic-active", button.dataset.topic === topic);
   });
 
-  updateStories();
+  renderStories();
+}
+
+function updateTopicFilters() {
+  // Collect all unique topics from blogs
+  const topicsSet = new Set(["Technology", "Lifestyle", "Creativity", "Learning"]);
+  allBlogs.forEach(b => {
+    if (b.topic && b.topic.trim()) topicsSet.add(b.topic.trim());
+  });
+
+  if (filtersContainer) {
+    filtersContainer.innerHTML = "";
+    const allBtn = document.createElement("button");
+    allBtn.className = `filter ${selectedTopic === "All" ? "active" : ""}`;
+    allBtn.dataset.topic = "All";
+    allBtn.textContent = "All stories";
+    allBtn.addEventListener("click", () => chooseTopic("All"));
+    filtersContainer.appendChild(allBtn);
+
+    topicsSet.forEach(topic => {
+      const btn = document.createElement("button");
+      btn.className = `filter ${selectedTopic === topic ? "active" : ""}`;
+      btn.dataset.topic = topic;
+      btn.textContent = topic;
+      btn.addEventListener("click", () => chooseTopic(topic));
+      filtersContainer.appendChild(btn);
+    });
+  }
+}
+
+async function fetchBlogs() {
+  if (storyGrid) {
+    storyGrid.innerHTML = `
+      <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--muted, #77766f);">
+        <p>Loading stories from SmartBlog community...</p>
+      </div>
+    `;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/blogs`);
+    if (!response.ok) {
+      throw new Error(`Failed to load stories: ${response.status}`);
+    }
+
+    const data = await response.json();
+    allBlogs = Array.isArray(data.blogs) ? data.blogs : [];
+
+    updateTopicFilters();
+    renderStories();
+  } catch (error) {
+    console.error("Error fetching explore blogs:", error);
+    if (storyGrid) {
+      storyGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--muted, #77766f);">
+          <p>Could not connect to server to load stories. Please try refreshing.</p>
+        </div>
+      `;
+    }
+  }
 }
 
 function createTopicButton(topic) {
@@ -148,145 +311,116 @@ function createTopicButton(topic) {
     Technology: "lavender-dot",
     Lifestyle: "pink-dot",
     Creativity: "orange-dot",
-    Learning: "blue-dot"
+    Learning: "blue-dot",
+    "Personal Stories": "orange-dot"
   };
 
   const dot = document.createElement("i");
   dot.className = dotClasses[topic] || "lime-dot";
-
   const label = topic === "All" ? "For you" : topic;
 
   button.appendChild(dot);
-  button.appendChild(document.createTextNode(label));
-
+  button.appendChild(document.createTextNode(` ${label}`));
   button.addEventListener("click", () => chooseTopic(topic));
-
   return button;
 }
 
-function renderInterests(interests) {
+function renderSidebarInterests(interests) {
+  if (!sidebarContainer) return;
   sidebarContainer.innerHTML = "";
-
   sidebarContainer.appendChild(createTopicButton("All"));
 
   interests.forEach(topic => {
     sidebarContainer.appendChild(createTopicButton(topic));
   });
-
-  chooseTopic("All");
 }
 
 async function loadInterests() {
   try {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     const userId = storedUser?.user_id ?? storedUser?.id;
 
     if (!userId) {
-      console.warn("User ID not found in localStorage.");
       return;
     }
 
-    const response = await fetch(
-      `${API_BASE}/interests/${encodeURIComponent(userId)}`
-    );
-
-    if (!response.ok) {
-      throw new Error("Could not fetch interests.");
-    }
+    const response = await fetch(`${API_BASE}/interests/${encodeURIComponent(userId)}`);
+    if (!response.ok) return;
 
     const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Could not load interests.");
+    if (data.success && Array.isArray(data.interests)) {
+      userInterests = data.interests;
+      renderSidebarInterests(userInterests);
     }
-
-    userInterests = Array.isArray(data.interests)
-      ? data.interests
-      : [];
-
-    renderInterests(userInterests);
-
   } catch (error) {
-    console.error("Error loading interests:", error);
+    console.warn("Could not load user interests:", error);
   }
 }
 
-// SEARCH
-searchInput.addEventListener("input", updateStories);
-searchButton.addEventListener("click", updateStories);
+// SEMANTIC NLP SEARCH INTEGRATION
+let searchDebounceTimer = null;
+let searchResults = null;
 
-searchInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") updateStories();
-});
+async function performSemanticSearch() {
+  const query = (searchInput?.value || "").trim();
 
-// TOPIC FILTERS
-filters.forEach(filter => {
-  filter.addEventListener("click", () => {
-    chooseTopic(filter.dataset.topic);
-  });
-});
-
-// SAVE BLOGS
-cards.forEach((card, index) => {
-  const button = card.querySelector(".save-button");
-
-  if (button) {
-    button.addEventListener("click", () => {
-      toggleSavedBlog(card, index);
-    });
+  if (!query) {
+    searchResults = null;
+    renderStories();
+    return;
   }
-});
 
-// PROFILE DROPDOWN
-const profileButton = document.getElementById("profileButton");
-const profileDropdown = document.getElementById("profileDropdown");
-
-profileButton.addEventListener("click", () => {
-  const isOpen = !profileDropdown.hidden;
-  profileDropdown.hidden = isOpen;
-  profileButton.setAttribute("aria-expanded", String(!isOpen));
-});
-
-document.addEventListener("click", event => {
-  if (
-    !event.target.closest(".profile-menu") &&
-    !profileDropdown.hidden
-  ) {
-    profileDropdown.hidden = true;
-    profileButton.setAttribute("aria-expanded", "false");
-  }
-});
-
-// LOG OUT
-const logoutBtn = document.getElementById("logoutButton");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    if (window.SmartBlogAuth) {
-      window.SmartBlogAuth.logout(true);
+  try {
+    const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`);
+    if (res.ok) {
+      const data = await res.json();
+      searchResults = Array.isArray(data.results) ? data.results : [];
     } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "login.html";
+      searchResults = null;
+    }
+  } catch (err) {
+    console.warn("Semantic search endpoint error, falling back to local search:", err);
+    searchResults = null;
+  }
+
+  renderStories();
+}
+
+function handleSearchInput() {
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(performSemanticSearch, 300);
+}
+
+if (searchInput) {
+  searchInput.addEventListener("input", handleSearchInput);
+  searchInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      clearTimeout(searchDebounceTimer);
+      performSemanticSearch();
     }
   });
 }
 
-// USER PROFILE INITIAL
-try {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-
-  if (storedUser?.name) {
-    const initial = storedUser.name.trim().charAt(0).toUpperCase();
-
-    document.querySelectorAll(".small-avatar").forEach(avatar => {
-      avatar.textContent = initial;
-    });
-  }
-} catch (error) {
-  console.error("Could not load user details:", error);
+if (searchButton) {
+  searchButton.addEventListener("click", () => {
+    clearTimeout(searchDebounceTimer);
+    performSemanticSearch();
+  });
 }
 
-// INITIALIZE
-updateStories();
-updateSaveButtons();
-loadInterests();
+// Ensure static sidebar topic filters have immediate click handlers
+function initStaticSidebarFilters() {
+  document.querySelectorAll(".sidebar-topics button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const topic = btn.dataset.topic || btn.textContent.trim().replace(/^[^a-zA-Z0-9]+/, '');
+      chooseTopic(topic);
+    });
+  });
+}
+
+// Initialization on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  initStaticSidebarFilters();
+  fetchBlogs();
+  loadInterests();
+});

@@ -4,371 +4,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | SmartBlog</title>
+    <title>My Profile | smartblog.</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="explore.css">
     <link rel="stylesheet" href="profile.css">
-    <script src="auth.js" defer></script>
-    <script src="profile.js" defer></script>
 </head>
-<body>
-    <aside class="sidebar">
+
+<body class="profile-page">
+
+    <!-- ANNOUNCEMENT -->
+    <div class="announcement">
+        A little inspiration goes a long way.
+        <a href="#publishedStories">Explore your stories ↗</a>
+    </div>
+
+    <!-- HEADER: SAME STRUCTURE AS EXPLORE -->
+    <header class="main-header">
+
         <a class="brand" href="dashboard.html">
-            <span class="brand-mark">S.</span>
-            smartblog.
+            <span class="brand-mark">S.</span> smartblog.
         </a>
-
-        <a href="profile.html" class="profile">
-            <div class="profile-avatar" id="sidebarAvatar">N</div>
-            <div>
-                <strong id="sidebarName">Welcome back!</strong>
-                <small>Your reading corner</small>
-            </div>
-        </a>
-
-        <p class="nav-heading">YOUR SPACE</p>
 
         <nav class="navigation">
-            <a class="nav-link" href="dashboard.html">
-                <span>⌂</span> Home
-            </a>
-
-            <a class="nav-link" href="explore.html">
-                <span>⌕</span> Explore stories
-            </a>
-
-            <a class="nav-link" href="search.html">
-                <span>↗</span> Search
-            </a>
-
-            <a class="nav-link" href="questions.html">
-                <span>✳</span> Community Q&A
-            </a>
-
-            <a class="nav-link" href="create-blog.html">
-                <span>＋</span> Create a story
-            </a>
-
-            <a class="nav-link active" href="profile.html">
-                <span>◯</span> My profile
-            </a>
-
-            <a class="nav-link" href="leaderboard.html">
-                <span>🏆</span> Leaderboard
-            </a>
-
-            <a class="nav-link" href="help.html">
-                <span>❓</span> Help &amp; Support
-            </a>
+            <a class="nav-link" href="dashboard.html">Home</a>
+            <a class="nav-link" href="explore.html">Explore</a>
+            <a class="nav-link" href="search.html">Search</a>
+            <a class="nav-link" href="questions.html">Community Q&amp;A</a>
+            <a class="nav-link" href="create-blog.html">Create a Story</a>
+            <a class="nav-link" href="messages.html">Messages</a>
+            <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+            <a class="nav-link" href="help.html">Help</a>
         </nav>
 
-        <div class="write-box">
-            <span class="write-star">✳</span>
-            <h3>Have an idea?</h3>
-            <p>Your story might be exactly what someone needs to read.</p>
-            <a href="create-blog.html" class="write-button">
-                ＋ Share your ideas
-            </a>
+        <div class="profile-menu">
+            <button
+                type="button"
+                class="profile-button"
+                id="profileButton"
+                aria-expanded="false"
+                title="Account Menu"
+            >
+                <span class="small-avatar">U</span>
+                <span>⌄</span>
+            </button>
+
+            <div class="profile-dropdown" id="profileDropdown" hidden>
+                <a href="profile.html">My Profile</a>
+                <a href="messages.html">Messages</a>
+                <a href="settings.html">Settings</a>
+                <a href="help.html">Help &amp; Support</a>
+                <button type="button" class="logout-btn" id="logoutButton">Log Out</button>
+            </div>
         </div>
 
-        <a href="home.html" class="back-link">← Back to the website</a>
-        <button type="button" class="sidebar-logout-btn logout-btn" style="margin-top: 10px;">🚪 Sign out</button>
-    </aside>
+    </header>
 
-    <main class="main-content">
 
-        <!-- PAGE HEADER -->
-        <header class="topbar">
-            <div>
-                <p class="eyebrow">YOUR CREATIVE SPACE</p>
-                <h1>Your little corner<br>of the internet<span>.</span></h1>
+    <!-- SAME PAGE LAYOUT AS EXPLORE -->
+    <div class="page-layout">
+
+        <!-- LEFT: INTERESTS SIDEBAR -->
+        <aside class="interests-sidebar">
+
+            <div class="interests-heading">
+                <div>
+                    <span class="panel-label">PERSONALIZE YOUR FEED</span>
+                    <h3>Your interests</h3>
+                </div>
+                <a href="interests.html">Edit</a>
             </div>
-            <a href="create-blog.html" class="create-btn">
-                ＋ Write a story
-            </a>
-        </header>
 
-        <!-- PROFILE HERO -->
-        <section class="hero">
-            <div class="hero-decoration decoration-one">✳</div>
-            <div class="hero-decoration decoration-two">✦</div>
+            <p class="interests-description">
+                Explore stories based on the topics you enjoy.
+            </p>
 
-            <div class="hero-content">
-                <div class="avatar-wrap">
-                    <label for="profilePicInput" class="avatar-upload"
-                           title="Change profile picture">
+            <div class="sidebar-topics">
+                <button class="topic-active" data-topic="All">
+                    <i class="lime-dot"></i> For you
+                </button>
 
-                        <img id="profilePicPreview"
-                             class="profile-pic hidden"
-                             alt="Profile picture">
+                <button data-topic="Technology">
+                    <i class="lavender-dot"></i> Technology
+                </button>
 
-                        <span id="profileAvatar" class="avatar">U</span>
-                        <span class="camera-icon">✎</span>
-                    </label>
+                <button data-topic="Lifestyle">
+                    <i class="pink-dot"></i> Lifestyle
+                </button>
 
-                    <input type="file"
-                           id="profilePicInput"
-                           accept="image/png,image/jpeg,image/webp"
-                           hidden>
-                </div>
+                <button data-topic="Creativity">
+                    <i class="orange-dot"></i> Creativity
+                </button>
 
-                <div class="hero-info">
-                    <span class="creator-label">✳ THE CREATOR'S SPACE</span>
-
-                    <h2 id="displayName"></h2>
-                    <p id="displayUsername" class="username">@user</p>
-
-                    <p id="displayBio" class="bio">
-                        Student, curious learner, and aspiring developer.
-                        I love exploring ideas and sharing what I learn.
-                    </p>
-
-                    <div class="interests" id="displayInterests">
-                        <span>Technology</span>
-                        <span>Programming</span>
-                        <span>Writing</span>
-                    </div>
-                </div>
-
-                <button id="editProfileBtn" class="edit-btn">
-                    ✎ Edit profile
+                <button data-topic="Learning">
+                    <i class="blue-dot"></i> Learning
                 </button>
             </div>
 
-            <div class="hero-bottom">
-                <span>MADE OF THOUGHTS & LITTLE IDEAS</span>
-                <span>✳ KEEP CREATING</span>
+            <div class="sidebar-note">
+                <span>✳</span>
+                <p>Your interests help us discover stories you'll enjoy.</p>
             </div>
-        </section>
 
-        <!-- EDIT PROFILE FORM -->
-        <section id="editProfileSection" class="edit-card hidden">
-            <div class="edit-heading">
+            <div class="sidebar-create">
+                <h3>Have an idea?</h3>
+                <p>Your story might be exactly what someone needs to read.</p>
+                <a href="create-blog.html"> + Share your ideas</a>
+            </div>
+
+            <button type="button" class="sidebar-logout-btn logout-btn">
+                🚪 Sign Out
+            </button>
+
+        </aside>
+
+
+        <!-- RIGHT: PROFILE CONTENT -->
+        <main class="main-content profile-main-content">
+
+            <!-- PROFILE PAGE HEADING -->
+            <section class="profile-page-heading">
                 <div>
-                    <p class="eyebrow">MAKE IT YOURS</p>
-                    <h2>Edit your profile</h2>
-                </div>
-                <span class="edit-sparkle">✳</span>
-            </div>
+                    <span class="eyebrow" id="profilePageEyebrow">
+                        CREATOR SPACE
+                    </span>
 
-            <form id="profileForm">
-                <label for="nameInput">Display name</label>
-                <input id="nameInput"
-                       type="text"
-                       maxlength="50"
-                       required>
+                    <h1 id="profilePageTitle">
+                        My profile<span>.</span>
+                    </h1>
 
-                <label for="usernameInput">Username</label>
-                <input id="usernameInput"
-                       type="text"
-                       maxlength="30"
-                       pattern="[A-Za-z0-9_]+"
-                       required>
-
-                <p class="hint">
-                    Letters, numbers and underscores only.
-                </p>
-
-                <label for="bioInput">Your bio</label>
-                <textarea id="bioInput"
-                          rows="3"
-                          maxlength="250"
-                          placeholder="Tell readers about yourself"></textarea>
-
-                <label for="interestsInput">Your interests</label>
-                <input id="interestsInput"
-                       type="text"
-                       placeholder="Technology, Programming, Writing">
-
-                <p class="hint">Separate interests with commas.</p>
-
-                <div class="form-actions">
-                    <button type="button"
-                            id="cancelEditBtn"
-                            class="secondary-btn">
-                        Cancel
-                    </button>
-
-                    <button type="submit" class="primary-btn">
-                        Save changes ↗
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- PROFILE STATISTICS -->
-        <section class="stats-grid">
-            <article class="stat-card">
-                <div class="stat-top">
-                    <span>✍</span>
-                    <span>01</span>
-                </div>
-                <p>STORIES CREATED</p>
-                <h2 id="publishedCount">0</h2>
-                <span class="stat-caption">
-                    Your ideas, out in the world.
-                </span>
-            </article>
-
-            <article class="stat-card">
-                <div class="stat-top">
-                    <span>♡</span>
-                    <span>02</span>
-                </div>
-                <p>BOOKMARKED FINDS</p>
-                <h2 id="savedCount">0</h2>
-                <span class="stat-caption">
-                    Little things worth remembering.
-                </span>
-            </article>
-
-            <article class="stat-card">
-                <div class="stat-top">
-                    <span>⌁</span>
-                    <span>03</span>
-                </div>
-                <p>READING JOURNEY</p>
-                <h2 id="historyCount">0</h2>
-                <span class="stat-caption">
-                    Every read leaves an idea.
-                </span>
-            </article>
-        </section>
-
-        <!-- PUBLISHED BLOGS -->
-        <section class="content-section">
-            <div class="section-heading">
-                <div>
-                    <p class="eyebrow">YOUR CREATIVE WORK</p>
-                    <h2>Made by you<span>.</span></h2>
-                    <p class="section-subtitle">
-                        Your thoughts deserve a place to live.
-                    </p>
+                    <p>Manage your identity and the stories you share.</p>
                 </div>
 
-                <a href="create-blog.html" class="text-link">
-                    + Create a story ↗
+                <a href="create-blog.html" class="dark-button" id="topWriteBtn">
+                    + Write a story ↗
                 </a>
-            </div>
+            </section>
 
-            <div id="blogsGrid" class="blogs-grid"></div>
 
-            <p id="blogsEmpty" class="empty-state">
-                <span class="empty-icon">✳</span>
-                <strong>Your first story starts here.</strong>
-                <span>
-                    Got an idea? Turn it into something worth reading.
-                </span>
-                <a href="create-blog.html" class="text-link">
-                    Write your first story →
-                </a>
-            </p>
-        </section>
+            <!-- PROFILE HERO -->
+            <section class="profile-hero" id="profileHero">
 
-        <!-- SAVED BLOGS -->
-        <section class="content-section">
-            <div class="section-heading">
-                <div>
-                    <p class="eyebrow">A COLLECTION OF GOOD IDEAS</p>
-                    <h2>Your reading list<span>.</span></h2>
-                    <p class="section-subtitle">
-                        Stories you want to come back to.
-                    </p>
+                <div class="profile-hero-main">
+
+                    <div class="avatar-wrap">
+                        <label
+                            for="profilePicInput"
+                            class="avatar-upload"
+                            id="avatarUploadLabel"
+                            title="Change profile picture"
+                        >
+                            <img
+                                id="profilePicPreview"
+                                class="profile-pic hidden"
+                                alt="Profile picture"
+                            >
+
+                            <span id="profileAvatar" class="avatar">U</span>
+                            <span class="camera-icon" id="cameraIcon">✎</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            id="profilePicInput"
+                            accept="image/png,image/jpeg,image/webp"
+                            hidden
+                        >
+                    </div>
+
+                    <div class="profile-hero-info">
+
+                        <div class="profile-name-row">
+                            <div>
+                                <h2 id="displayName">Loading profile...</h2>
+                                <p id="displayUsername" class="username">@user</p>
+                            </div>
+
+                            <span class="reputation-badge" id="reputationBadge">
+                                ★ 0 points
+                            </span>
+                        </div>
+
+                        <p id="displayBio" class="bio">
+                            Curious learner and writer on SmartBlog.
+                            Exploring ideas and sharing stories.
+                        </p>
+
+                        <div class="interests" id="displayInterests"></div>
+
+                    </div>
+
+                    <div class="hero-actions" id="heroActions">
+
+                        <button type="button" id="editProfileBtn" class="edit-btn">
+                            ✎ Edit profile
+                        </button>
+
+                        <a
+                            href="#"
+                            id="messageUserBtn"
+                            class="message-action-btn"
+                            hidden
+                        >
+                            ✉ Message
+                        </a>
+
+                    </div>
+
                 </div>
 
-                <a href="explore.html" class="text-link">
-                    Explore stories ↗
-                </a>
-            </div>
+                <div class="profile-hero-footer">
+                    <span>AUTHENTIC STORIES &amp; FRESH PERSPECTIVES</span>
+                    <span>✳ SMARTBLOG COMMUNITY</span>
+                </div>
 
-            <div id="savedGrid" class="blogs-grid"></div>
+            </section>
 
-            <p id="savedEmpty" class="empty-state">
-                <span class="empty-icon">♡</span>
-                <strong>Your next favourite read is out there.</strong>
-                <span>
-                    Explore stories and keep the ones you love.
-                </span>
-                <a href="explore.html" class="text-link">
-                    Explore stories →
-                </a>
-            </p>
-        </section>
 
-        <!-- EDIT BLOG MODAL -->
-        <div id="editBlogModal" class="edit-blog-modal hidden">
-            <div class="edit-blog-card">
+            <!-- EDIT PROFILE -->
+            <section id="editProfileSection" class="edit-card hidden">
 
                 <div class="edit-heading">
                     <div>
-                        <p class="eyebrow">YOUR CREATIVE WORK</p>
-                        <h2>Edit your story</h2>
-                        <p class="section-subtitle">
-                            Make changes to your published blog.
-                        </p>
+                        <span class="eyebrow">CUSTOMIZE IDENTITY</span>
+                        <h2>Edit your profile</h2>
                     </div>
 
-                    <button type="button"
-                            id="closeEditBlogBtn"
-                            class="close-edit-btn"
-                            aria-label="Close">
-                        ✕
-                    </button>
+                    <button
+                        type="button"
+                        id="closeEditSectionBtn"
+                        class="close-x-btn"
+                        aria-label="Close edit profile"
+                    >✕</button>
                 </div>
 
-                <form id="editBlogForm">
+                <form id="profileForm">
 
-                    <input type="hidden" id="editBlogId">
+                    <div class="form-row">
+                        <label for="nameInput">Full name</label>
+                        <input id="nameInput" type="text" maxlength="100" required>
+                    </div>
 
-                    <label for="editBlogTitle">Blog title</label>
-                    <input type="text"
-                           id="editBlogTitle"
-                           maxlength="200"
-                           required>
+                    <div class="form-row">
+                        <label for="usernameInput">Username</label>
+                        <input
+                            id="usernameInput"
+                            type="text"
+                            maxlength="30"
+                            pattern="[A-Za-z0-9_]+"
+                            required
+                        >
+                        <small class="field-hint">
+                            Letters, numbers, and underscores only.
+                        </small>
+                    </div>
 
-                    <label for="editBlogSubtitle">Subtitle</label>
-                    <input type="text"
-                           id="editBlogSubtitle"
-                           maxlength="300">
+                    <div class="form-row">
+                        <label for="bioInput">Bio</label>
+                        <textarea
+                            id="bioInput"
+                            rows="3"
+                            maxlength="300"
+                            placeholder="Tell readers about yourself"
+                        ></textarea>
+                    </div>
 
-                    <label for="editBlogTopic">Topic</label>
-                    <input type="text"
-                           id="editBlogTopic"
-                           maxlength="100">
-
-                    <label for="editBlogCover">Cover image URL</label>
-                    <input type="url"
-                           id="editBlogCover"
-                           placeholder="https://example.com/image.jpg">
-
-                    <label for="editBlogContent">Your story</label>
-                    <textarea id="editBlogContent"
-                              rows="12"
-                              required></textarea>
+                    <div class="form-row">
+                        <label for="interestsInput">Interests</label>
+                        <input
+                            id="interestsInput"
+                            type="text"
+                            placeholder="Technology, Programming, Writing"
+                        >
+                        <small class="field-hint">
+                            Separate your interests with commas.
+                        </small>
+                    </div>
 
                     <div class="form-actions">
-                        <button type="button"
-                                id="cancelEditBlogBtn"
-                                class="secondary-btn">
+                        <button type="button" id="cancelEditBtn" class="btn-secondary">
                             Cancel
                         </button>
 
-                        <button type="submit" class="primary-btn">
+                        <button type="submit" class="dark-button">
                             Save changes ↗
                         </button>
                     </div>
 
                 </form>
+            </section>
+
+
+            <!-- PROFILE STATISTICS -->
+            <section class="stats-grid" id="statsGrid">
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span>✍</span>
+                        <span>01</span>
+                    </div>
+                    <p>PUBLISHED STORIES</p>
+                    <h2 id="publishedCount">0</h2>
+                    <span class="stat-caption">Original articles shared</span>
+                </article>
+
+                <article class="stat-card" id="savedStatCard">
+                    <div class="stat-top">
+                        <span>♡</span>
+                        <span>02</span>
+                    </div>
+                    <p>SAVED STORIES</p>
+                    <h2 id="savedCount">0</h2>
+                    <span class="stat-caption">Curated reading bookmarks</span>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span>🏆</span>
+                        <span>03</span>
+                    </div>
+                    <p>REPUTATION</p>
+                    <h2 id="statReputation">0</h2>
+                    <span class="stat-caption">Community recognition score</span>
+                </article>
+
+            </section>
+
+
+            <!-- PUBLISHED STORIES -->
+            <section class="content-section" id="authoredSection">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow" id="authoredEyebrow">
+                            AUTHOR CONTRIBUTIONS
+                        </span>
+
+                        <h2 id="authoredHeading">
+                            Published stories<span>.</span>
+                        </h2>
+
+                        <p class="section-subtitle">
+                            Thoughtful perspectives and discoveries.
+                        </p>
+                    </div>
+
+                    <a
+                        href="create-blog.html"
+                        class="text-link"
+                        id="createStoryLink"
+                    >
+                        + Create a story ↗
+                    </a>
+                </div>
+
+                <div id="blogsGrid" class="blogs-grid"></div>
+
+                <div id="blogsEmpty" class="empty-state" hidden>
+                    <span class="empty-icon">✳</span>
+                    <strong>No published stories yet.</strong>
+
+                    <span id="blogsEmptyDesc">
+                        Got an idea? Turn it into something worth reading.
+                    </span>
+
+                    <a
+                        href="create-blog.html"
+                        class="btn-secondary"
+                        id="emptyWriteBtn"
+                    >
+                        Write your first story ↗
+                    </a>
+                </div>
+
+            </section>
+
+
+            <!-- SAVED STORIES -->
+            <section class="content-section" id="savedSection">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">READING BOOKMARKS</span>
+                        <h2>Your reading list<span>.</span></h2>
+
+                        <p class="section-subtitle">
+                            Stories you want to revisit.
+                        </p>
+                    </div>
+
+                    <a href="explore.html" class="text-link">
+                        Explore stories ↗
+                    </a>
+                </div>
+
+                <div id="savedGrid" class="blogs-grid"></div>
+
+                <div id="savedEmpty" class="empty-state" hidden>
+                    <span class="empty-icon">♡</span>
+                    <strong>Your reading list is empty.</strong>
+
+                    <span>
+                        Explore articles on SmartBlog and save the ones you love.
+                    </span>
+
+                    <a href="explore.html" class="btn-secondary">
+                        Explore stories ↗
+                    </a>
+                </div>
+
+            </section>
+
+
+            <!-- EDIT BLOG MODAL -->
+            <div
+                id="editBlogModal"
+                class="edit-blog-modal hidden"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="editBlogHeading"
+            >
+
+                <div class="edit-blog-card">
+
+                    <div class="edit-heading">
+                        <div>
+                            <span class="eyebrow">STORY MANAGEMENT</span>
+                            <h2 id="editBlogHeading">Edit story</h2>
+                            <p class="section-subtitle">
+                                Update and refine your published article.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="closeEditBlogBtn"
+                            class="close-x-btn"
+                            aria-label="Close edit story"
+                        >✕</button>
+                    </div>
+
+                    <form id="editBlogForm">
+
+                        <input type="hidden" id="editBlogId">
+
+                        <div class="form-row">
+                            <label for="editBlogTitle">Title</label>
+                            <input
+                                type="text"
+                                id="editBlogTitle"
+                                maxlength="200"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <label for="editBlogSubtitle">Introduction / Subtitle</label>
+                            <input
+                                type="text"
+                                id="editBlogSubtitle"
+                                maxlength="300"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <label for="editBlogTopic">Topic</label>
+                            <input
+                                type="text"
+                                id="editBlogTopic"
+                                maxlength="100"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <label for="editBlogCover">Cover Image URL</label>
+                            <input
+                                type="url"
+                                id="editBlogCover"
+                                placeholder="https://example.com/image.jpg"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <label for="editBlogContent">Content</label>
+                            <textarea id="editBlogContent" rows="10" required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button
+                                type="button"
+                                id="cancelEditBlogBtn"
+                                class="btn-secondary"
+                            >
+                                Cancel
+                            </button>
+
+                            <button type="submit" class="dark-button">
+                                Save changes ↗
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <!-- FOOTER -->
-        <footer>
-            <a href="dashboard.html" class="footer-logo">
-                smart<span>blog.</span>
-            </a>
-            <span>KEEP YOUR CURIOSITY ALIVE ✳</span>
-        </footer>
 
-    </main>
+            <!-- FOOTER -->
+            <footer class="footer profile-footer">
+                <a class="brand" href="dashboard.html">
+                    <span class="brand-mark">S.</span> smartblog.
+                </a>
+                <p>A home for curious minds and thoughtful stories.</p>
+            </footer>
+
+        </main>
+    </div>
+
+
+    <script src="auth.js"></script>
+    <script src="profile.js"></script>
+
 </body>
 </html>

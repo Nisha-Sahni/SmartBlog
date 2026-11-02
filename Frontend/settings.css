@@ -685,3 +685,67 @@ body.dark-theme .popular-chip:hover {
         flex-direction: column;
     }
 }
+
+
+/* ================= ACCENT SWATCHES ================= */
+
+.accent-selection-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line, #e9e5db);
+}
+
+.accent-swatches-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.accent-swatch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--paper, #fffefa);
+    border: 1px solid var(--line, #e9e5db);
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink, #22221f);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.accent-swatch-btn:hover {
+    border-color: var(--muted, #77766f);
+    background: var(--surface-subtle, #f5f2e9);
+}
+
+.accent-swatch-btn.active {
+    border-color: var(--ink, #22221f);
+    background: var(--surface-subtle, #f5f2e9);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.swatch-circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .accent-swatch-btn,
+body.dark-theme .accent-swatch-btn {
+    background: #24231f;
+    border-color: #383730;
+    color: #f7f6f0;
+}
+
+[data-theme="dark"] .accent-swatch-btn.active,
+body.dark-theme .accent-swatch-btn.active {
+    border-color: var(--lime, #dafa69);
+    background: #2e2d27;
+}
